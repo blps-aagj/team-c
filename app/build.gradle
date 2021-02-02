@@ -3,11 +3,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    compileSdkVersion 30 // versione api
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.ivanmorgillo.corsoandroid.teamc"
+        applicationId "com.ivanmorgillo.corsoandroid.teamc" // nome formale dell'app sul playstore
         minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
