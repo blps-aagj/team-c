@@ -22,10 +22,10 @@ class MainActivity : AppCompatActivity() {
         val adapter = RecipesAdapter()
 
         // dobbiamo mettere l'adapter in comunicazione con la recyclerview
-        recipies_list.adapter = adapter
+        recipes_list.adapter = adapter
 
         // ora passiamo la lista all'adapter
-        adapter.setRecipies(recipeList)
+        adapter.setRecipes(recipeList)
 
     }
 }
@@ -35,14 +35,15 @@ class MainActivity : AppCompatActivity() {
 // il viewholder è uno degli elementi visibile nella lista.
 class RecipesAdapter : Adapter<RecipeViewHolder>() {
     // questa variabile contiene gli elementi da passare all'adapter
-    private var recipies: List<RecipeUI> = emptyList()
+    private var recipes: List<RecipeUI> = emptyList()
 
 
     // viene chiamato per ogni elemento della lista per creare la sua rappresentazione in kotlin
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeViewHolder {
         // a RecipeViewHolder dobbiamo passare una view. Unoggetto view è una rappresentazione android di un xml.
 
-        // andiamo a creare una view. Il LayoutInflater ci serve per fare l'inflate
+        // andiamo a creare una view utilizzando l'inflater.
+        // Il LayoutInflater ci serve per fare l'inflate
         val view = LayoutInflater.from(parent.context).inflate(
             R.layout.recipe_item,
             parent,
@@ -54,16 +55,16 @@ class RecipesAdapter : Adapter<RecipeViewHolder>() {
     // questo metodo collega il viewholder con un elemento della lista (collega la UI con un item)
     // mette in comunicazione i dati che vengono dall'esterno con la parte grafica
     override fun onBindViewHolder(holder: RecipeViewHolder, position: Int) {
-        holder.bind(recipies[position])
+        holder.bind(recipes[position])
     }
 
     // ci dice qunti elementi ci sono nella lista
     override fun getItemCount(): Int {
-        return recipies.size
+        return recipes.size
     }
 
-    fun setRecipies(listOfRecipies: List<RecipeUI>){
-        recipies = listOfRecipies
+    fun setRecipes(listOfRecipes: List<RecipeUI>){
+        recipes = listOfRecipes
         // dobbiamo notificare che abbiamo aggiunto delle ricette
         notifyDataSetChanged()
     }
@@ -88,7 +89,7 @@ data class RecipeUI(
     val recipeImageUrl: String
 )
 
-val recipeList = listOf<RecipeUI>(
+val recipeList = listOf(
     RecipeUI(recipeName = "Beef and Mustard pie", recipeImageUrl = "https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg"),
     RecipeUI(recipeName = "Beef and Mustard pie", recipeImageUrl = "https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg"),
     RecipeUI(recipeName = "Beef and Mustard pie", recipeImageUrl = "https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg"),

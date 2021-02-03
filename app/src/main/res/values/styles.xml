@@ -1,5 +1,5 @@
 <resources>
-    <!-- Base application theme. -->
+    <!-- abbiamo modificato il tema nel parent per allinearci al material components che sitiamo usando nell'app-->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>

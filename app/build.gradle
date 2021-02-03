@@ -55,6 +55,8 @@ dependencies {
 
     implementation 'com.google.android.material:material:1.2.1'
 
+    // per scaricare material design
+    implementation 'com.google.android.material:material:1.2.1'
 
     // per testing
     testImplementation 'junit:junit:4.12'
