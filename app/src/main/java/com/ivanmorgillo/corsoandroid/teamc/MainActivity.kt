@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
         val adapter = RecipesAdapter()
 
         // dobbiamo mettere l'adapter in comunicazione con la recyclerview
-        recipies_list.adapter = adapter
+        recipes_list.adapter = adapter
 
         val recipeList = viewModel.getRecipes()
         // ora passiamo la lista all'adapter
@@ -27,8 +27,5 @@ data class RecipeUI(
     val recipeName: String,
     val recipeImageUrl: String
 )
-
-//prova
-
 
 
