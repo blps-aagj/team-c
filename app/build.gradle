@@ -53,6 +53,8 @@ dependencies {
     // per caricare l'immagine
     implementation("io.coil-kt:coil:1.1.1")
 
+    implementation 'com.google.android.material:material:1.2.1'
+
 
     // per testing
     testImplementation 'junit:junit:4.12'
