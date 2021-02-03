@@ -1,29 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".MainActivity">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <!--
+android:id="@+id/recipes_list" -> ci consente di richiamare questa view all'interno del codice kotlin
+
+android:layout_width="0dp" -> stiamo impostando la dimensione a MATCH_COSTRAINT. Il comportamento di default è quello che la dimensione
+                              risultante prende tutto lo spazio disponibile.
+
+android:layout_height="wrap_content" -> l'altezza dipenderà dal contenuto che andiamo a mettere all'interno della RecyclerView
+
+app:layout_constraintEnd_toEndOf="parent" -> ci consente di collegare il lato dx della view con la view che lo contiene.
+                                             Il contenitore esterno, in questo caso, è il costraint layout.
+
+app:layout_constraintStart_toStartOf="parent" -> ci consente di collegare il lato sx della view con la view che lo contiene.
+                                                 Il contenitore esterno, in questo caso, in questo caso, è il costraint layout.
+
+app:layout_constraintTop_toTopOf="parent" -> ci consente di collegare il lato superiore della view con la view che lo contiene.
+                                             Il contenitore esterno, in questo caso, in questo caso, è il costraint layout.
+
+android:orientation="vertical" -> ci consente di andare a decidere come deve avvenire lo scroll. In questo caso sarà verticale.
+
+app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" -> il layoutManager ci consente di arrangiare le view dentro il RecyclerView.
+                                                                        In questo caso verranno gestite usando un LinearLayout.
+                                                                        doc ref: https://developer.android.com/guide/topics/ui/layout/recyclerview
+
+tools:listitem="@layout/recipe_item" -> questo è un placeholder che ci consente di fare una preview di quello che sarà mostrato a video.
+                                        Osserviamo che abbiamo creato un layout; questo layout sarà usato per decidere come devono essere gli item nella recycler
+-->
 
     <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recipies_list"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:orientation="vertical"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/recipe_item"/>
+        android:id="@+id/recipes_list"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/recipe_item" />
+
     <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:visibility="gone"
-            tools:visibility="visible"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"
+        tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,9 +3,10 @@ package com.ivanmorgillo.corsoandroid.teamc
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_main.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
-
+    private val viewModel: MainViewModel by viewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -13,8 +14,9 @@ class MainActivity : AppCompatActivity() {
         val adapter = RecipesAdapter()
 
         // dobbiamo mettere l'adapter in comunicazione con la recyclerview
-        recipies_list.adapter = adapter
+        recipes_list.adapter = adapter
 
+        val recipeList = viewModel.getRecipes()
         // ora passiamo la lista all'adapter
         adapter.setRecipies(recipeList)
     }
@@ -26,13 +28,4 @@ data class RecipeUI(
     val recipeImageUrl: String
 )
 
-val recipeList = listOf<RecipeUI>(
-    RecipeUI(recipeName = "Beef and Mustard pie", recipeImageUrl = "https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg"),
-    RecipeUI(recipeName = "Beef and Mustard pie", recipeImageUrl = "https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg"),
-    RecipeUI(recipeName = "Beef and Mustard pie", recipeImageUrl = "https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg"),
-    RecipeUI(recipeName = "Beef and Mustard pie", recipeImageUrl = "https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg"),
-    RecipeUI(recipeName = "Beef and Mustard pie", recipeImageUrl = "https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg"),
-    RecipeUI(recipeName = "Beef and Mustard pie", recipeImageUrl = "https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg"),
-    RecipeUI(recipeName = "Beef and Mustard pie", recipeImageUrl = "https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg"),
-)
 
