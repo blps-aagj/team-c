@@ -1,7 +1,7 @@
 package com.ivanmorgillo.corsoandroid.teamc
 
 import androidx.lifecycle.ViewModel
-private const val MAXRANGE = 10
+private const val MAXRANGE = 10 // costante per potere togliere il problema del magic number
 /**
  * Main view model
  *
