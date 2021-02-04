@@ -39,6 +39,11 @@ class RecipesAdapter : RecyclerView.Adapter<RecipeViewHolder>() {
         return recipies.size
     }
 
+    /**
+     * Set recipies prende in input una lista di ricette
+     *
+     * @param listOfRecipies
+     */
     fun setRecipies(listOfRecipies: List<RecipeUI>){
         recipies = listOfRecipies
         // dobbiamo notificare che abbiamo aggiunto delle ricette
@@ -46,7 +51,14 @@ class RecipesAdapter : RecyclerView.Adapter<RecipeViewHolder>() {
     }
 }
 
-// itemView rappresenta la nostra card
+
+/**
+ * Recipe view holder
+ *
+ * @constructor
+ *
+ * @param itemView rappresenta la nostra card
+ */
 class RecipeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val recipeTitle = itemView.findViewById<TextView>(R.id.recipe_title)
     private val recipeImage = itemView.findViewById<ImageView>(R.id.recipe_image)
@@ -56,3 +68,16 @@ class RecipeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         recipeImage.load(item.recipeImageUrl)
     }
 }
+
+// mappa l'oggetto che sta nella card
+/**
+ * Recipe u i
+ *
+ * @property recipeName
+ * @property recipeImageUrl
+ * @constructor Create empty Recipe u i
+ */
+data class RecipeUI(
+    val recipeName: String,
+    val recipeImageUrl: String
+)
