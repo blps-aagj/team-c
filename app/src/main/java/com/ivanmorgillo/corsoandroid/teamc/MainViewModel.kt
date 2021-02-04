@@ -8,34 +8,38 @@ import androidx.lifecycle.ViewModel
  * @constructor Create empty Main view model
  */
 class MainViewModel : ViewModel() {
-    private val recipeList = listOf<RecipeUI>(
+
+    private val recipeName = "Beef and Mustard pie"
+    private val recipeImageUrl = "https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg"
+
+    private val recipeList = listOf(
         RecipeUI(
-            recipeName = "Beef and Mustard pie",
-            recipeImageUrl = "https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg"
+            recipeName = recipeName,
+            recipeImageUrl = recipeImageUrl
         ),
         RecipeUI(
-            recipeName = "Beef and Mustard pie",
-            recipeImageUrl = "https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg"
+            recipeName = recipeName,
+            recipeImageUrl = recipeImageUrl
         ),
         RecipeUI(
-            recipeName = "Beef and Mustard pie",
-            recipeImageUrl = "https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg"
+            recipeName = recipeName,
+            recipeImageUrl = recipeImageUrl
         ),
         RecipeUI(
-            recipeName = "Beef and Mustard pie",
-            recipeImageUrl = "https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg"
+            recipeName = recipeName,
+            recipeImageUrl = recipeImageUrl
         ),
         RecipeUI(
-            recipeName = "Beef and Mustard pie",
-            recipeImageUrl = "https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg"
+            recipeName = recipeName,
+            recipeImageUrl = recipeImageUrl
         ),
         RecipeUI(
-            recipeName = "Beef and Mustard pie",
-            recipeImageUrl = "https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg"
+            recipeName = recipeName,
+            recipeImageUrl = recipeImageUrl
         ),
         RecipeUI(
-            recipeName = "Beef and Mustard pie",
-            recipeImageUrl = "https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg"
+            recipeName = recipeName,
+            recipeImageUrl = recipeImageUrl
         ),
     )
 
