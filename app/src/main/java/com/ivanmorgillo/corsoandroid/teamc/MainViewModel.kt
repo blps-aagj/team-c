@@ -11,37 +11,12 @@ class MainViewModel : ViewModel() {
 
     private val recipeName = "Beef and Mustard pie"
     private val recipeImageUrl = "https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg"
-
-    private val recipeList = listOf(
+    private val recipeList = (1.rangeTo(10)).map {
         RecipeUI(
             recipeName = recipeName,
             recipeImageUrl = recipeImageUrl
-        ),
-        RecipeUI(
-            recipeName = recipeName,
-            recipeImageUrl = recipeImageUrl
-        ),
-        RecipeUI(
-            recipeName = recipeName,
-            recipeImageUrl = recipeImageUrl
-        ),
-        RecipeUI(
-            recipeName = recipeName,
-            recipeImageUrl = recipeImageUrl
-        ),
-        RecipeUI(
-            recipeName = recipeName,
-            recipeImageUrl = recipeImageUrl
-        ),
-        RecipeUI(
-            recipeName = recipeName,
-            recipeImageUrl = recipeImageUrl
-        ),
-        RecipeUI(
-            recipeName = recipeName,
-            recipeImageUrl = recipeImageUrl
-        ),
-    )
+        )
+    }
 
     /**
      * Get recipes
