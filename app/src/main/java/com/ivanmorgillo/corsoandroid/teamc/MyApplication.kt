@@ -7,11 +7,12 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 
-class MyApplication : Application(){
+@Suppress("unused") // gestire falso positivo
+class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         // Start Koin
-        startKoin{
+        startKoin {
             androidLogger()
             androidContext(this@MyApplication)
             modules(appModule)

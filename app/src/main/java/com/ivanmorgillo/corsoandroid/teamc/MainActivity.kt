@@ -1,7 +1,7 @@
 package com.ivanmorgillo.corsoandroid.teamc
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -18,8 +18,6 @@ class MainActivity : AppCompatActivity() {
 
         val recipeList = viewModel.getRecipes()
         // ora passiamo la lista all'adapter
-        adapter.setRecipies(recipeList)
+        adapter.setRecipes(recipeList)
     }
 }
-
-
