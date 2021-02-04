@@ -2,6 +2,11 @@ package com.ivanmorgillo.corsoandroid.teamc
 
 import androidx.lifecycle.ViewModel
 
+/**
+ * Main view model
+ *
+ * @constructor Create empty Main view model
+ */
 class MainViewModel : ViewModel() {
     private val recipeList = listOf<RecipeUI>(
         RecipeUI(
@@ -34,5 +39,10 @@ class MainViewModel : ViewModel() {
         ),
     )
 
-    fun getRecipes() = recipeList
+    /**
+     * Get recipes
+     *
+     * @return List<RecipeUI>
+     */
+    fun getRecipes(): List<RecipeUI> = recipeList
 }

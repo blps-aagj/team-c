@@ -19,6 +19,9 @@ class MyApplication : Application(){
     }
 }
 
+/**
+ * App module
+ */
 val appModule = module {
     viewModel { MainViewModel() }
 }

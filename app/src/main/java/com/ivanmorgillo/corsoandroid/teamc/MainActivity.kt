@@ -22,10 +22,4 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-// mappa l'oggetto che sta nella card
-data class RecipeUI(
-    val recipeName: String,
-    val recipeImageUrl: String
-)
-
 
