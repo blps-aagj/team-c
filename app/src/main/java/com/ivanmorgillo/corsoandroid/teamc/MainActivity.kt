@@ -19,10 +19,13 @@ class MainActivity : AppCompatActivity() {
         viewModel.states.observe(this, { state ->
             when (state) {
                 is MainScreenStates.Content -> {
+                    recipes_list_progressBar.gone()
                     adapter.setRecipes(state.recipes)
                 }
                 MainScreenStates.Error -> TODO()
-                MainScreenStates.Loading -> TODO()
+                MainScreenStates.Loading -> {
+                    recipes_list_progressBar.visible()
+                }
             }
         })
         viewModel.send(MainScreenEvent.OnReady)

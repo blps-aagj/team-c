@@ -24,7 +24,8 @@ class MainViewModel : ViewModel() {
     fun send(event: MainScreenEvent) {
         when (event) {
             MainScreenEvent.OnReady -> {
-                states.postValue(MainScreenStates.Content(recipeList))
+//                states.postValue(MainScreenStates.Content(recipeList))
+                  states.postValue(MainScreenStates.Loading)
             }
         }
     }
