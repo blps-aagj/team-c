@@ -1,6 +1,7 @@
 package com.ivanmorgillo.corsoandroid.teamc
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
@@ -12,7 +13,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val adapter = RecipesAdapter()
+        val adapter = RecipesAdapter {
+            viewModel.send(MainScreenEvent.OnRecipeClick(it))
+        }
 
         // dobbiamo mettere l'adapter in comunicazione con la recyclerview
         recipes_list.adapter = adapter
@@ -33,6 +36,13 @@ class MainActivity : AppCompatActivity() {
                 // ProgressBar visible
                 MainScreenStates.Loading -> {
                     recipes_list_progressBar.visible()
+                }
+            }
+        })
+        viewModel.actions.observe(this, { action ->
+            when (action) {
+                is MainScreenAction.NavigateToDetail -> {
+                    Toast.makeText(this, "Working in progress navigate to detail", Toast.LENGTH_SHORT).show()
                 }
             }
         })
