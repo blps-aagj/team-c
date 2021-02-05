@@ -2,6 +2,7 @@ package com.ivanmorgillo.corsoandroid.teamc
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -22,7 +23,11 @@ class MainActivity : AppCompatActivity() {
                     recipes_list_progressBar.gone()
                     adapter.setRecipes(state.recipes)
                 }
-                MainScreenStates.Error -> TODO()
+                MainScreenStates.Error -> {
+                    recipes_list_progressBar.gone()
+                    Snackbar.make(recipes_list, getString(R.string.main_screen_error), Snackbar.LENGTH_LONG)
+                        .show()
+                }
                 MainScreenStates.Loading -> {
                     recipes_list_progressBar.visible()
                 }
