@@ -16,7 +16,7 @@ class MainViewModel : ViewModel() {
     private val recipeImageUrl = "https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg"
     private val recipeList = (1..MAXRANGE).map {
         RecipeUI(
-            recipeName = recipeName,
+            recipeName = recipeName + it,
             recipeImageUrl = recipeImageUrl
         )
     }
