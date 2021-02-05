@@ -1,7 +1,10 @@
 package com.ivanmorgillo.corsoandroid.teamc
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+
 private const val MAXRANGE = 10 // costante per potere togliere il problema del magic number
+
 /**
  * Main view model
  *
@@ -17,11 +20,23 @@ class MainViewModel : ViewModel() {
             recipeImageUrl = recipeImageUrl
         )
     }
+    val states = MutableLiveData<MainScreenStates>()
+    fun send(event: MainScreenEvent) {
+        when (event) {
+            MainScreenEvent.OnReady -> {
+                states.postValue(MainScreenStates.Content(recipeList))
+            }
+        }
+    }
+}
 
-    /**
-     * Get recipes
-     *
-     * @return List<RecipeUI>
-     */
-    fun getRecipes(): List<RecipeUI> = recipeList
+sealed class MainScreenEvent {
+    object OnReady : MainScreenEvent()
+}
+
+// Stati che rappresentano la nostra schermata
+sealed class MainScreenStates {
+    object Loading : MainScreenStates()
+    object Error : MainScreenStates()
+    data class Content(val recipes: List<RecipeUI>) : MainScreenStates()
 }

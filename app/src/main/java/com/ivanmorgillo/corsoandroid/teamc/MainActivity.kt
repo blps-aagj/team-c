@@ -15,9 +15,16 @@ class MainActivity : AppCompatActivity() {
 
         // dobbiamo mettere l'adapter in comunicazione con la recyclerview
         recipes_list.adapter = adapter
-
-        val recipeList = viewModel.getRecipes()
-        // ora passiamo la lista all'adapter
-        adapter.setRecipes(recipeList)
+        //
+        viewModel.states.observe(this, { state ->
+            when (state) {
+                is MainScreenStates.Content -> {
+                    adapter.setRecipes(state.recipes)
+                }
+                MainScreenStates.Error -> TODO()
+                MainScreenStates.Loading -> TODO()
+            }
+        })
+        viewModel.send(MainScreenEvent.OnReady)
     }
 }
