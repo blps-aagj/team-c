@@ -1,5 +1,6 @@
 package com.ivanmorgillo.corsoandroid.teamc
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.google.android.material.card.MaterialCardView
 
 // dobbiamo creare l'adapter alla recyclerview. Adapter, quello della recyclerview, vuole un viewholder come tipo
 // L'adapter riceve una lista di oggetti che viene processata nell'onCreate e nell'onBinde per creare i viewHolder
@@ -61,11 +63,14 @@ class RecipesAdapter : RecyclerView.Adapter<RecipeViewHolder>() {
 class RecipeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val recipeTitle = itemView.findViewById<TextView>(R.id.recipe_title)
     private val recipeImage = itemView.findViewById<ImageView>(R.id.recipe_image)
+    private val recipeCardView = itemView.findViewById<MaterialCardView>(R.id.recipe_root)
 
     // creiamo un metodo bind
     fun bind(item: RecipeUI) {
         recipeTitle.text = item.recipeName // mette in comunicazione la textview con le info nella lista
         recipeImage.load(item.recipeImageUrl)
+        recipeImage.contentDescription = item.recipeName
+        recipeCardView.setOnClickListener { Log.d("RECIPE", item.toString()) }
     }
 }
 
