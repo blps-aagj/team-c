@@ -3,30 +3,25 @@ package com.ivanmorgillo.corsoandroid.teamc
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 
-private const val MAXRANGE = 10 // costante per potere togliere il problema del magic number
+class MainViewModel(val repository: RecipesRepository) : ViewModel() {
 
-/**
- * Main view model
- *
- * @constructor Create empty Main view model
- */
-class MainViewModel : ViewModel() {
-
-    private val recipeName = "Beef and Mustard pie"
-    private val recipeImageUrl = "https://www.themealdb.com/images/media/meals/sytuqu1511553755.jpg"
-    private val recipeList = (1..MAXRANGE).map {
-        RecipeUI(
-            recipeName = recipeName + it,
-            recipeImageUrl = recipeImageUrl
-        )
-    }
     val states = MutableLiveData<MainScreenStates>()
     val actions = SingleLiveEvent<MainScreenAction>()
     fun send(event: MainScreenEvent) {
         when (event) {
             MainScreenEvent.OnReady -> {
-                states.postValue(MainScreenStates.Content(recipeList))
+                viewModelScope.launch {
+                    val recipes = repository.loadRecipes().map {
+                        RecipeUI(
+                            recipeName = it.name,
+                            recipeImageUrl = it.image
+                        )
+                    }
+                    states.postValue(MainScreenStates.Content(recipes))
+                }
             }
             is MainScreenEvent.OnRecipeClick -> {
                 Log.d("RECIPE", event.recipe.toString())
