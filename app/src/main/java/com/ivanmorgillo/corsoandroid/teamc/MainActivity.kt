@@ -47,5 +47,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
         viewModel.send(MainScreenEvent.OnReady)
+        // Timber.d("TestLog")
     }
 }
