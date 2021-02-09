@@ -1,7 +1,10 @@
 package com.ivanmorgillo.corsoandroid.teamc.network
 
 import com.ivanmorgillo.corsoandroid.teamc.Recipe
-import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesError.*
+import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesError.NoInternet
+import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesError.NoRecipeFound
+import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesError.ServerError
+import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesError.SlowInternet
 import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesResult.Failure
 import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesResult.Success
 import okhttp3.OkHttpClient
