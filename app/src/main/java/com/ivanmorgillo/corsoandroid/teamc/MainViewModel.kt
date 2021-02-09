@@ -12,7 +12,9 @@ class MainViewModel(val repository: RecipesRepository) : ViewModel() {
     val actions = SingleLiveEvent<MainScreenAction>()
     fun send(event: MainScreenEvent) {
         when (event) {
+            // activity pronta
             MainScreenEvent.OnReady -> {
+                states.postValue(MainScreenStates.Loading) // visualizziamo progressbar mentre carica lista
                 viewModelScope.launch {
                     val recipes = repository.loadRecipes().map {
                         RecipeUI(
