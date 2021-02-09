@@ -18,8 +18,7 @@ class MainViewModel(val repository: RecipesRepository) : ViewModel() {
             MainScreenEvent.OnReady -> {
                 states.postValue(MainScreenStates.Loading) // visualizziamo progressbar mentre carica lista
                 viewModelScope.launch {
-                    val result = repository.loadRecipes()
-                    when (result) {
+                    when (val result = repository.loadRecipes()) {
                         is LoadRecipesResult.Failure -> {
                             when (result.error) {
                                 LoadRecipesError.NoInternet -> TODO()
