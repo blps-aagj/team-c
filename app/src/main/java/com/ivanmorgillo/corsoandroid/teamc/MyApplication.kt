@@ -9,7 +9,7 @@ import org.koin.core.context.startKoin
 @Suppress("unused") // gestire falso positivo
 class MyApplication : Application() {
     override fun onCreate() {
-        setupScrictMode()
+        setupStrictMode()
         super.onCreate()
         // Start Koin
         startKoin {
@@ -19,7 +19,7 @@ class MyApplication : Application() {
         }
     }
 
-    private fun setupScrictMode() {
+    private fun setupStrictMode() {
         if (BuildConfig.DEBUG) { // affinché venga usato solo della modalità debug
             StrictMode.setThreadPolicy(
                 StrictMode.ThreadPolicy.Builder()
