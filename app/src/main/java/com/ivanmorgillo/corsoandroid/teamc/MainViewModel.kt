@@ -1,6 +1,5 @@
 package com.ivanmorgillo.corsoandroid.teamc
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,10 +20,10 @@ class MainViewModel(val repository: RecipesRepository) : ViewModel() {
                     when (val result = repository.loadRecipes()) {
                         is LoadRecipesResult.Failure -> {
                             when (result.error) {
-                                LoadRecipesError.NoInternet -> TODO()
-                                LoadRecipesError.NoRecipeFound -> {
+                                LoadRecipesError.NoInternet -> {
                                     actions.postValue(MainScreenAction.ShowNoInternetMessage)
                                 }
+                                LoadRecipesError.NoRecipeFound -> TODO()
                                 LoadRecipesError.ServerError -> TODO()
                                 LoadRecipesError.SlowInternet -> TODO()
                             }
@@ -39,7 +38,6 @@ class MainViewModel(val repository: RecipesRepository) : ViewModel() {
                             states.postValue(MainScreenStates.Content(recipes))
                         }
                     }
-
                 }
             }
             is MainScreenEvent.OnRecipeClick -> {
