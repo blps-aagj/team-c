@@ -20,7 +20,7 @@ class MyApplication : Application() {
     }
 
     private fun setupStrictMode() {
-        if (BuildConfig.DEBUG) { // affinché venga usato solo della modalità debug
+        if (BuildConfig.DEBUG) { // affinché venga usato solo dalla modalità debug
             StrictMode.setThreadPolicy(
                 StrictMode.ThreadPolicy.Builder()
                     .detectAll()
