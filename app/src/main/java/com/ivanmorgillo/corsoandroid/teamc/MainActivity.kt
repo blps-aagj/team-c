@@ -1,7 +1,6 @@
 package com.ivanmorgillo.corsoandroid.teamc
 
 import android.os.Bundle
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
@@ -46,7 +45,7 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Working in progress navigate to detail", Toast.LENGTH_SHORT).show()
                 }
                 MainScreenAction.ShowNoInternetMessage -> {
-                    ProgressBar.GONE
+                    recipes_list_progressBar.gone()
                     Toast.makeText(this, "Check your internet connection", Toast.LENGTH_SHORT).show()
                 }
             }
