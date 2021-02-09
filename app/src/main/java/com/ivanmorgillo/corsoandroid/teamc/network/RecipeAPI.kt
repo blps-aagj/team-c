@@ -56,11 +56,11 @@ class RecipeAPI {
             }
         } catch (e: IOException) {
             return Failure(NoInternet)
-        } catch (e: SocketTimeoutException) {
+        } /*catch (e: SocketTimeoutException) {
             return Failure(SlowInternet)
         } catch (e: Exception) {
             return Failure(ServerError)
-        }
+        }*/
     }
 }
 
