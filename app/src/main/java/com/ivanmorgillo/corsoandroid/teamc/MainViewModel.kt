@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesError
+import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesResult
 import kotlinx.coroutines.launch
 
 class MainViewModel(val repository: RecipesRepository) : ViewModel() {
@@ -16,13 +18,29 @@ class MainViewModel(val repository: RecipesRepository) : ViewModel() {
             MainScreenEvent.OnReady -> {
                 states.postValue(MainScreenStates.Loading) // visualizziamo progressbar mentre carica lista
                 viewModelScope.launch {
-                    val recipes = repository.loadRecipes().map {
-                        RecipeUI(
-                            recipeName = it.name,
-                            recipeImageUrl = it.image
-                        )
+                    val result = repository.loadRecipes()
+                    when (result) {
+                        is LoadRecipesResult.Failure -> {
+                            when (result.error) {
+                                LoadRecipesError.NoInternet -> TODO()
+                                LoadRecipesError.NoRecipeFound -> {
+                                    actions.postValue(MainScreenAction.ShowNoInternetMessage)
+                                }
+                                LoadRecipesError.ServerError -> TODO()
+                                LoadRecipesError.SlowInternet -> TODO()
+                            }
+                        }
+                        is LoadRecipesResult.Success -> {
+                            val recipes = result.recipes.map {
+                                RecipeUI(
+                                    recipeName = it.name,
+                                    recipeImageUrl = it.image
+                                )
+                            }
+                            states.postValue(MainScreenStates.Content(recipes))
+                        }
                     }
-                    states.postValue(MainScreenStates.Content(recipes))
+
                 }
             }
             is MainScreenEvent.OnRecipeClick -> {
@@ -35,6 +53,7 @@ class MainViewModel(val repository: RecipesRepository) : ViewModel() {
 
 sealed class MainScreenAction {
     data class NavigateToDetail(val recipe: RecipeUI) : MainScreenAction()
+    object ShowNoInternetMessage : MainScreenAction()
 }
 
 sealed class MainScreenEvent {
