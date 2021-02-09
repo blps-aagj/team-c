@@ -6,6 +6,7 @@ import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesError.NoRecipeFoun
 import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesError.ServerError
 import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesError.SlowInternet
 import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesResult.Failure
+import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesResult.Success
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -51,7 +52,7 @@ class RecipeAPI {
             return if (recipes.isEmpty()) {
                 Failure(NoRecipeFound)
             } else {
-                LoadRecipesResult.Success(recipes)
+                Success(recipes)
             }
         } catch (e: IOException) {
             return Failure(NoInternet)
