@@ -5,13 +5,21 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.no_network.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import android.view.Menu
+
+import android.view.MenuInflater
+
+
+
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModel()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main)//eseguita 1 sola volta
 
         val adapter = RecipesAdapter {
             viewModel.send(MainScreenEvent.OnRecipeClick(it))
@@ -46,10 +54,18 @@ class MainActivity : AppCompatActivity() {
                 }
                 MainScreenAction.ShowNoInternetMessage -> {
                     recipes_list_progressBar.gone()
+                    recipes_list_root.gone()
+                    setContentView(R.layout.no_network)
                     Toast.makeText(this, "Check your internet connection", Toast.LENGTH_SHORT).show()
                 }
             }
         })
         viewModel.send(MainScreenEvent.OnReady)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.refresh , menu)
+        return true
     }
 }
