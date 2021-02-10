@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">My CookBook</string>
     <string name="main_screen_error">Something went wrong</string>
+    <string name="no_network">No Network</string>
 </resources>
