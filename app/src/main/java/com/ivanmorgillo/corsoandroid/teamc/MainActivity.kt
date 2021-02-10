@@ -9,7 +9,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import android.view.Menu
 import android.view.MenuItem
-import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModel()
@@ -69,11 +68,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId){
+        when (item.itemId) {
             R.id.refresh_btn -> viewModel.send(MainScreenEvent.OnRefreshClick)
             else -> Toast.makeText(this, "come se fosse Antani", Toast.LENGTH_SHORT).show()
         }.exhaustive
         return super.onOptionsItemSelected(item)
     }
-
 }

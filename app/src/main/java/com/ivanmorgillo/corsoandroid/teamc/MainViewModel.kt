@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesError
 import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesResult
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class MainViewModel(val repository: RecipesRepository) : ViewModel() {
 
@@ -27,7 +26,7 @@ class MainViewModel(val repository: RecipesRepository) : ViewModel() {
                 loadContent()
             }
             is MainScreenEvent.OnRecipeClick -> {
-                //add tracking
+                // add tracking
                 actions.postValue(MainScreenAction.NavigateToDetail(event.recipe))
             }
             MainScreenEvent.OnRefreshClick -> {
