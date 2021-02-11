@@ -20,5 +20,8 @@ val appModule = module {
     single { // spiego a Koin come creare un RecipeAPI, ho soppresso il tipo per ridondanza
         RecipeAPI()
     }
-    viewModel { MainViewModel(repository = get()) } // Il get costruisce in base al tipo e a single
+    single<Tracking> {
+        TrackingImpl()
+    }
+    viewModel { MainViewModel(repository = get(), tracking = get()) } // Il get costruisce in base al tipo e a single
 }
