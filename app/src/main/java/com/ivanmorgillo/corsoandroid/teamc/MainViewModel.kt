@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.NavigateToDetail
+import com.ivanmorgillo.corsoandroid.teamc.MainScreenStates.Error
 import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesError
 import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesResult
 import kotlinx.coroutines.launch
@@ -38,6 +39,7 @@ class MainViewModel(
         viewModelScope.launch {
             when (val result = repository.loadRecipes()) {
                 is LoadRecipesResult.Failure -> {
+                    states.postValue(Error)
                     when (result.error) {
                         LoadRecipesError.NoInternet -> {
                             actions.postValue(MainScreenAction.ShowNoInternetMessage)
