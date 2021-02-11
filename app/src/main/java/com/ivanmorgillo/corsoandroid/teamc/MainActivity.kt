@@ -1,14 +1,14 @@
 package com.ivanmorgillo.corsoandroid.teamc
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
-
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import android.view.Menu
-import android.view.MenuItem
+import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModel()
@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
             }.exhaustive
         })
         viewModel.send(MainScreenEvent.OnReady)
-        // Timber.d("Wow")
+        Timber.d("Wow")
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
