@@ -6,6 +6,7 @@ apply plugin: 'com.android.application'
 // Add the following line:
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: "androidx.navigation.safeargs.kotlin" // Navigation
 
 android {
     compileSdkVersion 30 // versione api
@@ -79,6 +80,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.0'
     // Timber
     implementation 'com.jakewharton.timber:timber:4.7.1'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     // AppCompat
     def appcompat_version = "1.2.0"
     implementation "androidx.appcompat:appcompat:$appcompat_version"
@@ -87,8 +89,11 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:26.4.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
-    implementation 'com.google.firebase:firebase-perf'
-    implementation 'com.google.firebase:firebase-config'
+    implementation 'com.google.firebase:firebase-perf-ktx'
+    implementation 'com.google.firebase:firebase-config-ktx'
+    // Navigation Components
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     // Testing dependencies
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

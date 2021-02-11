@@ -82,6 +82,7 @@ class RecipeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
  * @constructor Create empty Recipe u i
  */
 data class RecipeUI(
+    val id: Long,
     val recipeName: String,
     val recipeImageUrl: String
 )

@@ -50,6 +50,7 @@ class MainViewModel(
                 is LoadRecipesResult.Success -> {
                     val recipes = result.recipes.map {
                         RecipeUI(
+                            id = it.idMeal,
                             recipeName = it.name,
                             recipeImageUrl = it.image
                         )
