@@ -2,7 +2,7 @@ buildscript {
     ext {
         kotlin_version = "1.4.30"
         koin_version = '2.2.2'
-        lifecycle_version = "2.3.0-rc01"
+        lifecycle_version = "2.3.0"
     }
 
     repositories {
@@ -14,6 +14,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.koin:koin-gradle-plugin:$koin_version"
         classpath 'com.google.gms:google-services:4.3.5'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.4.1'
     }
 }
 

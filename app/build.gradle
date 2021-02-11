@@ -5,14 +5,15 @@ apply plugin: 'io.gitlab.arturbosch.detekt'
 apply plugin: 'com.android.application'
 // Add the following line:
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 
 android {
     compileSdkVersion 30 // versione api
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.blps.aagj.cookbook" // nome formale dell'app sul playstore
-        minSdkVersion 23 // versione minima supportata. L'utente può installarla solo se ha API >= 23
+        applicationId "com.blps.aagj.cookbook" // nome formale dell' app sul playstore
+        minSdkVersion 23 // versione minima supportata. L' utente può installarla solo se ha API >= 23
         targetSdkVersion 30
         versionCode 1 // numero incrementale ed univoco e ad ogni release viene incrementato
         versionName "1.0" // numero incrementale che identifica una nuova versione
@@ -20,9 +21,14 @@ android {
     }
 
     buildTypes {
+        debug {
+            manifestPlaceholders = [crashlyticsCollectionEnabled: "false"]
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            manifestPlaceholders = [crashlyticsCollectionEnabled: "true"]
+
         }
     }
 
@@ -80,7 +86,7 @@ dependencies {
     // Import the Firebase BoM
     implementation platform('com.google.firebase:firebase-bom:26.4.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
-    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-perf'
     implementation 'com.google.firebase:firebase-config'
     // Testing dependencies

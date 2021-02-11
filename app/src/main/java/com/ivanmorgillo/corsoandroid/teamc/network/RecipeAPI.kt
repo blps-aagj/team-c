@@ -11,6 +11,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import timber.log.Timber
 import java.io.IOException
 import java.net.SocketTimeoutException
 
@@ -35,7 +36,7 @@ class RecipeAPI {
 
     @Suppress("TooGenericExceptionCaught") // per non far vedere da detekt err eccezione troppo generica
     suspend fun loadRecipes(): LoadRecipesResult {
-        /*  
+        /*
         * try-catch devo gestire errore di chiamata di rete, si può trovare in due stati, funzionante o rotto
         * uso le sealed class
         */
@@ -59,6 +60,7 @@ class RecipeAPI {
         } catch (e: SocketTimeoutException) {
             return Failure(SlowInternet)
         } catch (e: Exception) {
+            Timber.e(e, "Generic Exception on LoadRecipes")
             return Failure(ServerError)
         }
     }
