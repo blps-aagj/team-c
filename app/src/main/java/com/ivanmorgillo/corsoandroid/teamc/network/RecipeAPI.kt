@@ -42,12 +42,8 @@ class RecipeAPI {
         */
         try {
             val recipeList = service.loadRecipes()
-            val recipes = recipeList.meals.map {
-                Recipe(
-                    name = it.strMeal,
-                    image = it.strMealThumb,
-                    idMeal = it.idMeal
-                )
+            val recipes = recipeList.meals.mapNotNull {
+                it.toDomain()
             }
             // caso lista vuota
             return if (recipes.isEmpty()) {
@@ -62,6 +58,19 @@ class RecipeAPI {
         } catch (e: Exception) {
             Timber.e(e, "Generic Exception on LoadRecipes")
             return Failure(ServerError)
+        }
+    }
+
+    private fun RecipeDTO.Meal.toDomain(): Recipe? {
+        val id = idMeal.toLongOrNull()
+        return if (id != null) {
+            Recipe(
+                name = strMeal,
+                image = strMealThumb,
+                idMeal = id
+            )
+        } else {
+            null
         }
     }
 }

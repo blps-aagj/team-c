@@ -9,5 +9,21 @@
         android:id="@+id/homeFragment"
         android:name="com.ivanmorgillo.corsoandroid.teamc.home.HomeFragment"
         android:label="HomeFragment"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.ivanmorgillo.corsoandroid.teamc.detail.DetailFragment"
+        android:label="DetailFragment"
+        tools:layout="@layout/fragment_detail">
+
+        <argument
+            android:name="recipe_id"
+            app:argType="long"
+            android:defaultValue="0L" />
+    </fragment>
+
 </navigation>
