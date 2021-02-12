@@ -1,5 +1,6 @@
 package com.ivanmorgillo.corsoandroid.teamc
 
+import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetailViewModel
 import com.ivanmorgillo.corsoandroid.teamc.network.RecipeAPI
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -24,4 +25,5 @@ val appModule = module {
         TrackingImpl()
     }
     viewModel { MainViewModel(repository = get(), tracking = get()) } // Il get costruisce in base al tipo e a single
+    viewModel { RecipeDetailViewModel() }
 }
