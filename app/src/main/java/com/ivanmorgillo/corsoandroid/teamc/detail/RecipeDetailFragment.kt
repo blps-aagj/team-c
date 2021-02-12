@@ -5,16 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.ivanmorgillo.corsoandroid.teamc.R
+import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-class DetailFragment : Fragment() {
-    private val viewModel: DetailViewModel by viewModel()
-    private val args: DetailFragmentArgs by navArgs()
+class RecipeDetailFragment : Fragment() {
+
+    private val recipeDetailViewModel: RecipeDetailViewModel by viewModel()
+
+    private val args: RecipeDetailFragmentArgs by navArgs()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_detail, container, false)
@@ -30,7 +32,21 @@ class DetailFragment : Fragment() {
         } else {
             Timber.d("RecipeId = $recipeId")
         }
+        recipeDetailViewModel.states.observe(viewLifecycleOwner, { state ->
+            when (state) {
+                is RecipeDetailScreenStates.Content -> {
+                    Timber.d("RecipeDetailScreenStates ${state.recipeDetail.recipeName}")
+                }
+                RecipeDetailScreenStates.Error -> {
+                    Timber.d("RecipeDetailScreenStates Error")
+                }
+                RecipeDetailScreenStates.Loading -> {
+                    Timber.d("RecipeDetailScreenStates Loading")
+                }
+            }.exhaustive
+        })
+
+        recipeDetailViewModel.send(RecipeDetailScreenEvent.OnScreenRecipeDetailReady)
+        Timber.d("RecipeDetailFragment/onViewCreated")
     }
 }
-
-class DetailViewModel : ViewModel()

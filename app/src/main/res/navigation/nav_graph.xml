@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
-        android:name="com.ivanmorgillo.corsoandroid.teamc.detail.DetailFragment"
+        android:name="com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetailFragment"
         android:label="DetailFragment"
         tools:layout="@layout/fragment_detail">
 
