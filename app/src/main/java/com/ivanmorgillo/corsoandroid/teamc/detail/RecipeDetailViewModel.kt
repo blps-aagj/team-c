@@ -1,7 +1,5 @@
 package com.ivanmorgillo.corsoandroid.teamc.detail
 
-import android.net.Uri
-import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
@@ -39,22 +37,8 @@ class RecipeDetailViewModel : ViewModel() {
             recipeArea = "Italian",
             recipeInstructions = recipeInstructions,
             recipeImage = "https://www.themealdb.com/images/media/meals/ustsqw1468250014.jpg",
-            recipeIngredientsAndMeasures = listOf(
-                IngredientAndMeasure(
-                    ingredient = "Penne Rigate",
-                    measure = "1 Pound"
-                ), IngredientAndMeasure(
-                    ingredient = "Penne Rigate",
-                    measure = "1 Pound"
-                ), IngredientAndMeasure(
-                    ingredient = "Penne Rigate",
-                    measure = "1 Pound"
-                ), IngredientAndMeasure(
-                    ingredient = "Penne Rigate",
-                    measure = "1 Pound"
-                )
-            ),
-            recipeVideoInstructions = strUri.toUri()
+            recipeIngredientsAndMeasures = mapOf(RecipeIngredients("pasta") to RecipeMeasures("1/2 cup")),
+            recipeVideoInstructions = strUri
         )
         states.postValue(RecipeDetailScreenStates.Content(recipeDetail))
     }
@@ -69,15 +53,3 @@ sealed class RecipeDetailScreenStates {
     object Error : RecipeDetailScreenStates()
     data class Content(val recipeDetail: RecipeDetail) : RecipeDetailScreenStates()
 }
-
-data class RecipeDetail(
-    val recipeName: String,
-    val recipeCategory: String,
-    val recipeArea: String,
-    val recipeInstructions: String,
-    val recipeImage: String,
-    val recipeIngredientsAndMeasures: List<IngredientAndMeasure>,
-    val recipeVideoInstructions: Uri
-)
-
-data class IngredientAndMeasure(val ingredient: String, val measure: String)
