@@ -1,6 +1,9 @@
 package com.ivanmorgillo.corsoandroid.teamc
 
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetailViewModel
+import com.ivanmorgillo.corsoandroid.teamc.detail.RecipesDetailRepositoryImpl
+import com.ivanmorgillo.corsoandroid.teamc.detail.RecipesDetailsRepository
+import com.ivanmorgillo.corsoandroid.teamc.detail.network.RecipeDetailAPI
 import com.ivanmorgillo.corsoandroid.teamc.network.RecipeAPI
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -24,6 +27,9 @@ val appModule = module {
     single<Tracking> {
         TrackingImpl()
     }
+    single<RecipesDetailsRepository> {
+        RecipesDetailRepositoryImpl(recipeDetailAPI = RecipeDetailAPI())
+    }
     viewModel { MainViewModel(repository = get(), tracking = get()) } // Il get costruisce in base al tipo e a single
-    viewModel { RecipeDetailViewModel() }
+    viewModel { RecipeDetailViewModel(recipeDetailRepository = get()) }
 }
