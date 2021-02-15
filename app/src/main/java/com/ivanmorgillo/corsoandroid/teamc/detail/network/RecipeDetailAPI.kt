@@ -1,13 +1,12 @@
 package com.ivanmorgillo.corsoandroid.teamc.detail.network
 
-import com.ivanmorgillo.corsoandroid.teamc.Recipe
+import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetail
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.POST
 import java.io.IOException
-
 
 class RecipeDetailAPI {
 
@@ -27,19 +26,33 @@ class RecipeDetailAPI {
         service = retrofit.create(RecipeDetailService::class.java)
     }
 
-    suspend fun loadDetailsRecipe(id: Int): LoadRecipesDetailResult {
+    suspend fun loadDetailsRecipe(id: Int) {
         try {
-            val recipeDetail = service.loadDetailsRecipe(id)
-            TODO()
+            val recipeDetailList = service.loadDetailsRecipe(id) // id non funziona ancora
+            val recipeDetail = recipeDetailList.meals.map {
+                it.toDomain()
+            }
         } catch (e: IOException) {
             TODO()
         }
+    }
+
+    private fun RecipeDetailDTO.Meal.toDomain(): RecipeDetail? {
+        return RecipeDetail(
+            recipeName = strMeal,
+            recipeCategory = strCategory,
+            recipeArea = strArea,
+            recipeInstructions = strInstructions,
+            recipeImage = strMealThumb,
+            recipeIngredientsAndMeasures = mapOf(), // da implementare
+            recipeVideoInstructions = strYoutube
+        )
     }
 }
 
 // Gestisce il caso di un qualsiasi errore
 sealed class LoadRecipesDetailError {
-    object NoRecipeFound : LoadRecipesDetailError()
+    object NoRecipeDetailFound : LoadRecipesDetailError()
     object NoInternet : LoadRecipesDetailError()
     object SlowInternet : LoadRecipesDetailError()
     object ServerError : LoadRecipesDetailError()
@@ -47,7 +60,7 @@ sealed class LoadRecipesDetailError {
 
 // Gestisce i due casi possibili del load
 sealed class LoadRecipesDetailResult {
-    data class Success(val recipes: List<Recipe>) : LoadRecipesDetailResult()
+    data class Success(val recipesDetail: List<RecipeDetail>) : LoadRecipesDetailResult()
     data class Failure(val error: LoadRecipesDetailError) : LoadRecipesDetailResult()
 }
 
