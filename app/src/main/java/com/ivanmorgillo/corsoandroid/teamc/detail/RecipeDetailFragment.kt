@@ -35,7 +35,7 @@ class RecipeDetailFragment : Fragment() {
         recipeDetailViewModel.states.observe(viewLifecycleOwner, { state ->
             when (state) {
                 is RecipeDetailScreenStates.Content -> {
-                    Timber.d("RecipeDetailScreenStates ${state.recipeDetail.recipeName}")
+                    Timber.d("RecipeDetailScreenStates ${state.recipeDetail}")
                 }
                 RecipeDetailScreenStates.Error -> {
                     Timber.d("RecipeDetailScreenStates Error")
