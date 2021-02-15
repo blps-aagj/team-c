@@ -2,12 +2,15 @@ package com.ivanmorgillo.corsoandroid.teamc.detail
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
-class RecipeDetailViewModel : ViewModel() {
+class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRepository) : ViewModel() {
     val states = MutableLiveData<RecipeDetailScreenStates>()
-
     fun send(event: RecipeDetailScreenEvent) {
+        Timber.d("send ViewModelDetail")
         when (event) {
             RecipeDetailScreenEvent.OnScreenRecipeDetailReady -> {
                 loadRecipeDetailContent()
@@ -17,6 +20,8 @@ class RecipeDetailViewModel : ViewModel() {
 
     private fun loadRecipeDetailContent() {
         states.postValue(RecipeDetailScreenStates.Loading)
+        viewModelScope.launch {
+        }
         val recipeInstructions = "To make the pastry, measure the flour into " +
                 "a bowl and rub in the butter with your fingertips until the " +
                 "mixture resembles fine breadcrumbs. Add the water, mixing to " +
@@ -35,9 +40,9 @@ class RecipeDetailViewModel : ViewModel() {
             recipeName = "Spicy Arrabiata Penne",
             recipeCategory = "Vegetarian",
             recipeArea = "Italian",
-            recipeInstructions = recipeInstructions,
+            recipeInstructions = listOf(),
             recipeImage = "https://www.themealdb.com/images/media/meals/ustsqw1468250014.jpg",
-            recipeIngredientsAndMeasures = mapOf(RecipeIngredients("pasta") to RecipeMeasures("1/2 cup")),
+            recipeIngredientsAndMeasures = listOf(), // da definire
             recipeVideoInstructions = strUri
         )
         states.postValue(RecipeDetailScreenStates.Content(recipeDetail))

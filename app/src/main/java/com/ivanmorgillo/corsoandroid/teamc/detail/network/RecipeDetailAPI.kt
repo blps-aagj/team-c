@@ -5,7 +5,9 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.POST
+import retrofit2.http.GET
+import retrofit2.http.Query
+import timber.log.Timber
 import java.io.IOException
 
 class RecipeDetailAPI {
@@ -26,25 +28,31 @@ class RecipeDetailAPI {
         service = retrofit.create(RecipeDetailService::class.java)
     }
 
-    suspend fun loadDetailsRecipe(id: Int) {
+    suspend fun loadDetailsRecipe(id: Long): LoadRecipesDetailResult {
         try {
-            val recipeDetailList = service.loadDetailsRecipe(id) // id non funziona ancora
+            val recipeDetailList = service.loadDetailsRecipe(id.toString())
+            Timber.d("recipeDetailList $recipeDetailList") // id non funziona ancora
             val recipeDetail = recipeDetailList.meals.map {
                 it.toDomain()
+            }
+            return if (recipeDetail.isEmpty()) {
+                LoadRecipesDetailResult.Failure(LoadRecipesDetailError.NoRecipeDetailFound)
+            } else {
+                LoadRecipesDetailResult.Success(recipeDetail)
             }
         } catch (e: IOException) {
             TODO()
         }
     }
 
-    private fun RecipeDetailDTO.Meal.toDomain(): RecipeDetail? {
+    private fun RecipeDetailDTO.Meal.toDomain(): RecipeDetail {
         return RecipeDetail(
             recipeName = strMeal,
             recipeCategory = strCategory,
             recipeArea = strArea,
-            recipeInstructions = strInstructions,
+            recipeInstructions = listOf(), // da implementare
             recipeImage = strMealThumb,
-            recipeIngredientsAndMeasures = mapOf(), // da implementare
+            recipeIngredientsAndMeasures = listOf(), // da implementare
             recipeVideoInstructions = strYoutube
         )
     }
@@ -65,6 +73,6 @@ sealed class LoadRecipesDetailResult {
 }
 
 interface RecipeDetailService {
-    @POST("lookup.php?i=52772")
-    suspend fun loadDetailsRecipe(id: Int): RecipeDetailDTO
+    @GET("lookup.php")
+    suspend fun loadDetailsRecipe(@Query("i") id: String): RecipeDetailDTO
 }
