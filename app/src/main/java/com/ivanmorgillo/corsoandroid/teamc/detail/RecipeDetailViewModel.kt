@@ -9,21 +9,23 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRepository) : ViewModel() {
+
     val states = MutableLiveData<RecipeDetailScreenStates>()
+    private var recipeId = 0L
     fun send(event: RecipeDetailScreenEvent) {
         Timber.d("send ViewModelDetail")
         when (event) {
             RecipeDetailScreenEvent.OnScreenRecipeDetailReady -> {
-                loadRecipeDetailContent()
+                loadRecipeDetailContent(recipeId)
             }
         }.exhaustive
     }
 
-    private fun loadRecipeDetailContent() {
+    private fun loadRecipeDetailContent(id: Long) {
         states.postValue(RecipeDetailScreenStates.Loading)
         viewModelScope.launch {
 
-            when (val result = recipeDetailRepository.loadDetailsRecipes(id = 52773)) {
+            when (val result = recipeDetailRepository.loadDetailsRecipes(id)) {
                 is LoadRecipesDetailResult.Failure -> {
                 }
                 is LoadRecipesDetailResult.Success -> {
@@ -42,6 +44,9 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
                 }
             }.exhaustive
         }
+    }
+    fun setRecipeId(recipeId: Long) {
+        this.recipeId = recipeId
     }
 }
 

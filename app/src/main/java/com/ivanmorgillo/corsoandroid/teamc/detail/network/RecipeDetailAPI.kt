@@ -5,8 +5,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.Query
 import timber.log.Timber
 import java.io.IOException
 
@@ -65,14 +63,8 @@ sealed class LoadRecipesDetailError {
     object SlowInternet : LoadRecipesDetailError()
     object ServerError : LoadRecipesDetailError()
 }
-
 // Gestisce i due casi possibili del load
 sealed class LoadRecipesDetailResult {
     data class Success(val recipesDetail: List<RecipeDetail>) : LoadRecipesDetailResult()
     data class Failure(val error: LoadRecipesDetailError) : LoadRecipesDetailResult()
-}
-
-interface RecipeDetailService {
-    @GET("lookup.php")
-    suspend fun loadDetailsRecipe(@Query("i") id: String): RecipeDetailDTO
 }

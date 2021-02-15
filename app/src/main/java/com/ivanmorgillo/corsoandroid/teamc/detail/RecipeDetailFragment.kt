@@ -46,6 +46,7 @@ class RecipeDetailFragment : Fragment() {
             }.exhaustive
         })
 
+        recipeDetailViewModel.setRecipeId(recipeId)
         recipeDetailViewModel.send(RecipeDetailScreenEvent.OnScreenRecipeDetailReady)
         Timber.d("RecipeDetailFragment/onViewCreated")
     }
