@@ -3,6 +3,7 @@ package com.ivanmorgillo.corsoandroid.teamc.detail
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ivanmorgillo.corsoandroid.teamc.detail.network.LoadRecipesDetailResult
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -21,7 +22,13 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
     private fun loadRecipeDetailContent() {
         states.postValue(RecipeDetailScreenStates.Loading)
         viewModelScope.launch {
+
+            when ( val result =  recipeDetailRepository.loadDetailsRecipes(52771) ){
+                is LoadRecipesDetailResult.Failure -> TODO()
+                is LoadRecipesDetailResult.Success -> TODO()
+            }.exhaustive
         }
+
         val recipeInstructions = "To make the pastry, measure the flour into " +
                 "a bowl and rub in the butter with your fingertips until the " +
                 "mixture resembles fine breadcrumbs. Add the water, mixing to " +
