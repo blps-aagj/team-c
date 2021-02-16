@@ -73,7 +73,7 @@ class RecipeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 }
 
-// mappa l'oggetto che sta nella card
+// mappa l' oggetto che sta nella card
 /**
  * Recipe u i
  *
