@@ -24,27 +24,42 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
     private fun loadRecipeDetailContent(id: Long) {
         states.postValue(RecipeDetailScreenStates.Loading)
         viewModelScope.launch {
-
             when (val result = recipeDetailRepository.loadDetailsRecipes(id)) {
                 is LoadRecipesDetailResult.Failure -> {
                 }
                 is LoadRecipesDetailResult.Success -> {
-                    val recipesDetails = result.recipesDetail.map {
-                        RecipeDetail(
-                            recipeName = it.recipeName,
-                            recipeCategory = it.recipeCategory,
-                            recipeArea = it.recipeArea,
-                            recipeInstructions = listOf(), // da implementare
-                            recipeImage = it.recipeImage,
-                            recipeIngredientsAndMeasures = listOf(), // da implementare
-                            recipeVideoInstructions = it.recipeVideoInstructions
-                        )
-                    }
+                    val recipesDetails: List<DetailScreenItems> = listOf(
+                        DetailScreenItems.Title(result.recipesDetail.recipeName),
+                        DetailScreenItems.CategoryArea(result.recipesDetail.recipeCategory, result.recipesDetail.recipeArea),
+                        DetailScreenItems.ImageIngredients(result.recipesDetail.recipeImage, listOf(
+                            IngredientUI("Milk", "500ml"),
+                            IngredientUI("Milk", "500ml"),
+                            IngredientUI("Milk", "500ml"),
+                            IngredientUI("Milk", "500ml"),
+                            IngredientUI("Milk", "500ml"),
+                            IngredientUI("Milk", "500ml"),
+                            IngredientUI("Milk", "500ml"),
+                            IngredientUI("Milk", "500ml"),
+                            IngredientUI("Milk", "500ml"),
+                            IngredientUI("Milk", "500ml"),
+                            IngredientUI("Milk", "500ml"),
+                            IngredientUI("Milk", "500ml"),
+                            IngredientUI("Milk", "500ml"),
+                            IngredientUI("Milk", "500ml"),
+                            IngredientUI("Milk", "500ml"),
+                            IngredientUI("Milk", "500ml"),
+                            IngredientUI("Milk", "500ml"),
+                            IngredientUI("Milk", "500ml"),
+                            IngredientUI("Milk", "500ml"),
+                            IngredientUI("Milk", "500ml"),
+                        )))
+
                     states.postValue(RecipeDetailScreenStates.Content(recipesDetails))
                 }
             }.exhaustive
         }
     }
+
     fun setRecipeId(recipeId: Long) {
         this.recipeId = recipeId
     }
@@ -57,5 +72,5 @@ sealed class RecipeDetailScreenEvent {
 sealed class RecipeDetailScreenStates {
     object Loading : RecipeDetailScreenStates()
     object Error : RecipeDetailScreenStates()
-    data class Content(val recipeDetail: List<RecipeDetail>) : RecipeDetailScreenStates()
+    data class Content(val recipeDetail: List<DetailScreenItems>) : RecipeDetailScreenStates()
 }

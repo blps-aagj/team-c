@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.ivanmorgillo.corsoandroid.teamc.R
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
+import kotlinx.android.synthetic.main.fragment_detail.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -17,7 +18,11 @@ class RecipeDetailFragment : Fragment() {
     private val recipeDetailViewModel: RecipeDetailViewModel by viewModel()
 
     private val args: RecipeDetailFragmentArgs by navArgs()
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_detail, container, false)
     }
@@ -25,6 +30,8 @@ class RecipeDetailFragment : Fragment() {
     //  Equivalente alla onCreate di un activity
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val adapter = DetailRecipeScreenAdapter()
+        recipes_list_root.adapter = adapter
         val recipeId = args.recipeId
         if (recipeId == 0L) {
             // Torna nella schermata precedente
@@ -36,6 +43,7 @@ class RecipeDetailFragment : Fragment() {
             when (state) {
                 is RecipeDetailScreenStates.Content -> {
                     Timber.d("RecipeDetailScreenStates ${state.recipeDetail}")
+                    adapter.items = state.recipeDetail
                 }
                 RecipeDetailScreenStates.Error -> {
                     Timber.d("RecipeDetailScreenStates Error")

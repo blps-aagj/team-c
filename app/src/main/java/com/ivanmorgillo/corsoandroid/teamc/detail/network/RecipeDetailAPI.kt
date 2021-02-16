@@ -30,14 +30,13 @@ class RecipeDetailAPI {
         try {
             val recipeDetailList = service.loadDetailsRecipe(id.toString())
             Timber.d("recipeDetailList $recipeDetailList") // id non funziona ancora
-            val recipeDetail = recipeDetailList.meals.map {
-                it.toDomain()
-            }
-            return if (recipeDetail.isEmpty()) {
+            val recipeDetail = recipeDetailList.meals.firstOrNull()
+            return if (recipeDetail == null) {
                 LoadRecipesDetailResult.Failure(LoadRecipesDetailError.NoRecipeDetailFound)
             } else {
-                LoadRecipesDetailResult.Success(recipeDetail)
+                LoadRecipesDetailResult.Success(recipeDetail.toDomain())
             }
+
         } catch (e: IOException) {
             TODO()
         }
@@ -63,8 +62,9 @@ sealed class LoadRecipesDetailError {
     object SlowInternet : LoadRecipesDetailError()
     object ServerError : LoadRecipesDetailError()
 }
+
 // Gestisce i due casi possibili del load
 sealed class LoadRecipesDetailResult {
-    data class Success(val recipesDetail: List<RecipeDetail>) : LoadRecipesDetailResult()
+    data class Success(val recipesDetail: RecipeDetail) : LoadRecipesDetailResult()
     data class Failure(val error: LoadRecipesDetailError) : LoadRecipesDetailResult()
 }
