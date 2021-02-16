@@ -3,6 +3,7 @@ package com.ivanmorgillo.corsoandroid.teamc.detail
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ivanmorgillo.corsoandroid.teamc.detail.DetailScreenItems.CategoryArea
 import com.ivanmorgillo.corsoandroid.teamc.detail.network.LoadRecipesDetailResult
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import kotlinx.coroutines.launch
@@ -30,7 +31,7 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
                 is LoadRecipesDetailResult.Success -> {
                     val recipesDetails: List<DetailScreenItems> = listOf(
                         DetailScreenItems.Title(result.recipesDetail.recipeName),
-                        DetailScreenItems.CategoryArea(result.recipesDetail.recipeCategory, result.recipesDetail.recipeArea),
+                        CategoryArea(result.recipesDetail.recipeCategory, result.recipesDetail.recipeArea),
                         DetailScreenItems.ImageIngredients(result.recipesDetail.recipeImage, listOf(
                             IngredientUI("Milk", "500ml"),
                             IngredientUI("Milk", "500ml"),
