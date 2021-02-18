@@ -25,8 +25,7 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
         states.postValue(RecipeDetailScreenStates.Loading)
         viewModelScope.launch {
             when (val result = recipeDetailRepository.loadDetailsRecipes(id)) {
-                is LoadRecipesDetailResult.Failure -> {
-                }
+                is LoadRecipesDetailResult.Failure -> Unit
                 is LoadRecipesDetailResult.Success -> {
                     val recipesDetails: List<DetailScreenItems> = listOf(
                         DetailScreenItems.TitleCategoryArea(
@@ -57,6 +56,9 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
                                 IngredientUI("Milk", "500ml"),
                                 IngredientUI("Milk", "500ml"),
                             )
+                        ),
+                        DetailScreenItems.Instructions(
+                            result.recipesDetail.recipeInstructions
                         )
                     )
 
