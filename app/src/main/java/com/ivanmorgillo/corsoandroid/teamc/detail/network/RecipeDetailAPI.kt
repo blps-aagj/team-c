@@ -36,7 +36,6 @@ class RecipeDetailAPI {
             } else {
                 LoadRecipesDetailResult.Success(recipeDetail.toDomain())
             }
-
         } catch (e: IOException) {
             TODO()
         }
