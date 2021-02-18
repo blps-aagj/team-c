@@ -45,6 +45,50 @@ class RecipeDetailAPI {
     }
 
     private fun RecipeDetailDTO.Meal.toDomain(): RecipeDetail {
+        val ingredientList: List<String?> = listOf(
+            strIngredient1,
+            strIngredient2,
+            strIngredient3,
+            strIngredient4,
+            strIngredient5,
+            strIngredient6,
+            strIngredient7,
+            strIngredient8,
+            strIngredient9,
+            strIngredient10,
+            strIngredient11,
+            strIngredient12,
+            strIngredient13,
+            strIngredient14,
+            strIngredient15,
+            strIngredient16,
+            strIngredient17,
+            strIngredient18,
+            strIngredient19,
+            strIngredient20
+        )
+        val measureList: List<String?> = listOf(
+            strMeasure1,
+            strMeasure2,
+            strMeasure3,
+            strMeasure4,
+            strMeasure5,
+            strMeasure6,
+            strMeasure7,
+            strMeasure8,
+            strMeasure9,
+            strMeasure10,
+            strMeasure11,
+            strMeasure12,
+            strMeasure13,
+            strMeasure14,
+            strMeasure15,
+            strMeasure16,
+            strMeasure17,
+            strMeasure18,
+            strMeasure19,
+            strMeasure20
+        )
         return RecipeDetail(
             recipeName = strMeal,
             recipeCategory = strCategory,
@@ -59,6 +103,14 @@ class RecipeDetailAPI {
     private fun loadRecipeInstruction(instructions: String): List<String> {
         return instructions.split("/r/n")
     }
+
+//    private fun loadRecipeIngredients(ingredientsList: List<String?>, measureList: List<String?>): List<IngredientUI> {
+//        val ingredientListWithoutNull = ingredientsList.filterNotNull()
+//        val measureListWithoutNull = measureList.filterNotNull()
+//
+//        // Creare oggetto di tipo Ingredients, se il nome é null non deve essere inserito nella lista ingredienti, buttare anche la misura corrispondente.
+//    }
+
 }
 
 // Gestisce il caso di un qualsiasi errore
