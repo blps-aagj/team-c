@@ -3,6 +3,7 @@ package com.ivanmorgillo.corsoandroid.teamc.detail.network
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetail
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.json.JSONException
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
@@ -38,6 +39,8 @@ class RecipeDetailAPI {
             }
         } catch (e: IOException) {
             TODO()
+        } catch (e: JSONException) {
+            TODO()
         }
     }
 
@@ -46,11 +49,15 @@ class RecipeDetailAPI {
             recipeName = strMeal,
             recipeCategory = strCategory,
             recipeArea = strArea,
-            recipeInstructions = listOf(), // da implementare
+            recipeInstructions = loadRecipeInstruction(strInstructions),
             recipeImage = strMealThumb,
             recipeIngredientsAndMeasures = listOf(), // da implementare
             recipeVideoInstructions = strYoutube
         )
+    }
+
+    private fun loadRecipeInstruction(instructions: String): List<String> {
+        return instructions.split("/r/n")
     }
 }
 

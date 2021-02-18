@@ -17,12 +17,12 @@ data class RecipeDetail(
     val recipeName: String,
     val recipeCategory: String,
     val recipeArea: String,
-    val recipeInstructions: List<Instructions>,
+    val recipeInstructions: List<String>,
     val recipeImage: String,
     val recipeIngredientsAndMeasures: List<RecipeIngredient>,
-    val recipeVideoInstructions: String
+    val recipeVideoInstructions: String?
 )
 
 data class RecipeIngredient(val ingredientName: String, val ingredientQuantity: String)
 
-data class Instructions(val instruction: String)
+//data class Instructions(val instruction: String)

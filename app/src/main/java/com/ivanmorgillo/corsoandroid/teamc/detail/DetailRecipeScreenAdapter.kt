@@ -9,25 +9,26 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import coil.load
 import com.ivanmorgillo.corsoandroid.teamc.R
-import com.ivanmorgillo.corsoandroid.teamc.detail.DetailRecipeScreenViewHolder.CategoryAreaViewHolder
 import com.ivanmorgillo.corsoandroid.teamc.detail.DetailRecipeScreenViewHolder.ImageIngredientsViewHolder
-import com.ivanmorgillo.corsoandroid.teamc.detail.DetailRecipeScreenViewHolder.TitleViewHolder
 import com.ivanmorgillo.corsoandroid.teamc.detail.DetailRecipeScreenViewHolder.InstructionsViewHolder
+import com.ivanmorgillo.corsoandroid.teamc.detail.DetailRecipeScreenViewHolder.TitleCategoryAreaViewHolder
 import com.ivanmorgillo.corsoandroid.teamc.detail.DetailRecipeScreenViewHolder.VideoInstructionsViewHolder
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 
 sealed class DetailScreenItems {
-    data class Title(val title: String) : DetailScreenItems() // modelare il titolo della schermata
-    data class CategoryArea(val category: String, val area: String) : DetailScreenItems()
+    data class TitleCategoryArea(val title: String, val category: String, val area: String) :
+        DetailScreenItems() // modelare il titolo della schermata
+
+    //    data class CategoryArea(val category: String, val area: String) : DetailScreenItems()
     data class ImageIngredients(val image: String, val ingredients: List<IngredientUI>) : DetailScreenItems()
     data class Instructions(val instructions: List<String>) : DetailScreenItems()
     data class VideoInstructions(val videoInstructions: String) : DetailScreenItems()
 }
 
-private const val CATEGORY_AREA_VIEWTYPE = 1
+//private const val CATEGORY_AREA_VIEWTYPE = 1
 private const val IMAGE_INGREDIENTS_VIEWTYPE = 2
 private const val INSTRUCTIONS_VIEWTYPE = 3
-private const val TITLE_VIEWTYPE = 4
+private const val TITLE_CATEGORY_AREA_VIEWTYPE = 4
 private const val VIDEOINSTRUCTIONS_VIEWTYPE = 5
 
 class DetailRecipeScreenAdapter : RecyclerView.Adapter<DetailRecipeScreenViewHolder>() {
@@ -46,8 +47,7 @@ class DetailRecipeScreenAdapter : RecyclerView.Adapter<DetailRecipeScreenViewHol
     override fun getItemViewType(position: Int): Int {
         val item = this.items[position]
         return when (item) {
-            is DetailScreenItems.Title -> TITLE_VIEWTYPE
-            is DetailScreenItems.CategoryArea -> CATEGORY_AREA_VIEWTYPE
+            is DetailScreenItems.TitleCategoryArea -> TITLE_CATEGORY_AREA_VIEWTYPE
             is DetailScreenItems.ImageIngredients -> IMAGE_INGREDIENTS_VIEWTYPE
             is DetailScreenItems.Instructions -> INSTRUCTIONS_VIEWTYPE
             is DetailScreenItems.VideoInstructions -> VIDEOINSTRUCTIONS_VIEWTYPE
@@ -57,13 +57,9 @@ class DetailRecipeScreenAdapter : RecyclerView.Adapter<DetailRecipeScreenViewHol
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailRecipeScreenViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         return when (viewType) {
-            TITLE_VIEWTYPE -> {
-                val view = layoutInflater.inflate(R.layout.detail_recipe_screen_title, parent, false)
-                TitleViewHolder(view)
-            }
-            CATEGORY_AREA_VIEWTYPE -> {
-                val view = layoutInflater.inflate(R.layout.detail_recipe_screen_category_area, parent, false)
-                CategoryAreaViewHolder(view)
+            TITLE_CATEGORY_AREA_VIEWTYPE -> {
+                val view = layoutInflater.inflate(R.layout.detail_screen_title_category_area, parent, false)
+                TitleCategoryAreaViewHolder(view)
             }
             IMAGE_INGREDIENTS_VIEWTYPE -> {
                 val view = layoutInflater.inflate(R.layout.detail_recipe_screen_image_ingredients, parent, false)
@@ -83,8 +79,7 @@ class DetailRecipeScreenAdapter : RecyclerView.Adapter<DetailRecipeScreenViewHol
 
     override fun onBindViewHolder(holder: DetailRecipeScreenViewHolder, position: Int) {
         when (holder) {
-            is TitleViewHolder -> holder.bind(items[position] as DetailScreenItems.Title)
-            is CategoryAreaViewHolder -> holder.bind(items[position] as DetailScreenItems.CategoryArea)
+            is TitleCategoryAreaViewHolder -> holder.bind(items[position] as DetailScreenItems.TitleCategoryArea)
             is ImageIngredientsViewHolder -> holder.bind(items[position] as DetailScreenItems.ImageIngredients)
             is InstructionsViewHolder -> holder.bind(items[position] as DetailScreenItems.Instructions)
             is VideoInstructionsViewHolder -> {
@@ -99,23 +94,27 @@ class DetailRecipeScreenAdapter : RecyclerView.Adapter<DetailRecipeScreenViewHol
 
 sealed class DetailRecipeScreenViewHolder(itemView: View) : ViewHolder(itemView) {
     // 1
-    class TitleViewHolder(itemView: View) : DetailRecipeScreenViewHolder(itemView) {
-        private val detailRecipeTitle: TextView = itemView.findViewById(R.id.detail_recipe_screen_title)
-        fun bind(title: DetailScreenItems.Title) {
-            detailRecipeTitle.text = title.title
+    class TitleCategoryAreaViewHolder(itemView: View) : DetailRecipeScreenViewHolder(itemView) {
+        private val detailRecipeCategory: TextView = itemView.findViewById(R.id.detail_recipe_screen_category_value)
+        private val detailRecipeArea: TextView = itemView.findViewById(R.id.detail_recipe_screen_area_value)
+        private val detailRecipeTitle: TextView = itemView.findViewById(R.id.detail_screen_title)
+        fun bind(titleCategoryArea: DetailScreenItems.TitleCategoryArea) {
+            detailRecipeTitle.text = titleCategoryArea.title
+            detailRecipeArea.text = titleCategoryArea.area
+            detailRecipeCategory.text = titleCategoryArea.category
         }
     }
 
     // 3
-    class CategoryAreaViewHolder(itemView: View) : DetailRecipeScreenViewHolder(itemView) {
-        private val detailRecipeCategory: TextView = itemView.findViewById(R.id.detail_recipe_screen_category)
-        private val detailRecipeArea: TextView = itemView.findViewById(R.id.detail_recipe_screen_area)
-
-        fun bind(categoryArea: DetailScreenItems.CategoryArea) {
-            detailRecipeArea.text = categoryArea.area
-            detailRecipeCategory.text = categoryArea.category
-        }
-    }
+//    class CategoryAreaViewHolder(itemView: View) : DetailRecipeScreenViewHolder(itemView) {
+//        private val detailRecipeCategory: TextView = itemView.findViewById(R.id.detail_recipe_screen_category)
+//        private val detailRecipeArea: TextView = itemView.findViewById(R.id.detail_recipe_screen_area)
+//
+//        fun bind(categoryArea: DetailScreenItems.CategoryArea) {
+//            detailRecipeArea.text = categoryArea.area
+//            detailRecipeCategory.text = categoryArea.category
+//        }
+//    }
 
     class ImageIngredientsViewHolder(itemView: View) : DetailRecipeScreenViewHolder(itemView) {
         private val detailRecipeImage: ImageView = itemView.findViewById(R.id.detail_recipe_screen_image)
@@ -132,7 +131,7 @@ sealed class DetailRecipeScreenViewHolder(itemView: View) : ViewHolder(itemView)
     class InstructionsViewHolder(itemView: View) : DetailRecipeScreenViewHolder(itemView) {
         private val detailRecipeInstructions: TextView = itemView.findViewById(R.id.recipe_detail_screen_instructions)
         fun bind(instructions: DetailScreenItems.Instructions) {
-            //  detailRecipeInstructions.text = instructions.instructions
+            detailRecipeInstructions.text = instructions.instructions.toString()
         }
     }
 
