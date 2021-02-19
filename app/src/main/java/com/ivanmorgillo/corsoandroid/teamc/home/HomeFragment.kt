@@ -17,7 +17,6 @@ import com.ivanmorgillo.corsoandroid.teamc.MainScreenEvent
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenStates
 import com.ivanmorgillo.corsoandroid.teamc.MainViewModel
 import com.ivanmorgillo.corsoandroid.teamc.R
-import com.ivanmorgillo.corsoandroid.teamc.RecipesAdapter
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.gone
 import com.ivanmorgillo.corsoandroid.teamc.visible

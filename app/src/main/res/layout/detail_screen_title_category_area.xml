@@ -6,9 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardBackgroundColor="#BAC8D3"
-    app:cardCornerRadius="16dp"
-    >
+    app:cardBackgroundColor="#FFFFFF"
+    app:cardCornerRadius="16dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -18,7 +17,8 @@
 
         <TextView
             android:id="@+id/detail_screen_title"
-            style="@style/TextAppearance.MaterialComponents.Headline4"
+            style="@style/TextAppearance.MaterialComponents.Headline1"
+            android:textSize="32sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"

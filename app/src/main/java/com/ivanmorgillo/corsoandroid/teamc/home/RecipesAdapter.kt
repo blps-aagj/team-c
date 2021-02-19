@@ -1,4 +1,4 @@
-package com.ivanmorgillo.corsoandroid.teamc
+package com.ivanmorgillo.corsoandroid.teamc.home
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.google.android.material.card.MaterialCardView
+import com.ivanmorgillo.corsoandroid.teamc.R
 
 // dobbiamo creare l'adapter alla recyclerview. Adapter, quello della recyclerview, vuole un viewholder come tipo
 // L'adapter riceve una lista di oggetti che viene processata nell'onCreate e nell'onBinde per creare i viewHolder
