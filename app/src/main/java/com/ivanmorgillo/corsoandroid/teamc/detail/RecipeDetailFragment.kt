@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -12,6 +13,8 @@ import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import kotlinx.android.synthetic.main.fragment_detail.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
+
+private const val Z_AXIS: Float = 100f
 
 class RecipeDetailFragment : Fragment() {
 
@@ -30,6 +33,11 @@ class RecipeDetailFragment : Fragment() {
     //  Equivalente alla onCreate di un activity
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        ViewCompat.setTranslationZ(
+            getView()!!,
+            Z_AXIS
+        )
         val adapter = DetailRecipeScreenAdapter()
         recipes_list_root.adapter = adapter
         val recipeId = args.recipeId
