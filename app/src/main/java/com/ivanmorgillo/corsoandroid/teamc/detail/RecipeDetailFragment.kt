@@ -14,6 +14,8 @@ import kotlinx.android.synthetic.main.fragment_detail.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
+private const val Z_AXIS: Float = 100f
+
 class RecipeDetailFragment : Fragment() {
 
     private val recipeDetailViewModel: RecipeDetailViewModel by viewModel()
@@ -31,9 +33,10 @@ class RecipeDetailFragment : Fragment() {
     //  Equivalente alla onCreate di un activity
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         ViewCompat.setTranslationZ(
             getView()!!,
-            100f
+            Z_AXIS
         )
         val adapter = DetailRecipeScreenAdapter()
         recipes_list_root.adapter = adapter
