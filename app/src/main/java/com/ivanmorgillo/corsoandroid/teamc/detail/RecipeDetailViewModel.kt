@@ -28,13 +28,15 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
                 is LoadRecipesDetailResult.Failure -> Unit
                 is LoadRecipesDetailResult.Success -> {
                     val recipesDetails: List<DetailScreenItems> = listOf(
+                        DetailScreenItems.Image(
+                            result.recipesDetail.recipeImage,
+                        ),
                         DetailScreenItems.TitleCategoryArea(
                             result.recipesDetail.recipeName,
                             result.recipesDetail.recipeCategory,
                             result.recipesDetail.recipeArea
                         ),
-                        DetailScreenItems.ImageIngredients(
-                            result.recipesDetail.recipeImage,
+                        DetailScreenItems.Ingredients(
                             result.recipesDetail.recipeIngredientsAndMeasures
                                 .map { ingredient ->
                                     IngredientUI(name = ingredient.ingredientName, measure = ingredient.ingredientQuantity)
@@ -44,7 +46,6 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
                             result.recipesDetail.recipeInstructions
                         )
                     )
-
                     states.postValue(RecipeDetailScreenStates.Content(recipesDetails))
                 }
             }.exhaustive
