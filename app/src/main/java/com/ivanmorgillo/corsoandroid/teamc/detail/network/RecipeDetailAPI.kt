@@ -3,6 +3,7 @@ package com.ivanmorgillo.corsoandroid.teamc.detail.network
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetail
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.json.JSONException
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
@@ -36,22 +37,11 @@ class RecipeDetailAPI {
             } else {
                 LoadRecipesDetailResult.Success(recipeDetail.toDomain())
             }
-
         } catch (e: IOException) {
             TODO()
+        } catch (e: JSONException) {
+            TODO()
         }
-    }
-
-    private fun RecipeDetailDTO.Meal.toDomain(): RecipeDetail {
-        return RecipeDetail(
-            recipeName = strMeal,
-            recipeCategory = strCategory,
-            recipeArea = strArea,
-            recipeInstructions = listOf(), // da implementare
-            recipeImage = strMealThumb,
-            recipeIngredientsAndMeasures = listOf(), // da implementare
-            recipeVideoInstructions = strYoutube
-        )
     }
 }
 

@@ -3,7 +3,6 @@ package com.ivanmorgillo.corsoandroid.teamc.detail
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ivanmorgillo.corsoandroid.teamc.detail.DetailScreenItems.CategoryArea
 import com.ivanmorgillo.corsoandroid.teamc.detail.network.LoadRecipesDetailResult
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import kotlinx.coroutines.launch
@@ -26,35 +25,27 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
         states.postValue(RecipeDetailScreenStates.Loading)
         viewModelScope.launch {
             when (val result = recipeDetailRepository.loadDetailsRecipes(id)) {
-                is LoadRecipesDetailResult.Failure -> {
-                }
+                is LoadRecipesDetailResult.Failure -> Unit
                 is LoadRecipesDetailResult.Success -> {
                     val recipesDetails: List<DetailScreenItems> = listOf(
-                        DetailScreenItems.Title(result.recipesDetail.recipeName),
-                        CategoryArea(result.recipesDetail.recipeCategory, result.recipesDetail.recipeArea),
-                        DetailScreenItems.ImageIngredients(result.recipesDetail.recipeImage, listOf(
-                            IngredientUI("Milk", "500ml"),
-                            IngredientUI("Milk", "500ml"),
-                            IngredientUI("Milk", "500ml"),
-                            IngredientUI("Milk", "500ml"),
-                            IngredientUI("Milk", "500ml"),
-                            IngredientUI("Milk", "500ml"),
-                            IngredientUI("Milk", "500ml"),
-                            IngredientUI("Milk", "500ml"),
-                            IngredientUI("Milk", "500ml"),
-                            IngredientUI("Milk", "500ml"),
-                            IngredientUI("Milk", "500ml"),
-                            IngredientUI("Milk", "500ml"),
-                            IngredientUI("Milk", "500ml"),
-                            IngredientUI("Milk", "500ml"),
-                            IngredientUI("Milk", "500ml"),
-                            IngredientUI("Milk", "500ml"),
-                            IngredientUI("Milk", "500ml"),
-                            IngredientUI("Milk", "500ml"),
-                            IngredientUI("Milk", "500ml"),
-                            IngredientUI("Milk", "500ml"),
-                        )))
-
+                        DetailScreenItems.Image(
+                            result.recipesDetail.recipeImage,
+                        ),
+                        DetailScreenItems.TitleCategoryArea(
+                            result.recipesDetail.recipeName,
+                            result.recipesDetail.recipeCategory,
+                            result.recipesDetail.recipeArea
+                        ),
+                        DetailScreenItems.Ingredients(
+                            result.recipesDetail.recipeIngredientsAndMeasures
+                                .map { ingredient ->
+                                    IngredientUI(name = ingredient.ingredientName, measure = ingredient.ingredientQuantity)
+                                }
+                        ),
+                        DetailScreenItems.Instructions(
+                            result.recipesDetail.recipeInstructions
+                        )
+                    )
                     states.postValue(RecipeDetailScreenStates.Content(recipesDetails))
                 }
             }.exhaustive

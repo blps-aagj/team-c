@@ -67,7 +67,9 @@ class RecipeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     // creiamo un metodo bind
     fun bind(item: RecipeUI, onclick: (RecipeUI) -> Unit) {
         recipeTitle.text = item.recipeName // mette in comunicazione la textview con le info nella lista
-        recipeImage.load(item.recipeImageUrl)
+        recipeImage.load(item.recipeImageUrl) {
+            crossfade(true)
+        }
         recipeImage.contentDescription = item.recipeName
         recipeCardView.setOnClickListener { onclick(item) }
     }

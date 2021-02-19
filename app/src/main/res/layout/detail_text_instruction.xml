@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/detail_recipe_screen_title"
-    style="@style/TextAppearance.MaterialComponents.Headline5"
+    android:id="@+id/detail_single_instruction"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center"
-    tools:text="Spicy Arrabbiata Penne 2" />
+    tools:text="@string/app_name"
+    android:layout_margin="8dp" />
