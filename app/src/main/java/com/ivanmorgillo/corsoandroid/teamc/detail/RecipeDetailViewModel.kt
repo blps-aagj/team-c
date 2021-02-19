@@ -34,28 +34,11 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
                             result.recipesDetail.recipeArea
                         ),
                         DetailScreenItems.ImageIngredients(
-                            result.recipesDetail.recipeImage, listOf(
-                                IngredientUI("Milk", "500ml"),
-                                IngredientUI("Milk", "500ml"),
-                                IngredientUI("Milk", "500ml"),
-                                IngredientUI("Milk", "500ml"),
-                                IngredientUI("Milk", "500ml"),
-                                IngredientUI("Milk", "500ml"),
-                                IngredientUI("Milk", "500ml"),
-                                IngredientUI("Milk", "500ml"),
-                                IngredientUI("Milk", "500ml"),
-                                IngredientUI("Milk", "500ml"),
-                                IngredientUI("Milk", "500ml"),
-                                IngredientUI("Milk", "500ml"),
-                                IngredientUI("Milk", "500ml"),
-                                IngredientUI("Milk", "500ml"),
-                                IngredientUI("Milk", "500ml"),
-                                IngredientUI("Milk", "500ml"),
-                                IngredientUI("Milk", "500ml"),
-                                IngredientUI("Milk", "500ml"),
-                                IngredientUI("Milk", "500ml"),
-                                IngredientUI("Milk", "500ml"),
-                            )
+                            result.recipesDetail.recipeImage,
+                            result.recipesDetail.recipeIngredientsAndMeasures
+                                .map { ingredient ->
+                                    IngredientUI(name = ingredient.ingredientName, measure = ingredient.ingredientQuantity)
+                                }
                         ),
                         DetailScreenItems.Instructions(
                             result.recipesDetail.recipeInstructions

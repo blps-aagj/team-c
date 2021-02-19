@@ -1,5 +1,6 @@
 package com.ivanmorgillo.corsoandroid.teamc.detail.network
 
+import com.ivanmorgillo.corsoandroid.teamc.detail.Ingredient
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetail
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -45,57 +46,38 @@ class RecipeDetailAPI {
     }
 
     private fun RecipeDetailDTO.Meal.toDomain(): RecipeDetail {
-        val ingredientList: List<String?> = listOf(
-            strIngredient1,
-            strIngredient2,
-            strIngredient3,
-            strIngredient4,
-            strIngredient5,
-            strIngredient6,
-            strIngredient7,
-            strIngredient8,
-            strIngredient9,
-            strIngredient10,
-            strIngredient11,
-            strIngredient12,
-            strIngredient13,
-            strIngredient14,
-            strIngredient15,
-            strIngredient16,
-            strIngredient17,
-            strIngredient18,
-            strIngredient19,
-            strIngredient20
+
+        // da migliorare la soluzione
+        val ingredientList: List<Ingredient> = listOfNotNull(
+            validateIngredientsAndMeasures(strIngredient1, strMeasure1),
+            validateIngredientsAndMeasures(strIngredient2, strMeasure2),
+            validateIngredientsAndMeasures(strIngredient3, strMeasure3),
+            validateIngredientsAndMeasures(strIngredient4, strMeasure4),
+            validateIngredientsAndMeasures(strIngredient5, strMeasure5),
+            validateIngredientsAndMeasures(strIngredient6, strMeasure6),
+            validateIngredientsAndMeasures(strIngredient7, strMeasure7),
+            validateIngredientsAndMeasures(strIngredient8, strMeasure8),
+            validateIngredientsAndMeasures(strIngredient9, strMeasure9),
+            validateIngredientsAndMeasures(strIngredient10, strMeasure10),
+            validateIngredientsAndMeasures(strIngredient11, strMeasure11),
+            validateIngredientsAndMeasures(strIngredient12, strMeasure12),
+            validateIngredientsAndMeasures(strIngredient13, strMeasure13),
+            validateIngredientsAndMeasures(strIngredient14, strMeasure14),
+            validateIngredientsAndMeasures(strIngredient15, strMeasure15),
+            validateIngredientsAndMeasures(strIngredient16, strMeasure16),
+            validateIngredientsAndMeasures(strIngredient17, strMeasure17),
+            validateIngredientsAndMeasures(strIngredient18, strMeasure18),
+            validateIngredientsAndMeasures(strIngredient19, strMeasure19),
+            validateIngredientsAndMeasures(strIngredient20, strMeasure20),
         )
-        val measureList: List<String?> = listOf(
-            strMeasure1,
-            strMeasure2,
-            strMeasure3,
-            strMeasure4,
-            strMeasure5,
-            strMeasure6,
-            strMeasure7,
-            strMeasure8,
-            strMeasure9,
-            strMeasure10,
-            strMeasure11,
-            strMeasure12,
-            strMeasure13,
-            strMeasure14,
-            strMeasure15,
-            strMeasure16,
-            strMeasure17,
-            strMeasure18,
-            strMeasure19,
-            strMeasure20
-        )
+
         return RecipeDetail(
             recipeName = strMeal,
             recipeCategory = strCategory,
             recipeArea = strArea,
             recipeInstructions = loadRecipeInstruction(strInstructions),
             recipeImage = strMealThumb,
-            recipeIngredientsAndMeasures = listOf(), // da implementare
+            recipeIngredientsAndMeasures = ingredientList,
             recipeVideoInstructions = strYoutube
         )
     }
@@ -104,13 +86,18 @@ class RecipeDetailAPI {
         return instructions.split("/r/n")
     }
 
-//    private fun loadRecipeIngredients(ingredientsList: List<String?>, measureList: List<String?>): List<IngredientUI> {
-//        val ingredientListWithoutNull = ingredientsList.filterNotNull()
-//        val measureListWithoutNull = measureList.filterNotNull()
-//
-//        // Creare oggetto di tipo Ingredients, se il nome é null non deve essere inserito nella lista ingredienti, buttare anche la misura corrispondente.
-//    }
-
+    private fun validateIngredientsAndMeasures(ingredientName: String?, ingredientQuantity: String?): Ingredient? {
+        // inserire check per vedere se la stringa è fatta solo di numeri
+        return if (ingredientName.isNullOrBlank()) {
+            null
+        } else {
+            if (ingredientQuantity.isNullOrBlank()) {
+                Ingredient(ingredientName, "q.s.")
+            } else {
+                Ingredient(ingredientName, ingredientQuantity)
+            }
+        }
+    }
 }
 
 // Gestisce il caso di un qualsiasi errore

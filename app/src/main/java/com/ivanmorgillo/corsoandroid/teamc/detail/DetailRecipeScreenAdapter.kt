@@ -60,7 +60,7 @@ class DetailRecipeScreenAdapter : RecyclerView.Adapter<DetailRecipeScreenViewHol
                 TitleCategoryAreaViewHolder(view)
             }
             IMAGE_INGREDIENTS_VIEWTYPE -> {
-                val view = layoutInflater.inflate(R.layout.detail_recipe_screen_image_ingredients, parent, false)
+                val view = layoutInflater.inflate(R.layout.detail_recipe_screen_image, parent, false)
                 ImageIngredientsViewHolder(view)
             }
             INSTRUCTIONS_VIEWTYPE -> {
@@ -149,8 +149,10 @@ class IngredientsAdapter : RecyclerView.Adapter<IngredientsViewHolder>() {
 
 class IngredientsViewHolder(itemView: View) : ViewHolder(itemView) {
     val name: TextView = itemView.findViewById(R.id.detail_screen_ingredient_name)
+    val quantity: TextView = itemView.findViewById(R.id.detail_screen_ingredient_quantity)
     fun bind(item: IngredientUI) {
         name.text = item.name
+        quantity.text = item.measure
     }
 }
 

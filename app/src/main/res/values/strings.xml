@@ -7,4 +7,5 @@
     <string name="penne_rigate_olive_oil_garlic_chopped_tomatoes_red_chile_flakes_italian_seasoningbasil_basil_parmigiano_reggiano" translatable="false"> \n - penne rigate\n - olive oil\n - garlic\n  - chopped tomatoes\n  - red chile flakes\n  - italian seasoningbasil\n - basil\n - Parmigiano-Reggiano \n</string>
     <string name="category_label">Category:</string>
     <string name="area_label">Area:</string>
+    <string name="defaultQuantity">q.s.</string>
 </resources>
