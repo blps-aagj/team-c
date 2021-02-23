@@ -36,10 +36,12 @@ class HomeFragment : Fragment() {
     //  Equivalente alla onCreate di un activity
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val adapter = RecipesAdapter {
+//        val adapter = RecipesAdapter {
+
+//        }
+        val adapter = RecipeByAreaAdapter {
             viewModel.send(MainScreenEvent.OnRecipeClick(it))
         }
-
         // dobbiamo mettere l'adapter in comunicazione con la recyclerview
         recipes_list.adapter = adapter
         // osserva in che stato si trova la schermata
@@ -50,7 +52,7 @@ class HomeFragment : Fragment() {
                     recipes_list_progressBar.gone()
                     main_screen_no_network.gone()
                     recipes_list_root.visible()
-                    adapter.setRecipes(state.recipes)
+                    adapter.setRecipesByArea(state.recipes)
                 }
                 // Mostra Errore
                 MainScreenStates.Error -> {
