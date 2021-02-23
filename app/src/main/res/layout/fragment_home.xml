@@ -22,7 +22,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:listitem="@layout/recipe_item" />
+            tools:listitem="@layout/area_item" />
 
         <ProgressBar
             android:id="@+id/recipes_list_progressBar"
