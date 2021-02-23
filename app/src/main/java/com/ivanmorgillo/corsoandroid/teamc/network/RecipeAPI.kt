@@ -44,7 +44,7 @@ class RecipeAPI {
         */
         try {
             val recipeList = service.loadRecipes(area)
-            Timber.e("recipeList $recipeList")
+//            Timber.e("recipeList $recipeList")
             val recipes = recipeList.meals.mapNotNull {
                 it.toDomain()
             }

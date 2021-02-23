@@ -6,7 +6,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONException
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import timber.log.Timber
 import java.io.IOException
 
 class RecipeDetailAPI {
@@ -30,7 +29,7 @@ class RecipeDetailAPI {
     suspend fun loadDetailsRecipe(id: Long): LoadRecipesDetailResult {
         try {
             val recipeDetailList = service.loadDetailsRecipe(id.toString())
-            Timber.d("recipeDetailList $recipeDetailList") // id non funziona ancora
+//            Timber.d("recipeDetailList $recipeDetailList") // id non funziona ancora
             val recipeDetail = recipeDetailList.meals.firstOrNull()
             return if (recipeDetail == null) {
                 LoadRecipesDetailResult.Failure(LoadRecipesDetailError.NoRecipeDetailFound)

@@ -7,7 +7,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ivanmorgillo.corsoandroid.teamc.R
 import com.ivanmorgillo.corsoandroid.teamc.RecipeByAreaUI
-import timber.log.Timber
 
 class RecipeByAreaAdapter(private val onclick: (RecipeUI) -> Unit) : RecyclerView.Adapter<RecipeByAreaViewHolder>() {
     private var recipeByArea: List<RecipeByAreaUI> = emptyList()
@@ -39,7 +38,7 @@ class RecipeByAreaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     private val recipeAreaRecyclerView = itemView.findViewById<RecyclerView>(R.id.recipe_area_recyclerview)
     fun bind(item: RecipeByAreaUI, onclick: (RecipeUI) -> Unit) {
         recipeAreaTitle.text = item.nameArea
-        Timber.e("RecipeByAreaViewHolder ${item.recipeByArea}")
+//        Timber.e("RecipeByAreaViewHolder ${item.recipeByArea}")
         val adapter = RecipesAdapter(onclick)
         recipeAreaRecyclerView.adapter = adapter
         adapter.setRecipes(item.recipeByArea)
