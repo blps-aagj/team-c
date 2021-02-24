@@ -19,6 +19,10 @@ import com.ivanmorgillo.corsoandroid.teamc.detail.DetailScreenItems.Instructions
 import com.ivanmorgillo.corsoandroid.teamc.detail.DetailScreenItems.TitleCategoryArea
 import com.ivanmorgillo.corsoandroid.teamc.detail.DetailScreenItems.VideoInstructions
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
+import com.ivanmorgillo.corsoandroid.teamc.gone
+import com.ivanmorgillo.corsoandroid.teamc.visible
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 
 sealed class DetailScreenItems {
@@ -28,7 +32,7 @@ sealed class DetailScreenItems {
     data class Image(val image: String) : DetailScreenItems()
     data class Ingredients(val ingredients: List<IngredientUI>) : DetailScreenItems()
     data class Instructions(val instructions: List<String>) : DetailScreenItems()
-    data class VideoInstructions(val videoInstructions: String?) : DetailScreenItems()
+    data class VideoInstructions(val videoInstructions: String) : DetailScreenItems()
 }
 
 private const val IMAGE_VIEWTYPE = 1
@@ -146,10 +150,19 @@ sealed class DetailRecipeScreenViewHolder(itemView: View) : ViewHolder(itemView)
     }
 
     class VideoInstructionsViewHolder(itemView: View) : DetailRecipeScreenViewHolder(itemView) {
-
         private val youTubePlayerView: YouTubePlayerView = itemView.findViewById(R.id.youtube_player_view)
         fun bind(item: VideoInstructions) {
-            
+            if (item.videoInstructions.isEmpty()) {
+                youTubePlayerView.gone()
+            } else {
+                youTubePlayerView.visible()
+                youTubePlayerView.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
+                    override fun onReady(youTubePlayer: YouTubePlayer) {
+                        youTubePlayer.loadVideo(item.videoInstructions, 0f)
+                        youTubePlayer.pause()
+                    }
+                })
+            }
         }
     }
 }
@@ -214,6 +227,5 @@ class InstructionsItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         itemView.findViewById<TextView>(R.id.detail_single_instruction).text = instruction
     }
 }
-
 
 data class IngredientUI(val name: String, val measure: String)
