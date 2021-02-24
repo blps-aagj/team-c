@@ -17,7 +17,9 @@ import com.ivanmorgillo.corsoandroid.teamc.detail.DetailScreenItems.Image
 import com.ivanmorgillo.corsoandroid.teamc.detail.DetailScreenItems.Ingredients
 import com.ivanmorgillo.corsoandroid.teamc.detail.DetailScreenItems.Instructions
 import com.ivanmorgillo.corsoandroid.teamc.detail.DetailScreenItems.TitleCategoryArea
+import com.ivanmorgillo.corsoandroid.teamc.detail.DetailScreenItems.VideoInstructions
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 
 sealed class DetailScreenItems {
     data class TitleCategoryArea(val title: String, val category: String, val area: String) :
@@ -26,7 +28,7 @@ sealed class DetailScreenItems {
     data class Image(val image: String) : DetailScreenItems()
     data class Ingredients(val ingredients: List<IngredientUI>) : DetailScreenItems()
     data class Instructions(val instructions: List<String>) : DetailScreenItems()
-    data class VideoInstructions(val videoInstructions: String) : DetailScreenItems()
+    data class VideoInstructions(val videoInstructions: String?) : DetailScreenItems()
 }
 
 private const val IMAGE_VIEWTYPE = 1
@@ -54,7 +56,7 @@ class DetailRecipeScreenAdapter : RecyclerView.Adapter<DetailRecipeScreenViewHol
             is TitleCategoryArea -> TITLE_CATEGORY_AREA_VIEWTYPE
             is Image -> IMAGE_VIEWTYPE
             is Instructions -> INSTRUCTIONS_VIEWTYPE
-            is DetailScreenItems.VideoInstructions -> VIDEOINSTRUCTIONS_VIEWTYPE
+            is VideoInstructions -> VIDEOINSTRUCTIONS_VIEWTYPE
             is Ingredients -> INGREDIENTS_VIEWTYPE
         }.exhaustive
     }
@@ -91,7 +93,7 @@ class DetailRecipeScreenAdapter : RecyclerView.Adapter<DetailRecipeScreenViewHol
             is TitleCategoryAreaViewHolder -> holder.bind(items[position] as TitleCategoryArea)
             is ImageViewHolder -> holder.bind(items[position] as Image)
             is InstructionsViewHolder -> holder.bind(items[position] as Instructions)
-            is VideoInstructionsViewHolder -> Unit
+            is VideoInstructionsViewHolder -> holder.bind(items[position] as VideoInstructions)
             is DetailRecipeScreenViewHolder.IngredientsViewHolder -> holder.bind(items[position] as Ingredients)
         }.exhaustive
     }
@@ -143,7 +145,13 @@ sealed class DetailRecipeScreenViewHolder(itemView: View) : ViewHolder(itemView)
         }
     }
 
-    class VideoInstructionsViewHolder(itemView: View) : DetailRecipeScreenViewHolder(itemView) // da IMPLEMENTARE
+    class VideoInstructionsViewHolder(itemView: View) : DetailRecipeScreenViewHolder(itemView) {
+
+        private val youTubePlayerView: YouTubePlayerView = itemView.findViewById(R.id.youtube_player_view)
+        fun bind(item: VideoInstructions) {
+            
+        }
+    }
 }
 
 class IngredientsAdapter : RecyclerView.Adapter<IngredientsItemViewHolder>() {
@@ -206,5 +214,6 @@ class InstructionsItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         itemView.findViewById<TextView>(R.id.detail_single_instruction).text = instruction
     }
 }
+
 
 data class IngredientUI(val name: String, val measure: String)
