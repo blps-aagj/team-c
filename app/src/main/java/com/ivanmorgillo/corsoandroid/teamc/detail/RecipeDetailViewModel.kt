@@ -44,6 +44,9 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
                         ),
                         DetailScreenItems.Instructions(
                             result.recipesDetail.recipeInstructions
+                        ),
+                        DetailScreenItems.VideoInstructions(
+                            result.recipesDetail.recipeVideoInstructions
                         )
                     )
                     states.postValue(RecipeDetailScreenStates.Content(recipesDetails))

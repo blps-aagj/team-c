@@ -15,8 +15,16 @@ fun RecipeDetailDTO.Meal.toDomain(): RecipeDetail {
         recipeInstructions = loadRecipeInstruction(strInstructions),
         recipeImage = strMealThumb,
         recipeIngredientsAndMeasures = ingredientList,
-        recipeVideoInstructions = strYoutube
+        recipeVideoInstructions = getVideoID(strYoutube)
     )
+}
+
+fun getVideoID(videoUri: String?): String {
+    return if (videoUri != null && videoUri.isNotBlank()) {
+        videoUri.replace("https://www.youtube.com/watch?v=", "")
+    } else {
+        ""
+    }
 }
 
 private fun RecipeDetailDTO.Meal.getIngredients() = listOfNotNull(

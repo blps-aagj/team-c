@@ -20,7 +20,7 @@ data class RecipeDetail(
     val recipeInstructions: List<String>,
     val recipeImage: String,
     val recipeIngredientsAndMeasures: List<Ingredient>,
-    val recipeVideoInstructions: String?
+    val recipeVideoInstructions: String
 )
 
 data class Ingredient(val ingredientName: String, val ingredientQuantity: String)
