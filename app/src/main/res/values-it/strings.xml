@@ -6,4 +6,6 @@
     <string name="category_label">Category:</string>
     <string name="area_label">Area:</string>
     <string name="defaultQuantity">q.s.</string>
+    <string name="open">Apri</string>
+    <string name="close">Chiudi</string>
 </resources>
