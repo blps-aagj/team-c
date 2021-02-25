@@ -3,8 +3,12 @@ package com.ivanmorgillo.corsoandroid.teamc
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetailViewModel
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipesDetailRepositoryImpl
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipesDetailsRepository
-import com.ivanmorgillo.corsoandroid.teamc.detail.network.RecipeDetailAPI
-import com.ivanmorgillo.corsoandroid.teamc.network.RecipeAPI
+import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
+import com.ivanmorgillo.corsoandroid.teamc.firebase.TrackingImpl
+import com.ivanmorgillo.corsoandroid.teamc.home.RecipeRepositoryImpl
+import com.ivanmorgillo.corsoandroid.teamc.home.RecipesRepository
+import com.ivanmorgillo.corsoandroid.teamc.network.detail.RecipeDetailAPI
+import com.ivanmorgillo.corsoandroid.teamc.network.home.RecipeAPI
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 

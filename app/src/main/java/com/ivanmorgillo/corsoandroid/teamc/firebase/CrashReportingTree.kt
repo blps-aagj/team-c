@@ -1,4 +1,4 @@
-package com.ivanmorgillo.corsoandroid.teamb
+package com.ivanmorgillo.corsoandroid.teamc.firebase
 
 import android.util.Log
 import com.google.firebase.crashlytics.FirebaseCrashlytics

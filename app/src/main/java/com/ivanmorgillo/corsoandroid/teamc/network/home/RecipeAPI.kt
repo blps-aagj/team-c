@@ -1,14 +1,14 @@
-package com.ivanmorgillo.corsoandroid.teamc.network
+package com.ivanmorgillo.corsoandroid.teamc.network.home
 
-import com.ivanmorgillo.corsoandroid.teamc.Recipe
-import com.ivanmorgillo.corsoandroid.teamc.RecipeByArea
+import com.ivanmorgillo.corsoandroid.teamc.domain.Recipe
+import com.ivanmorgillo.corsoandroid.teamc.domain.RecipeByArea
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
-import com.ivanmorgillo.corsoandroid.teamc.network.LoadAreaResult.Failure
-import com.ivanmorgillo.corsoandroid.teamc.network.LoadAreaResult.Success
-import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesError.NoInternet
-import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesError.NoRecipeFound
-import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesError.ServerError
-import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesError.SlowInternet
+import com.ivanmorgillo.corsoandroid.teamc.network.home.LoadAreaResult.Failure
+import com.ivanmorgillo.corsoandroid.teamc.network.home.LoadAreaResult.Success
+import com.ivanmorgillo.corsoandroid.teamc.network.home.LoadRecipesError.NoInternet
+import com.ivanmorgillo.corsoandroid.teamc.network.home.LoadRecipesError.NoRecipeFound
+import com.ivanmorgillo.corsoandroid.teamc.network.home.LoadRecipesError.ServerError
+import com.ivanmorgillo.corsoandroid.teamc.network.home.LoadRecipesError.SlowInternet
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

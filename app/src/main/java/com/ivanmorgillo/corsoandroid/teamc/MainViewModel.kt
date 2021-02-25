@@ -5,9 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.NavigateToDetail
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenStates.Error
+import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipeUI
-import com.ivanmorgillo.corsoandroid.teamc.network.LoadAreaResult
-import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesError
+import com.ivanmorgillo.corsoandroid.teamc.home.RecipesRepository
+import com.ivanmorgillo.corsoandroid.teamc.network.home.LoadAreaResult
+import com.ivanmorgillo.corsoandroid.teamc.network.home.LoadRecipesError
+import com.ivanmorgillo.corsoandroid.teamc.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
 
 class MainViewModel(

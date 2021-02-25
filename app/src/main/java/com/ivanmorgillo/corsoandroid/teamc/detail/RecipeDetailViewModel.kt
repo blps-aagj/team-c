@@ -3,8 +3,8 @@ package com.ivanmorgillo.corsoandroid.teamc.detail
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ivanmorgillo.corsoandroid.teamc.detail.network.LoadRecipesDetailResult
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
+import com.ivanmorgillo.corsoandroid.teamc.network.detail.LoadRecipesDetailResult
 import kotlinx.coroutines.launch
 import timber.log.Timber
 

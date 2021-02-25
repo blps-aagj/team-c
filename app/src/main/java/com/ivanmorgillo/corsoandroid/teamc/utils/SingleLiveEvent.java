@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.ivanmorgillo.corsoandroid.teamc;
+package com.ivanmorgillo.corsoandroid.teamc.utils;
 
 import android.util.Log;
 import androidx.annotation.MainThread;

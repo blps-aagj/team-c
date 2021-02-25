@@ -1,8 +1,8 @@
-package com.ivanmorgillo.corsoandroid.teamc
+package com.ivanmorgillo.corsoandroid.teamc.home
 
-import com.ivanmorgillo.corsoandroid.teamc.network.LoadAreaResult
-import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesResult
-import com.ivanmorgillo.corsoandroid.teamc.network.RecipeAPI
+import com.ivanmorgillo.corsoandroid.teamc.network.home.LoadAreaResult
+import com.ivanmorgillo.corsoandroid.teamc.network.home.LoadRecipesResult
+import com.ivanmorgillo.corsoandroid.teamc.network.home.RecipeAPI
 
 interface RecipesRepository {
     suspend fun loadArea(): LoadAreaResult
@@ -19,7 +19,3 @@ class RecipeRepositoryImpl(private val recipeAPI: RecipeAPI) : RecipesRepository
         return recipeAPI.loadRecipes(area)
     }
 }
-
-// lista di ricette: lista di oggetti con nome, immagine e id
-data class Recipe(val name: String, val image: String, val idMeal: Long)
-data class RecipeByArea(val nameArea: String, val recipeByArea: List<Recipe>)

@@ -1,4 +1,4 @@
-package com.ivanmorgillo.corsoandroid.teamc
+package com.ivanmorgillo.corsoandroid.teamc.firebase
 
 import timber.log.Timber
 

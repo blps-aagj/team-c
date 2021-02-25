@@ -1,4 +1,4 @@
-package com.ivanmorgillo.corsoandroid.teamc
+package com.ivanmorgillo.corsoandroid.teamc.firebase
 
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
