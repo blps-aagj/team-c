@@ -1,4 +1,4 @@
-package com.ivanmorgillo.corsoandroid.teamc.detail.network
+package com.ivanmorgillo.corsoandroid.teamc.network.detail
 
 import retrofit2.http.GET
 import retrofit2.http.Query

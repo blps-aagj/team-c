@@ -2,7 +2,8 @@ package com.ivanmorgillo.corsoandroid.teamc
 
 import android.app.Application
 import android.os.StrictMode
-import com.ivanmorgillo.corsoandroid.teamb.CrashReportingTree
+import com.ivanmorgillo.corsoandroid.teamc.firebase.CrashReportingTree
+import com.ivanmorgillo.corsoandroid.teamc.firebase.LineNumberDebugTree
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin

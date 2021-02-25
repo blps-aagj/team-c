@@ -1,6 +1,6 @@
-package com.ivanmorgillo.corsoandroid.teamc.detail.network
+package com.ivanmorgillo.corsoandroid.teamc.network.detail
 
-import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetail
+import com.ivanmorgillo.corsoandroid.teamc.domain.RecipeDetail
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONException

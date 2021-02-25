@@ -1,4 +1,4 @@
-package com.ivanmorgillo.corsoandroid.teamc.detail.network
+package com.ivanmorgillo.corsoandroid.teamc.network.detail
 
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName

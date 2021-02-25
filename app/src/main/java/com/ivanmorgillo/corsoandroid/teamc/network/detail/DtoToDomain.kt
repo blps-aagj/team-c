@@ -1,7 +1,7 @@
-package com.ivanmorgillo.corsoandroid.teamc.detail.network
+package com.ivanmorgillo.corsoandroid.teamc.network.detail
 
-import com.ivanmorgillo.corsoandroid.teamc.detail.Ingredient
-import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetail
+import com.ivanmorgillo.corsoandroid.teamc.domain.Ingredient
+import com.ivanmorgillo.corsoandroid.teamc.domain.RecipeDetail
 
 fun RecipeDetailDTO.Meal.toDomain(): RecipeDetail {
 
