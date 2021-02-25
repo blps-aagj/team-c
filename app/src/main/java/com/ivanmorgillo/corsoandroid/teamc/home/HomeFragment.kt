@@ -90,10 +90,7 @@ class HomeFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.refresh_btn -> viewModel.send(MainScreenEvent.OnRefreshClick)
-            else -> Toast.makeText(context!!, "come se fosse Antani", Toast.LENGTH_SHORT).show()
-        }.exhaustive
+        if (item.itemId == R.id.refresh_btn) viewModel.send(MainScreenEvent.OnRefreshClick)
         return super.onOptionsItemSelected(item)
     }
 }
