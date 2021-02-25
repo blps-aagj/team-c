@@ -23,7 +23,7 @@ class MainViewModel(
         when (event) {
             // Activity pronta
             MainScreenEvent.OnReady -> {
-                loadContent()
+                loadContent(false)
             }
             is MainScreenEvent.OnRecipeClick -> {
                 // Tracking click on recipe
@@ -33,15 +33,16 @@ class MainViewModel(
             MainScreenEvent.OnRefreshClick -> {
                 // Tracking refresh
                 tracking.logEvent("Refresh requested")
-                loadContent()
+                loadContent(true)
             }
         }.exhaustive
     }
 
-    private fun loadContent() {
+    private fun loadContent(forced: Boolean) {
         states.postValue(MainScreenStates.Loading) // visualizziamo progressbar mentre carica lista
         viewModelScope.launch {
-            when (val result = repository.loadArea()) {
+            val result = repository.loadAllRecipesByArea(forced)
+            when (result) {
                 is LoadAreaResult.Failure -> {
                     states.postValue(Error)
                     when (result.error) {
@@ -54,7 +55,6 @@ class MainViewModel(
                     }
                 }
                 is LoadAreaResult.Success -> {
-
                     val recipes = result.recipes.map {
                         RecipeByAreaUI(
                             nameArea = it.nameArea,

@@ -44,7 +44,6 @@ class RecipeAPI {
         */
         try {
             val recipeList = service.loadRecipes(area)
-//            Timber.e("recipeList $recipeList")
             val recipes = recipeList.meals.mapNotNull {
                 it.toDomain()
             }
@@ -106,7 +105,8 @@ class RecipeAPI {
 
     private suspend fun AreaDTO.Meal.toDomain(): RecipeByArea {
         var recipeByArea = emptyList<Recipe>()
-        when (val result = loadRecipes(strArea)) {
+        val result = loadRecipes(strArea)
+        when (result) {
             is LoadRecipesResult.Failure -> Timber.e("AreaDTO Meal toDomain() ")
             is LoadRecipesResult.Success -> {
                 recipeByArea = result.recipes
