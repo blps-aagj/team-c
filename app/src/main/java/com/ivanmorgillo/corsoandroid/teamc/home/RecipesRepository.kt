@@ -15,23 +15,37 @@ interface RecipesRepository {
 
 // implementa l'interfaccia sopra
 class RecipeRepositoryImpl(private val recipeAPI: RecipeAPI) : RecipesRepository {
+    private var recipeByAreaList: List<RecipeByArea>? = null
     override suspend fun loadAllRecipesByArea(forced: Boolean): List<RecipeByArea>? {
+        return if (recipeByAreaList == null || forced) {
+            recipeByAreaList = loadFromNetwork()
+            recipeByAreaList
+        } else {
+            recipeByAreaList
+        }
+    }
+
+    private suspend fun loadFromNetwork(): List<RecipeByArea>? {
         return recipeAPI.loadAreas().map()?.run {
             this.map {
-                var recipes = loadRecipes(it.nameArea)
+                val recipes = loadRecipes(it.nameArea)
                 it to recipes
             }.mapNotNull {
-                val area = it.first
-                val recipes = it.second.getOrNull()
-                if (recipes.isNullOrEmpty()) {
-                    null
-                } else {
-                    RecipeByArea(
-                        nameArea = area.nameArea,
-                        recipeByArea = recipes
-                    )
-                }
+                toRecipeByArea(it)
             }
+        }
+    }
+
+    private fun toRecipeByArea(it: Pair<Area, LoadRecipesResult>): RecipeByArea? {
+        val area = it.first
+        val recipes = it.second.getOrNull()
+        return if (recipes.isNullOrEmpty()) {
+            null
+        } else {
+            RecipeByArea(
+                nameArea = area.nameArea,
+                recipeByArea = recipes
+            )
         }
     }
 
