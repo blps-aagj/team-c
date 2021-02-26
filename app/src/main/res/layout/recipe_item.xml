@@ -26,10 +26,12 @@
         <TextView
             android:id="@+id/recipe_title"
             style="@style/TextAppearance.MaterialComponents.Headline3"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:textSize="20sp"
+            android:maxEms="10"
+            android:singleLine="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/recipe_image"
@@ -38,7 +40,8 @@
         <include
             android:id="@+id/favourite_list_checkbox_layout"
             layout="@layout/favourite_checkbox"
-            android:visibility="visible" />
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
