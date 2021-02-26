@@ -4,12 +4,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.NavigateToDetail
-import com.ivanmorgillo.corsoandroid.teamc.MainScreenStates.Error
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipeUI
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipesRepository
-import com.ivanmorgillo.corsoandroid.teamc.network.home.LoadAreaResult
-import com.ivanmorgillo.corsoandroid.teamc.network.home.LoadRecipesError
 import com.ivanmorgillo.corsoandroid.teamc.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
 
@@ -23,7 +20,7 @@ class MainViewModel(
         when (event) {
             // Activity pronta
             MainScreenEvent.OnReady -> {
-                loadContent(false)
+                loadContent()
             }
             is MainScreenEvent.OnRecipeClick -> {
                 // Tracking click on recipe
@@ -33,44 +30,28 @@ class MainViewModel(
             MainScreenEvent.OnRefreshClick -> {
                 // Tracking refresh
                 tracking.logEvent("Refresh requested")
-                loadContent(true)
+                loadContent()
             }
         }.exhaustive
     }
 
-    private fun loadContent(forced: Boolean) {
+    private fun loadContent() {
         states.postValue(MainScreenStates.Loading) // visualizziamo progressbar mentre carica lista
         viewModelScope.launch {
-            val result = repository.loadAllRecipesByArea(forced)
-            when (result) {
-                is LoadAreaResult.Failure -> {
-                    states.postValue(Error)
-                    when (result.error) {
-                        LoadRecipesError.NoInternet -> {
-                            actions.postValue(MainScreenAction.ShowNoInternetMessage)
+            val result = repository.loadAllRecipesByArea()
+            if (result.isNullOrEmpty()) {
+                states.postValue(MainScreenStates.Error)
+            } else {
+                val recipes = result.map { recipeByArea ->
+                    RecipeByAreaUI(
+                        nameArea = recipeByArea.nameArea,
+                        recipeByArea = recipeByArea.recipeByArea.map { recipe ->
+                            RecipeUI(id = recipe.idMeal, recipeName = recipe.name, recipeImageUrl = recipe.image)
                         }
-                        LoadRecipesError.NoRecipeFound -> TODO()
-                        LoadRecipesError.ServerError -> TODO()
-                        LoadRecipesError.SlowInternet -> TODO()
-                    }
+                    )
                 }
-                is LoadAreaResult.Success -> {
-                    val recipes = result.recipes.map {
-                        RecipeByAreaUI(
-                            nameArea = it.nameArea,
-                            recipeByArea = it.recipeByArea.map { recipe ->
-                                RecipeUI(
-                                    id = recipe.idMeal,
-                                    recipeName = recipe.name,
-                                    recipeImageUrl = recipe.image
-
-                                )
-                            }
-                        )
-                    }
-                    states.postValue(MainScreenStates.Content(recipes))
-                }
-            }.exhaustive
+                states.postValue(MainScreenStates.Content(recipes))
+            }
         }
     }
 }
