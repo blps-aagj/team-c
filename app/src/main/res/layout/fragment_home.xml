@@ -34,12 +34,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <include
-        android:id="@+id/main_screen_no_network"
-        android:visibility="gone"
-        tools:visibility="visible"
-        layout="@layout/no_network" />
+        <include
+            android:id="@+id/main_screen_no_network"
+            layout="@layout/no_network"
+            android:visibility="gone"
+            tools:visibility="visible" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
