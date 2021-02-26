@@ -1,8 +1,7 @@
 package com.ivanmorgillo.corsoandroid.teamc.network.home
 
+import com.ivanmorgillo.corsoandroid.teamc.domain.Area
 import com.ivanmorgillo.corsoandroid.teamc.domain.Recipe
-import com.ivanmorgillo.corsoandroid.teamc.domain.RecipeByArea
-import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.network.home.LoadAreaResult.Failure
 import com.ivanmorgillo.corsoandroid.teamc.network.home.LoadAreaResult.Success
 import com.ivanmorgillo.corsoandroid.teamc.network.home.LoadRecipesError.NoInternet
@@ -64,14 +63,14 @@ class RecipeAPI {
     }
 
     @Suppress("TooGenericExceptionCaught") // per non far vedere da detekt err eccezione troppo generica
-    suspend fun loadArea(): LoadAreaResult {
+    suspend fun loadAreas(): LoadAreaResult {
         /*
         * try-catch devo gestire errore di chiamata di rete, si può trovare in due stati, funzionante o rotto
         * uso le sealed class
         */
         try {
             val areaList = service.loadArea()
-            val areas = areaList.meals.map {
+            val areas = areaList.meals.mapNotNull {
                 it.toDomain()
             }
             // caso lista vuota
@@ -103,19 +102,15 @@ class RecipeAPI {
         }
     }
 
-    private suspend fun AreaDTO.Meal.toDomain(): RecipeByArea {
-        var recipeByArea = emptyList<Recipe>()
-        val result = loadRecipes(strArea)
-        when (result) {
-            is LoadRecipesResult.Failure -> Timber.e("AreaDTO Meal toDomain() ")
-            is LoadRecipesResult.Success -> {
-                recipeByArea = result.recipes
-            }
-        }.exhaustive
-        return RecipeByArea(
-            nameArea = strArea,
-            recipeByArea = recipeByArea
-        )
+    private fun AreaDTO.Meal.toDomain(): Area? {
+        val area = strArea
+        return if (area.isBlank()) {
+            null
+        } else {
+            Area(
+                nameArea = area,
+            )
+        }
     }
 }
 
@@ -134,6 +129,6 @@ sealed class LoadRecipesResult {
 }
 
 sealed class LoadAreaResult {
-    data class Success(val recipes: List<RecipeByArea>) : LoadAreaResult()
+    data class Success(val areas: List<Area>) : LoadAreaResult()
     data class Failure(val error: LoadRecipesError) : LoadAreaResult()
 }
