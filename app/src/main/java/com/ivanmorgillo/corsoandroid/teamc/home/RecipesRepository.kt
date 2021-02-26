@@ -17,15 +17,11 @@ interface RecipesRepository {
 class RecipeRepositoryImpl(private val recipeAPI: RecipeAPI) : RecipesRepository {
     private var recipeByAreaList: List<RecipeByArea>? = null
     override suspend fun loadAllRecipesByArea(forced: Boolean): List<RecipeByArea>? {
-        if (forced) {
+        return if (recipeByAreaList == null || forced) {
             recipeByAreaList = loadFromNetwork()
-            return recipeByAreaList
-        }
-        if (recipeByAreaList != null) {
-            return recipeByAreaList
+            recipeByAreaList
         } else {
-            recipeByAreaList = loadFromNetwork()
-            return recipeByAreaList
+            recipeByAreaList
         }
     }
 
