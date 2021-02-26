@@ -13,23 +13,40 @@
         android:padding="8dp">
 
 
-        <TextView
-            android:id="@+id/recipe_area_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/recipe_area_container_title"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="@string/app_name"
-            style="@style/TextAppearance.MaterialComponents.Headline6"
-            android:gravity="start"
-            android:padding="8dp"
-            android:textSize="32sp" />
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/recipe_area_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@string/app_name"
+                style="@style/TextAppearance.MaterialComponents.Headline3"
+                android:gravity="center_horizontal"
+                android:textSize="32sp" />
+
+            <ImageView
+                android:id="@+id/recipe_area_title_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/recipe_area_title"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:src="@drawable/ic_favourite_list" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recipe_area_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/recipe_area_title"
+            app:layout_constraintTop_toBottomOf="@id/recipe_area_container_title"
             app:layout_constraintStart_toStartOf="parent"
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
