@@ -32,7 +32,7 @@
                 android:textSize="32sp" />
 
             <ImageView
-                android:id="@+id/recipe_area_title_icon"
+                android:id="@+id/recipe_area_flag_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toEndOf="@id/recipe_area_title"
