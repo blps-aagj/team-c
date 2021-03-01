@@ -10,6 +10,7 @@ import coil.load
 import com.ivanmorgillo.corsoandroid.teamc.R
 import com.ivanmorgillo.corsoandroid.teamc.RecipeByAreaUI
 import com.ivanmorgillo.corsoandroid.teamc.utils.getFlag
+import com.ivanmorgillo.corsoandroid.teamc.utils.imageLoader
 
 class RecipeByAreaAdapter(private val onclick: (RecipeUI) -> Unit) : RecyclerView.Adapter<RecipeByAreaViewHolder>() {
     private var recipeByArea: List<RecipeByAreaUI> = emptyList()
@@ -47,6 +48,7 @@ class RecipeByAreaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         recipeAreaRecyclerView.adapter = adapter
         adapter.setRecipes(item.recipeByArea)
         val areaFlag = getFlag(item.nameArea)
-        recipeImageIcon.load("https://www.countryflags.io/$areaFlag/shiny/64.png")
+        val flagUri = "https://www.countryflags.io/$areaFlag/shiny/64.png"
+        recipeImageIcon.load(flagUri, imageLoader(itemView.context))
     }
 }

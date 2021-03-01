@@ -20,6 +20,7 @@ import com.ivanmorgillo.corsoandroid.teamc.detail.DetailScreenItems.TitleCategor
 import com.ivanmorgillo.corsoandroid.teamc.detail.DetailScreenItems.VideoInstructions
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.gone
+import com.ivanmorgillo.corsoandroid.teamc.utils.imageLoader
 import com.ivanmorgillo.corsoandroid.teamc.visible
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
@@ -124,9 +125,7 @@ sealed class DetailRecipeScreenViewHolder(itemView: View) : ViewHolder(itemView)
         private val detailRecipeImage: ImageView = itemView.findViewById(R.id.detail_recipe_screen_image)
 
         fun bind(image: Image) {
-            detailRecipeImage.load(image.image) {
-                crossfade(true)
-            }
+            detailRecipeImage.load(image.image, imageLoader(itemView.context))
         }
     }
 
