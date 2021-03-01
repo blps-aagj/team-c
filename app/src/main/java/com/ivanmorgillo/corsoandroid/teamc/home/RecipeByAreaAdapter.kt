@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.ivanmorgillo.corsoandroid.teamc.R
 import com.ivanmorgillo.corsoandroid.teamc.RecipeByAreaUI
-import com.ivanmorgillo.corsoandroid.teamc.utils.COUNTRYABBREVIATOR
+import com.ivanmorgillo.corsoandroid.teamc.utils.getFlag
 
 class RecipeByAreaAdapter(private val onclick: (RecipeUI) -> Unit) : RecyclerView.Adapter<RecipeByAreaViewHolder>() {
     private var recipeByArea: List<RecipeByAreaUI> = emptyList()
@@ -17,7 +17,7 @@ class RecipeByAreaAdapter(private val onclick: (RecipeUI) -> Unit) : RecyclerVie
         val view = LayoutInflater.from(parent.context).inflate(
             R.layout.area_item,
             parent,
-            false /*è sempre false questo parametro*/
+            false // è sempre false questo parametro
         )
         return RecipeByAreaViewHolder(view)
     }
@@ -39,14 +39,14 @@ class RecipeByAreaAdapter(private val onclick: (RecipeUI) -> Unit) : RecyclerVie
 class RecipeByAreaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val recipeAreaTitle = itemView.findViewById<TextView>(R.id.recipe_area_title)
     private val recipeAreaRecyclerView = itemView.findViewById<RecyclerView>(R.id.recipe_area_recyclerview)
-    private val recipeImageIcon = itemView.findViewById<ImageView>(R.id.recipe_area_title_icon)
+    private val recipeImageIcon = itemView.findViewById<ImageView>(R.id.recipe_area_flag_icon)
     fun bind(item: RecipeByAreaUI, onclick: (RecipeUI) -> Unit) {
         recipeAreaTitle.text = item.nameArea
 //        Timber.e("RecipeByAreaViewHolder ${item.recipeByArea}")
         val adapter = RecipesAdapter(onclick)
         recipeAreaRecyclerView.adapter = adapter
         adapter.setRecipes(item.recipeByArea)
-        val prova = COUNTRYABBREVIATOR[item.nameArea] ?: ""
-        recipeImageIcon.load("https://www.countryflags.io/$prova/shiny/64.png")
+        val areaFlag = getFlag(item.nameArea)
+        recipeImageIcon.load("https://www.countryflags.io/$areaFlag/shiny/64.png")
     }
 }

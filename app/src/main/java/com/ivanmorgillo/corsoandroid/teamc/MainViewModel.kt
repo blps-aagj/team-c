@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.NavigateToDetail
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
+import com.ivanmorgillo.corsoandroid.teamc.home.AllRecipesByAreaResult
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipeUI
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipesRepository
 import com.ivanmorgillo.corsoandroid.teamc.utils.SingleLiveEvent
@@ -38,19 +39,23 @@ class MainViewModel(
     private fun loadContent(forced: Boolean) {
         states.postValue(MainScreenStates.Loading) // visualizziamo progressbar mentre carica lista
         viewModelScope.launch {
-            val result = repository.loadAllRecipesByArea(forced)
-            if (result.isNullOrEmpty()) {
-                states.postValue(MainScreenStates.Error)
-            } else {
-                val recipes = result.map { recipeByArea ->
-                    RecipeByAreaUI(
-                        nameArea = recipeByArea.nameArea,
-                        recipeByArea = recipeByArea.recipeByArea.map { recipe ->
-                            RecipeUI(id = recipe.idMeal, recipeName = recipe.name, recipeImageUrl = recipe.image)
-                        }
-                    )
+            when (val result = repository.loadAllRecipesByArea(forced)) {
+                is AllRecipesByAreaResult.Failure -> states.postValue(MainScreenStates.Error)
+                is AllRecipesByAreaResult.Success -> {
+                    val recipes = result.contentListRecipes.map {
+                        RecipeByAreaUI(
+                            nameArea = it.nameArea,
+                            recipeByArea = it.recipeByArea.map { recipe ->
+                                RecipeUI(
+                                    id = recipe.idMeal,
+                                    recipeName = recipe.name,
+                                    recipeImageUrl = recipe.image
+                                )
+                            }
+                        )
+                    }
+                    states.postValue(MainScreenStates.Content(recipes))
                 }
-                states.postValue(MainScreenStates.Content(recipes))
             }
         }
     }

@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.NavigateToDetail
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.ShowNoInternetMessage
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenEvent
@@ -57,12 +56,13 @@ class HomeFragment : Fragment() {
                 // Mostra Errore
                 MainScreenStates.Error -> {
                     recipes_list_progressBar.gone()
-                    Snackbar.make(recipes_list, getString(R.string.main_screen_error), Snackbar.LENGTH_LONG)
-                        .show()
+                    recipes_list_root.gone()
+                    main_screen_no_network.visible()
                 }
                 // ProgressBar visible
                 MainScreenStates.Loading -> {
                     recipes_list_progressBar.visible()
+                    Timber.d("MainscreenStates Loading")
                 }
             }.exhaustive
         })

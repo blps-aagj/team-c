@@ -32,13 +32,15 @@
                 android:textSize="32sp" />
 
             <ImageView
-                android:id="@+id/recipe_area_title_icon"
+                android:contentDescription="@string/flag"
+                android:id="@+id/recipe_area_flag_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toEndOf="@id/recipe_area_title"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                tools:src="@drawable/ic_favourite_list" />
+                tools:src="@drawable/ic_favourite_list"
+                android:padding="8dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
