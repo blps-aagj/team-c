@@ -34,26 +34,15 @@ class RecipeRepositoryImpl(private val recipeAPI: RecipeAPI) : RecipesRepository
         val loadArea = recipeAPI.loadAreas()
         return when (loadArea) {
             is LoadAreaResult.Failure -> {
-                when (loadArea.error) {
-                    NoInternet -> Failure(AllRecipesByAreaError.NoInternet)
-                    NoRecipeFound -> Failure(GenericError)
-                    ServerError -> Failure(GenericError)
-                    SlowInternet -> Failure(AllRecipesByAreaError.SlowInternet)
-                }
+                loadAreaFailure(loadArea)
             }
             is LoadAreaResult.Success -> {
                 val areas = loadArea.areas
                 val x = areas
                     .map { area ->
-                        val result = loadRecipes(area.nameArea)
-                        when (result) {
+                        when (val result = loadRecipes(area.nameArea)) {
                             is LoadRecipesResult.Failure ->
-                                when (result.error) {
-                                    NoInternet -> Failure(AllRecipesByAreaError.NoInternet)
-                                    NoRecipeFound -> Failure(GenericError)
-                                    ServerError -> Failure(GenericError)
-                                    SlowInternet -> Failure(AllRecipesByAreaError.SlowInternet)
-                                }
+                                loadRecipesFailure(result)
                             is LoadRecipesResult.Success -> {
                                 RecipeByArea(
                                     nameArea = area.nameArea,
@@ -75,13 +64,27 @@ class RecipeRepositoryImpl(private val recipeAPI: RecipeAPI) : RecipesRepository
                         it is NoInternet
                     }
                     return if (isNoInternet) {
-                        AllRecipesByAreaResult.Failure(AllRecipesByAreaError.NoInternet)
+                        Failure(AllRecipesByAreaError.NoInternet)
                     } else {
-                        AllRecipesByAreaResult.Failure(GenericError)
+                        Failure(GenericError)
                     }
                 }
             }
         }.exhaustive
+    }
+
+    private fun loadAreaFailure(loadArea: LoadAreaResult.Failure) = when (loadArea.error) {
+        NoInternet -> Failure(AllRecipesByAreaError.NoInternet)
+        NoRecipeFound -> Failure(GenericError)
+        ServerError -> Failure(GenericError)
+        SlowInternet -> Failure(AllRecipesByAreaError.SlowInternet)
+    }
+
+    private fun loadRecipesFailure(result: LoadRecipesResult.Failure) = when (result.error) {
+        NoInternet -> Failure(AllRecipesByAreaError.NoInternet)
+        NoRecipeFound -> Failure(GenericError)
+        ServerError -> Failure(GenericError)
+        SlowInternet -> Failure(AllRecipesByAreaError.SlowInternet)
     }
 
     override suspend fun loadRecipes(area: String): LoadRecipesResult {
