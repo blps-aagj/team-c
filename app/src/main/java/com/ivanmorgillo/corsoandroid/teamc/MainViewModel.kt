@@ -46,7 +46,11 @@ class MainViewModel(
                     RecipeByAreaUI(
                         nameArea = recipeByArea.nameArea,
                         recipeByArea = recipeByArea.recipeByArea.map { recipe ->
-                            RecipeUI(id = recipe.idMeal, recipeName = recipe.name, recipeImageUrl = recipe.image)
+                            RecipeUI(
+                                id = recipe.idMeal,
+                                recipeName = recipe.name,
+                                recipeImageUrl = recipe.image
+                            )
                         }
                     )
                 }
