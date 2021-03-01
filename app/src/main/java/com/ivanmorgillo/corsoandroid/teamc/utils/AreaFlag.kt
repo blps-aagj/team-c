@@ -20,6 +20,7 @@ fun getFlag(area: String): String {
         "Mexican" -> "MX"
         "Moroccan" -> "MA"
         "Polish" -> "PL"
+        "Portuguese" -> "PT"
         "Russian" -> "RU"
         "Spanish" -> "ES"
         "Thai" -> "TH"
