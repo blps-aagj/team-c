@@ -11,4 +11,5 @@
     <string name="open">Open</string>
     <string name="close">Close</string>
     <string name="flag">flag</string>
+    <string name="remove">remove</string>
 </resources>
