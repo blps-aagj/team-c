@@ -8,5 +8,5 @@ interface RecipeService {
     suspend fun loadRecipes(@Query("a") area: String): RecipeDTO
 
     @GET("list.php?a=list")
-    suspend fun loadArea(): AreaDTO
+    suspend fun loadAreas(): AreaDTO
 }

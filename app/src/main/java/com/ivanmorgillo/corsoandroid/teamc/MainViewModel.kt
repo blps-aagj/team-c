@@ -15,11 +15,10 @@ class MainViewModel(
     private val repository: RecipesRepository,
     private val tracking: Tracking
 ) : ViewModel() {
-    val states = MutableLiveData<MainScreenStates>() // potremmo passarci direttamente loading // mai null
+    val states = MutableLiveData<MainScreenStates>()
     val actions = SingleLiveEvent<MainScreenAction>()
     fun send(event: MainScreenEvent) {
         when (event) {
-            // Activity pronta
             MainScreenEvent.OnReady -> {
                 loadContent(false)
             }
@@ -37,26 +36,30 @@ class MainViewModel(
     }
 
     private fun loadContent(forced: Boolean) {
-        states.postValue(MainScreenStates.Loading) // visualizziamo progressbar mentre carica lista
+        states.postValue(MainScreenStates.Loading)
         viewModelScope.launch {
             when (val result = repository.loadAllRecipesByArea(forced)) {
                 is AllRecipesByAreaResult.Failure -> states.postValue(MainScreenStates.Error)
                 is AllRecipesByAreaResult.Success -> {
-                    val recipes = result.contentListRecipes.map {
-                        RecipeByAreaUI(
-                            nameArea = it.nameArea,
-                            recipeByArea = it.recipeByArea.map { recipe ->
-                                RecipeUI(
-                                    id = recipe.idMeal,
-                                    recipeName = recipe.name,
-                                    recipeImageUrl = recipe.image
-                                )
-                            }
-                        )
-                    }
+                    val recipes = successRecipeByArea(result)
                     states.postValue(MainScreenStates.Content(recipes))
                 }
             }
+        }
+    }
+
+    private fun successRecipeByArea(result: AllRecipesByAreaResult.Success): List<RecipeByAreaUI> {
+        return result.contentListRecipes.map {
+            RecipeByAreaUI(
+                nameArea = it.nameArea,
+                recipeByArea = it.recipeByArea.map { recipe ->
+                    RecipeUI(
+                        id = recipe.idMeal,
+                        recipeName = recipe.name,
+                        recipeImageUrl = recipe.image
+                    )
+                }
+            )
         }
     }
 }
@@ -65,17 +68,14 @@ data class RecipeByAreaUI(val nameArea: String, val recipeByArea: List<RecipeUI>
 
 sealed class MainScreenAction {
     data class NavigateToDetail(val recipe: RecipeUI) : MainScreenAction()
-    object ShowNoInternetMessage : MainScreenAction()
 }
 
 sealed class MainScreenEvent {
     data class OnRecipeClick(val recipe: RecipeUI) : MainScreenEvent()
-
     object OnReady : MainScreenEvent()
     object OnRefreshClick : MainScreenEvent()
 }
 
-// Stati che rappresentano la nostra schermata
 sealed class MainScreenStates {
     object Loading : MainScreenStates()
     object Error : MainScreenStates()
