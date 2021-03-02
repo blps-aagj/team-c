@@ -3,6 +3,7 @@ package com.ivanmorgillo.corsoandroid.teamc
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetailViewModel
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipesDetailRepositoryImpl
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipesDetailsRepository
+import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteViewModel
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.firebase.TrackingImpl
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipeRepositoryImpl
@@ -36,4 +37,5 @@ val appModule = module {
     }
     viewModel { MainViewModel(repository = get(), tracking = get()) } // Il get costruisce in base al tipo e a single
     viewModel { RecipeDetailViewModel(recipeDetailRepository = get()) }
+    viewModel { FavouriteViewModel(tracking = get()) }
 }
