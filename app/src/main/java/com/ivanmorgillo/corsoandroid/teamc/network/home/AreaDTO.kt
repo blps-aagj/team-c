@@ -6,10 +6,10 @@ import com.google.gson.annotations.SerializedName
 @Keep
 data class AreaDTO(
     @SerializedName("meals")
-    val meals: List<Meal>
+    val areas: List<Area>
 ) {
     @Keep
-    data class Meal(
+    data class Area(
         @SerializedName("strArea")
         val strArea: String
     )

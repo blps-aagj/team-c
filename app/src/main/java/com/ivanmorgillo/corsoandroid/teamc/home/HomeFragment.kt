@@ -7,11 +7,9 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.NavigateToDetail
-import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.ShowNoInternetMessage
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenEvent
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenStates
 import com.ivanmorgillo.corsoandroid.teamc.MainViewModel
@@ -72,11 +70,6 @@ class HomeFragment : Fragment() {
                     val directions = HomeFragmentDirections.actionHomeFragmentToDetailFragment(action.recipe.id)
                     Timber.d("Invio al detail RecipeId = ${action.recipe.id}")
                     findNavController().navigate(directions)
-                }
-                ShowNoInternetMessage -> {
-                    recipes_list_root.gone()
-                    main_screen_no_network.visible()
-                    Toast.makeText(view.context, "Check your internet connection", Toast.LENGTH_SHORT).show()
                 }
             }.exhaustive
         })
