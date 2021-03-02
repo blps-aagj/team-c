@@ -14,7 +14,7 @@ import com.ivanmorgillo.corsoandroid.teamc.utils.SingleLiveEvent
 // Aggiungere DB
 class FavouriteViewModel(private val tracking: Tracking) : ViewModel() {
 
-    private val favouriteStates = MutableLiveData<FavouriteScreenStates>()
+    val favouriteStates = MutableLiveData<FavouriteScreenStates>()
     private val favouriteActions = SingleLiveEvent<FavouriteScreenAction>()
 
     fun send(event: FavouriteScreenEvents) {
@@ -26,6 +26,7 @@ class FavouriteViewModel(private val tracking: Tracking) : ViewModel() {
             OnFavouriteScreenReady -> {
                 loadContent()
             }
+            is FavouriteScreenEvents.OnItemSwiped -> TODO()
         }.exhaustive
     }
 
@@ -38,23 +39,23 @@ class FavouriteViewModel(private val tracking: Tracking) : ViewModel() {
         return listOf(
             FavouriteRecipeUI(
                 idRecipe = 52772,
-                imageRecipe = "Teriyaki Chicken Casserole",
-                titleRecipe = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg"
+                titleRecipe = "Teriyaki Chicken Casserole",
+                imageRecipe = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg"
             ),
             FavouriteRecipeUI(
                 idRecipe = 52772,
-                imageRecipe = "Teriyaki Chicken Casserole",
-                titleRecipe = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg"
+                titleRecipe = "Teriyaki Chicken Casserole",
+                imageRecipe = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg"
             ),
             FavouriteRecipeUI(
                 idRecipe = 52772,
-                imageRecipe = "Teriyaki Chicken Casserole",
-                titleRecipe = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg"
+                titleRecipe = "Teriyaki Chicken Casserole",
+                imageRecipe = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg"
             ),
             FavouriteRecipeUI(
                 idRecipe = 52772,
-                imageRecipe = "Teriyaki Chicken Casserole",
-                titleRecipe = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg"
+                titleRecipe = "Teriyaki Chicken Casserole",
+                imageRecipe = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg"
             ),
         )
     }
@@ -66,6 +67,7 @@ sealed class FavouriteScreenAction {
 
 sealed class FavouriteScreenEvents {
     data class OnFavouriteRecipeClick(val favouriteRecipe: FavouriteRecipeUI) : FavouriteScreenEvents()
+    data class OnItemSwiped(val position: Int) : FavouriteScreenEvents()
     object OnFavouriteScreenReady : FavouriteScreenEvents()
 }
 

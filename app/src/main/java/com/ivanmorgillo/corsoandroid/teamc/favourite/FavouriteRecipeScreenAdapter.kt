@@ -8,7 +8,7 @@ import com.ivanmorgillo.corsoandroid.teamc.databinding.FavouriteListItemBinding
 import com.ivanmorgillo.corsoandroid.teamc.utils.ImageLoaderForCaching.Companion.imageLoader
 
 class FavouriteRecipeScreenAdapter(private val onClick: (FavouriteRecipeUI) -> Unit) : RecyclerView.Adapter<FavouriteViewHolder>() {
-    private var items: List<FavouriteRecipeUI> = emptyList()
+    var items: List<FavouriteRecipeUI> = emptyList()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -24,7 +24,7 @@ class FavouriteRecipeScreenAdapter(private val onClick: (FavouriteRecipeUI) -> U
     override fun getItemCount(): Int = items.size
 }
 
-class FavouriteViewHolder(private val binding: FavouriteListItemBinding) : RecyclerView.ViewHolder(binding.root) {
+class FavouriteViewHolder(val binding: FavouriteListItemBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: FavouriteRecipeUI, onClick: (FavouriteRecipeUI) -> Unit) {
         binding.imageFavouriteRecipe.load(item.imageRecipe, imageLoader(itemView.context))
         binding.titleFavouriteRecipe.text = item.titleRecipe
