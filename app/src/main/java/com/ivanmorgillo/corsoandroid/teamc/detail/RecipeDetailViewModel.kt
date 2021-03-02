@@ -28,7 +28,7 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
         states.postValue(RecipeDetailScreenStates.Loading)
         viewModelScope.launch {
             when (val result = recipeDetailRepository.loadDetailsRecipesRandom()) {
-                is LoadRecipesDetailResult.Failure -> Unit
+                is LoadRecipesDetailResult.Failure -> states.postValue(RecipeDetailScreenStates.Error.NoRecipeFound)
                 is LoadRecipesDetailResult.Success -> {
                     val recipesDetails: List<DetailScreenItems> = listOf(
                         DetailScreenItems.Image(
@@ -65,7 +65,7 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
         states.postValue(RecipeDetailScreenStates.Loading)
         viewModelScope.launch {
             when (val result = recipeDetailRepository.loadDetailsRecipes(id)) {
-                is LoadRecipesDetailResult.Failure -> Unit
+                is LoadRecipesDetailResult.Failure -> states.postValue(RecipeDetailScreenStates.Error.NoRecipeFound)
                 is LoadRecipesDetailResult.Success -> {
                     val recipesDetails: List<DetailScreenItems> = listOf(
                         DetailScreenItems.Image(
@@ -90,8 +90,8 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
                         )
                     )
                     states.postValue(
-                        RecipeDetailScreenStates.Error.NoRecipeFound
-                        // RecipeDetailScreenStates.Content(recipesDetails)
+//                        RecipeDetailScreenStates.Error.NoRecipeFound
+                        RecipeDetailScreenStates.Content(recipesDetails)
                     )
                 }
             }.exhaustive
