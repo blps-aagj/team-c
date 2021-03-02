@@ -30,8 +30,8 @@
 
         <argument
             android:name="recipe_id"
-            app:argType="long"
-            android:defaultValue="0L" />
+            android:defaultValue="0L"
+            app:argType="long" />
     </fragment>
 
     <fragment
@@ -39,5 +39,4 @@
         android:name="com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteFragment"
         android:label="FavouriteFragment"
         tools:layout="@layout/fragment_favourite_list" />
-
 </navigation>

@@ -40,6 +40,7 @@ class MainViewModel(
                     favouriteRepository.save(event.recipe, isFavourite)
                 }
             }
+            is MainScreenEvent.OnRandomClick -> TODO()
         }.exhaustive
     }
 
@@ -47,7 +48,7 @@ class MainViewModel(
         states.postValue(MainScreenStates.Loading)
         viewModelScope.launch {
             when (val result = repository.loadAllRecipesByArea(forced)) {
-                is AllRecipesByAreaResult.Failure -> states.postValue(MainScreenStates.Error)
+                is AllRecipesByAreaResult.Failure -> states.postValue(MainScreenStates.Error.NoNetwork)
                 is AllRecipesByAreaResult.Success -> {
                     val recipes = successRecipeByArea(result)
                     states.postValue(MainScreenStates.Content(recipes))
@@ -85,10 +86,16 @@ sealed class MainScreenEvent {
 
     object OnReady : MainScreenEvent()
     object OnRefreshClick : MainScreenEvent()
+    data class OnRandomClick(val recipe: RecipeUI) : MainScreenEvent()
 }
 
 sealed class MainScreenStates {
     object Loading : MainScreenStates()
-    object Error : MainScreenStates()
+
+    sealed class Error : MainScreenStates() {
+        object NoNetwork : Error()
+        object NoRecipeFound : Error()
+    }
+
     data class Content(val recipes: List<RecipeByAreaUI>) : MainScreenStates()
 }
