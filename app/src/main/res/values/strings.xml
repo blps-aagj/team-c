@@ -12,4 +12,5 @@
     <string name="close">Close</string>
     <string name="flag">flag</string>
     <string name="remove">remove</string>
+    <string name="favourite_recipe_image">Favourite Recipe Image</string>
 </resources>

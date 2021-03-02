@@ -6,18 +6,18 @@
     android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/favorite_book_background"
+        android:id="@+id/favorite_recipe_background"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/md_red_A700"
         android:minHeight="48dp"
-        app:layout_constraintBottom_toBottomOf="@id/favorite_book_foreground"
+        app:layout_constraintBottom_toBottomOf="@id/favorite_recipe_foreground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/favorite_book_foreground">
+        app:layout_constraintTop_toTopOf="@id/favorite_recipe_foreground">
 
         <ImageView
-            android:id="@+id/favorite_book_remove"
+            android:id="@+id/favorite_recipe_remove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -35,13 +35,13 @@
             android:layout_margin="16dp"
             android:text="@string/remove"
             android:textColor="@color/md_white_1000"
-            app:layout_constraintBottom_toBottomOf="@id/favorite_book_remove"
-            app:layout_constraintEnd_toStartOf="@id/favorite_book_remove"
-            app:layout_constraintTop_toTopOf="@id/favorite_book_remove" />
+            app:layout_constraintBottom_toBottomOf="@id/favorite_recipe_remove"
+            app:layout_constraintEnd_toStartOf="@id/favorite_recipe_remove"
+            app:layout_constraintTop_toTopOf="@id/favorite_recipe_remove" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/favorite_book_foreground"
+        android:id="@+id/favorite_recipe_foreground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/md_white_1000"
@@ -56,27 +56,20 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/favorite_books_title"
+            android:id="@+id/favourite_recipe_title"
             style="@style/TextAppearance.MaterialComponents.Subtitle1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/image_favourite_recipe"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Amici Miei" />
-
-        <TextView
-            android:id="@+id/favorite_books_author"
-            style="@style/TextAppearance.MaterialComponents.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            app:layout_constraintStart_toStartOf="@id/favorite_books_title"
-            app:layout_constraintTop_toBottomOf="@id/favorite_books_title"
-            tools:text="Conte Mascetti" />
+            android:layout_marginStart="12dp"
+            app:layout_constraintStart_toEndOf="@id/image_favourite_recipe"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:gravity="center"
+            tools:text="Amici Miei" />
+
 
         <ImageView
+            android:contentDescription="@string/favourite_recipe_image"
             android:layout_width="50dp"
             android:layout_margin="8dp"
             android:id="@+id/image_favourite_recipe"
