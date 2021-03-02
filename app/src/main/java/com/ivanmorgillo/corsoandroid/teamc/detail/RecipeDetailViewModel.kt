@@ -18,14 +18,17 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
             RecipeDetailScreenEvent.OnScreenRecipeDetailReady -> {
                 loadRecipeDetailContent(recipeId)
             }
+            RecipeDetailScreenEvent.OnScreenRecipeDetailRandomReady -> {
+                loadRecipeDetailRandomContent()
+            }
         }.exhaustive
     }
 
-    private fun loadRecipeDetailContent(id: Long) {
+    private fun loadRecipeDetailRandomContent() {
         states.postValue(RecipeDetailScreenStates.Loading)
         viewModelScope.launch {
-            when (val result = recipeDetailRepository.loadDetailsRecipes(id)) {
-                is LoadRecipesDetailResult.Failure -> Unit
+            when (val result = recipeDetailRepository.loadDetailsRecipesRandom()) {
+                is LoadRecipesDetailResult.Failure -> states.postValue(RecipeDetailScreenStates.Error.NoRecipeFound)
                 is LoadRecipesDetailResult.Success -> {
                     val recipesDetails: List<DetailScreenItems> = listOf(
                         DetailScreenItems.Image(
@@ -49,7 +52,47 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
                             result.recipesDetail.recipeVideoInstructions
                         )
                     )
-                    states.postValue(RecipeDetailScreenStates.Content(recipesDetails))
+                    states.postValue(
+                        // RecipeDetailScreenStates.Error.NoRecipeFound
+                        RecipeDetailScreenStates.Content(recipesDetails)
+                    )
+                }
+            }.exhaustive
+        }
+    }
+
+    private fun loadRecipeDetailContent(id: Long) {
+        states.postValue(RecipeDetailScreenStates.Loading)
+        viewModelScope.launch {
+            when (val result = recipeDetailRepository.loadDetailsRecipes(id)) {
+                is LoadRecipesDetailResult.Failure -> states.postValue(RecipeDetailScreenStates.Error.NoRecipeFound)
+                is LoadRecipesDetailResult.Success -> {
+                    val recipesDetails: List<DetailScreenItems> = listOf(
+                        DetailScreenItems.Image(
+                            result.recipesDetail.recipeImage,
+                        ),
+                        DetailScreenItems.TitleCategoryArea(
+                            result.recipesDetail.recipeName,
+                            result.recipesDetail.recipeCategory,
+                            result.recipesDetail.recipeArea
+                        ),
+                        DetailScreenItems.Ingredients(
+                            result.recipesDetail.recipeIngredientsAndMeasures
+                                .map { ingredient ->
+                                    IngredientUI(name = ingredient.ingredientName, measure = ingredient.ingredientQuantity)
+                                }
+                        ),
+                        DetailScreenItems.Instructions(
+                            result.recipesDetail.recipeInstructions
+                        ),
+                        DetailScreenItems.VideoInstructions(
+                            result.recipesDetail.recipeVideoInstructions
+                        )
+                    )
+                    states.postValue(
+//                        RecipeDetailScreenStates.Error.NoRecipeFound
+                        RecipeDetailScreenStates.Content(recipesDetails)
+                    )
                 }
             }.exhaustive
         }
@@ -62,10 +105,15 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
 
 sealed class RecipeDetailScreenEvent {
     object OnScreenRecipeDetailReady : RecipeDetailScreenEvent()
+    object OnScreenRecipeDetailRandomReady : RecipeDetailScreenEvent()
 }
 
 sealed class RecipeDetailScreenStates {
     object Loading : RecipeDetailScreenStates()
-    object Error : RecipeDetailScreenStates()
+    sealed class Error : RecipeDetailScreenStates() {
+        object NoNetwork : Error()
+        object NoRecipeFound : Error()
+    }
+
     data class Content(val recipeDetail: List<DetailScreenItems>) : RecipeDetailScreenStates()
 }
