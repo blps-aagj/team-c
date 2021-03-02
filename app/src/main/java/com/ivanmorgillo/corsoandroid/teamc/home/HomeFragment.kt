@@ -51,16 +51,20 @@ class HomeFragment : Fragment() {
                     recipes_list_root.visible()
                     adapter.setRecipesByArea(state.recipes)
                 }
-                // Mostra Errore
-                MainScreenStates.Error -> {
-                    recipes_list_progressBar.gone()
-                    recipes_list_root.gone()
-                    main_screen_no_network.visible()
-                }
                 // ProgressBar visible
                 MainScreenStates.Loading -> {
                     recipes_list_progressBar.visible()
                     Timber.d("MainscreenStates Loading")
+                }
+                MainScreenStates.Error.NoNetwork -> {
+                    recipes_list_progressBar.gone()
+                    recipes_list_root.gone()
+                    main_screen_no_network.visible()
+                }
+                MainScreenStates.Error.NoRecipeFound -> {
+                    recipes_list_progressBar.gone()
+                    recipes_list_root.gone()
+                    main_screen_no_recipe.visible()
                 }
             }.exhaustive
         })
