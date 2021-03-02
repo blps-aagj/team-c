@@ -32,6 +32,11 @@ class MainViewModel(
                 tracking.logEvent("Refresh requested")
                 loadContent(true)
             }
+//            is MainScreenEvent.OnRandomClick -> {
+//                tracking.logEvent("Random requested")
+//                actions.postValue(NavigateToDetail(event.recipe))
+//            }
+            is MainScreenEvent.OnRandomClick -> TODO()
         }.exhaustive
     }
 
@@ -42,8 +47,8 @@ class MainViewModel(
                 is AllRecipesByAreaResult.Failure -> states.postValue(MainScreenStates.Error.NoNetwork)
                 is AllRecipesByAreaResult.Success -> {
                     val recipes = successRecipeByArea(result)
-//                    states.postValue(MainScreenStates.Content(recipes))
-                    states.postValue(MainScreenStates.Error.NoRecipeFound)
+                    states.postValue(MainScreenStates.Content(recipes))
+//                    states.postValue(MainScreenStates.Error.NoRecipeFound)
                 }
             }
         }
@@ -75,12 +80,12 @@ sealed class MainScreenEvent {
     data class OnRecipeClick(val recipe: RecipeUI) : MainScreenEvent()
     object OnReady : MainScreenEvent()
     object OnRefreshClick : MainScreenEvent()
+    data class OnRandomClick(val recipe: RecipeUI) : MainScreenEvent()
 }
 
 sealed class MainScreenStates {
     object Loading : MainScreenStates()
 
-    //    object Error : MainScreenStates()
     sealed class Error : MainScreenStates() {
         object NoNetwork : Error()
         object NoRecipeFound : Error()

@@ -49,7 +49,9 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
                             result.recipesDetail.recipeVideoInstructions
                         )
                     )
-                    states.postValue(RecipeDetailScreenStates.Content(recipesDetails))
+                    states.postValue(
+                        RecipeDetailScreenStates.Error.NoRecipeFound
+                    )
                 }
             }.exhaustive
         }
@@ -66,6 +68,10 @@ sealed class RecipeDetailScreenEvent {
 
 sealed class RecipeDetailScreenStates {
     object Loading : RecipeDetailScreenStates()
-    object Error : RecipeDetailScreenStates()
+    sealed class Error : RecipeDetailScreenStates() {
+        object NoNetwork : Error()
+        object NoRecipeFound : Error()
+    }
+
     data class Content(val recipeDetail: List<DetailScreenItems>) : RecipeDetailScreenStates()
 }

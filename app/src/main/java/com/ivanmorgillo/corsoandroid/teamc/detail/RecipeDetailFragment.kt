@@ -10,7 +10,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.ivanmorgillo.corsoandroid.teamc.R
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
+import com.ivanmorgillo.corsoandroid.teamc.gone
+import com.ivanmorgillo.corsoandroid.teamc.visible
 import kotlinx.android.synthetic.main.fragment_detail.*
+import kotlinx.android.synthetic.main.no_recipe_found.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -39,8 +42,11 @@ class RecipeDetailFragment : Fragment() {
             Z_AXIS
         )
         val adapter = DetailRecipeScreenAdapter()
-        recipes_list_root.adapter = adapter
         val recipeId = args.recipeId
+        recipes_list_root.adapter = adapter
+        no_recipe_found_random_btn.setOnClickListener {
+            Timber.d("setOnClickListener random")
+        }
         if (recipeId == 0L) {
             // Torna nella schermata precedente
             findNavController().popBackStack()
@@ -53,11 +59,17 @@ class RecipeDetailFragment : Fragment() {
                     Timber.d("RecipeDetailScreenStates ${state.recipeDetail}")
                     adapter.items = state.recipeDetail
                 }
-                RecipeDetailScreenStates.Error -> {
-                    Timber.d("RecipeDetailScreenStates Error")
-                }
                 RecipeDetailScreenStates.Loading -> {
+                    // Aggiungiamo una Progress ? (SI)
                     Timber.d("RecipeDetailScreenStates Loading")
+                }
+                RecipeDetailScreenStates.Error.NoNetwork -> {
+                    recipes_list_root.gone()
+                    detail_screen_no_network.visible()
+                }
+                RecipeDetailScreenStates.Error.NoRecipeFound -> {
+                    recipes_list_root.gone()
+                    detail_screen_no_recipe.visible()
                 }
             }.exhaustive
         })
