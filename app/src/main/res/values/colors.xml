@@ -6,6 +6,8 @@
     <color name="title_cardview_title_category_area">#FFFFFF</color>
     <color name="white_border_hearth">#FFFFFF</color>
     <color name="color_backgroundFab">#000000</color>
+    <color name="color_iconFab">#FFFFFF</color>
+    <color name="color_background_item">#FFFFFF</color>
 
     <!--reds-->
     <color name="md_red_A700">#D50000</color>
@@ -35,6 +37,6 @@
     <color name="md_blue_grey_700">#455A64</color>
     <color name="md_blue_grey_800">#37474F</color>
     <color name="md_blue_grey_900">#263238</color>
-    <color name="color_iconFab">#FFFFFFFF</color>
+
 
 </resources>
