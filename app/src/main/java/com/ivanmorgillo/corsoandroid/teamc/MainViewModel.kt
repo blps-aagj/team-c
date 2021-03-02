@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.NavigateToDetail
+import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteRepository
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.home.AllRecipesByAreaResult
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipeUI
@@ -13,6 +14,7 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val repository: RecipesRepository,
+    private val favouriteRepository: FavouriteRepository,
     private val tracking: Tracking
 ) : ViewModel() {
     val states = MutableLiveData<MainScreenStates>()
@@ -31,6 +33,12 @@ class MainViewModel(
                 // Tracking refresh
                 tracking.logEvent("Refresh requested")
                 loadContent(true)
+            }
+            is MainScreenEvent.OnFavouriteClicked -> {
+                val isFavourite = !event.recipe.isFavourite
+                viewModelScope.launch {
+                    favouriteRepository.save(event.recipe, isFavourite)
+                }
             }
         }.exhaustive
     }
@@ -56,7 +64,8 @@ class MainViewModel(
                     RecipeUI(
                         id = recipe.idMeal,
                         recipeName = recipe.name,
-                        recipeImageUrl = recipe.image
+                        recipeImageUrl = recipe.image,
+                        isFavourite = false
                     )
                 }
             )
@@ -72,6 +81,8 @@ sealed class MainScreenAction {
 
 sealed class MainScreenEvent {
     data class OnRecipeClick(val recipe: RecipeUI) : MainScreenEvent()
+    data class OnFavouriteClicked(val recipe: RecipeUI) : MainScreenEvent()
+
     object OnReady : MainScreenEvent()
     object OnRefreshClick : MainScreenEvent()
 }
