@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.ivanmorgillo.corsoandroid.teamc.databinding.FavouriteListItemBinding
-import com.ivanmorgillo.corsoandroid.teamc.utils.ImageLoaderForCaching.Companion.imageLoader
+import com.ivanmorgillo.corsoandroid.teamc.utils.imageLoader
 
 class FavouriteRecipeScreenAdapter(private val onClick: (FavouriteRecipeUI) -> Unit) : RecyclerView.Adapter<FavouriteViewHolder>() {
     var items: List<FavouriteRecipeUI> = emptyList()
