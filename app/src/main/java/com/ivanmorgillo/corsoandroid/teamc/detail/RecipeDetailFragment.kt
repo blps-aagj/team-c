@@ -46,6 +46,7 @@ class RecipeDetailFragment : Fragment() {
         recipes_list_root.adapter = adapter
         no_recipe_found_random_btn.setOnClickListener {
             Timber.d("setOnClickListener random")
+            recipeDetailViewModel.send(RecipeDetailScreenEvent.OnScreenRecipeDetailRandomReady)
         }
         if (recipeId == 0L) {
             // Torna nella schermata precedente
@@ -56,6 +57,8 @@ class RecipeDetailFragment : Fragment() {
         recipeDetailViewModel.states.observe(viewLifecycleOwner, { state ->
             when (state) {
                 is RecipeDetailScreenStates.Content -> {
+                    recipes_list_root.visible()
+                    detail_screen_no_recipe.gone()
                     Timber.d("RecipeDetailScreenStates ${state.recipeDetail}")
                     adapter.items = state.recipeDetail
                 }

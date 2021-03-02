@@ -42,6 +42,23 @@ class RecipeDetailAPI {
             TODO()
         }
     }
+
+    suspend fun loadDetailsRecipeRandom(): LoadRecipesDetailResult {
+        try {
+            val recipeDetailList = service.loadDetailsRecipeRandom()
+//            Timber.d("recipeDetailList $recipeDetailList") // id non funziona ancora
+            val recipeDetail = recipeDetailList.meals.firstOrNull()
+            return if (recipeDetail == null) {
+                LoadRecipesDetailResult.Failure(LoadRecipesDetailError.NoRecipeDetailFound)
+            } else {
+                LoadRecipesDetailResult.Success(recipeDetail.toDomain())
+            }
+        } catch (e: IOException) {
+            TODO()
+        } catch (e: JSONException) {
+            TODO()
+        }
+    }
 }
 
 // Gestisce il caso di un qualsiasi errore
