@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.ivanmorgillo.corsoandroid.teamc.R
 import com.ivanmorgillo.corsoandroid.teamc.RecipeByAreaUI
+import com.ivanmorgillo.corsoandroid.teamc.utils.ImageLoaderForCaching.Companion.imageLoader
 import com.ivanmorgillo.corsoandroid.teamc.utils.getFlag
-import com.ivanmorgillo.corsoandroid.teamc.utils.imageLoader
 
 class RecipeByAreaAdapter(private val onclick: (RecipeUI) -> Unit) : RecyclerView.Adapter<RecipeByAreaViewHolder>() {
     private var recipeByArea: List<RecipeByAreaUI> = emptyList()

@@ -5,13 +5,17 @@ import coil.ImageLoader
 import coil.util.CoilUtils
 import okhttp3.OkHttpClient
 
-fun imageLoader(context: Context): ImageLoader {
-    return ImageLoader.Builder(context)
-        .crossfade(true)
-        .okHttpClient {
-            OkHttpClient.Builder()
-                .cache(CoilUtils.createDefaultCache(context))
+class ImageLoaderForCaching {
+    companion object {
+        fun imageLoader(context: Context): ImageLoader {
+            return ImageLoader.Builder(context)
+                .crossfade(true)
+                .okHttpClient {
+                    OkHttpClient.Builder()
+                        .cache(CoilUtils.createDefaultCache(context))
+                        .build()
+                }
                 .build()
         }
-        .build()
+    }
 }
