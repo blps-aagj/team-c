@@ -25,33 +25,26 @@ class HomeFragment : Fragment() {
     private val viewModel: MainViewModel by viewModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
-    //  Equivalente alla onCreate di un activity
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        val adapter = RecipesAdapter {
 
-//        }
-        val adapter = RecipeByAreaAdapter {
-            viewModel.send(MainScreenEvent.OnRecipeClick(it))
-        }
-        // dobbiamo mettere l'adapter in comunicazione con la recyclerview
+        val adapter = RecipeByAreaAdapter(
+            { viewModel.send(MainScreenEvent.OnRecipeClick(it)) },
+            { viewModel.send((MainScreenEvent.OnFavouriteClicked(it))) }
+        )
         recipes_list.adapter = adapter
-        // osserva in che stato si trova la schermata
         viewModel.states.observe(viewLifecycleOwner, { state ->
             when (state) {
-                // Nasconde la progressBar e fa vedere la lista delle ricette
                 is MainScreenStates.Content -> {
                     recipes_list_progressBar.gone()
                     main_screen_no_network.gone()
                     recipes_list_root.visible()
                     adapter.setRecipesByArea(state.recipes)
                 }
-                // ProgressBar visible
                 MainScreenStates.Loading -> {
                     recipes_list_progressBar.visible()
                     Timber.d("MainscreenStates Loading")

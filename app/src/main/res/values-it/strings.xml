@@ -11,4 +11,7 @@
     <string name="flag">bandiera</string>
     <string name="no_recipe_found_text">Nessuna Ricetta trovata! :(</string>
     <string name="random_recipe_text_btn">Cerca un\'altra ricetta a caso!</string>
+    <string name="remove">Rimuovi</string>
+    <string name="favourite_recipe_image">Immagine della Ricetta Preferita</string>
+
 </resources>
