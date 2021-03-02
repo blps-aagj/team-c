@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/no_recipe_found_id"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        style="@style/TextAppearance.MaterialComponents.Headline4"
+        android:text="@string/no_recipe_found_text" />
+
+    <ImageView
+        android:id="@+id/no_recipe_found_image"
+        app:layout_constraintBottom_toTopOf="@id/no_recipe_found_random_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/no_recipe_found_id"
+        android:src="@drawable/ic_no_recipe_icon"
+        android:contentDescription="@string/no_recipe_found_text" />
+
+    <TextView
+        android:id="@+id/no_recipe_found_random_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:text="@string/random_recipe_text_btn"
+        app:layout_constraintBottom_toTopOf="@id/no_recipe_found_random_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/no_recipe_found_image" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/no_recipe_found_random_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:backgroundTint="@color/color_backgroundFab"
+        app:layout_constraintTop_toBottomOf="@id/no_recipe_found_random_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_dices"
+        app:tint="@color/color_iconFab" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
