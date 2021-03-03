@@ -10,6 +10,9 @@ apply plugin: "androidx.navigation.safeargs.kotlin" // Navigation
 
 def keystorePassword = System.getenv('KEYSTOREPASSWORD')
 def aliasPassword = System.getenv('ALIASPASSWORD')
+def buildNumber = System.getenv('GITHUB_RUN_NUMBER') ?: "1"
+def _versionCode = buildNumber.toInteger()
+
 
 android
         {
@@ -20,8 +23,8 @@ android
                 applicationId "com.blps.aagj.cookbook" // nome formale dell' app sul playstore
                 minSdkVersion 23 // versione minima supportata. L' utente può installarla solo se ha API >= 23
                 targetSdkVersion 30
-                versionCode 1 // numero incrementale ed univoco e ad ogni release viene incrementato
-                versionName "1.0" // numero incrementale che identifica una nuova versione
+                versionCode _versionCode
+                versionName "1.0.1." + _versionCode
                 testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
             }
             signingConfigs {
