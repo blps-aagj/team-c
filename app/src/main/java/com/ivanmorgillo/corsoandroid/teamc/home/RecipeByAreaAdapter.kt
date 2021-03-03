@@ -35,7 +35,7 @@ class RecipeByAreaAdapter(private val onclick: (RecipeUI) -> Unit, private val o
     }
 }
 
-class RecipeByAreaViewHolder(val binding: AreaItemBinding) : RecyclerView.ViewHolder(binding.root) {
+class RecipeByAreaViewHolder(private val binding: AreaItemBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: RecipeByAreaUI, onclick: (RecipeUI) -> Unit, onFavouriteClicked: (RecipeUI) -> Unit) {
         binding.recipeAreaTitle.text = item.nameArea
         val adapter = RecipesAdapter(onclick, onFavouriteClicked)

@@ -8,102 +8,115 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: "androidx.navigation.safeargs.kotlin" // Navigation
 
-android {
-    compileSdkVersion 30 // versione api
-    buildToolsVersion "30.0.3"
+def keystorePassword = System.getenv('KEYSTOREPASSWORD')
+def aliasPassword = System.getenv('ALIASPASSWORD')
 
-    defaultConfig {
-        applicationId "com.blps.aagj.cookbook" // nome formale dell' app sul playstore
-        minSdkVersion 23 // versione minima supportata. L' utente può installarla solo se ha API >= 23
-        targetSdkVersion 30
-        versionCode 1 // numero incrementale ed univoco e ad ogni release viene incrementato
-        versionName "1.0" // numero incrementale che identifica una nuova versione
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
+android
+        {
+            compileSdkVersion 30 // versione api
+            buildToolsVersion "30.0.3"
 
-    buildTypes {
-        debug {
-            manifestPlaceholders = [crashlyticsCollectionEnabled: "false"]
+            defaultConfig {
+                applicationId "com.blps.aagj.cookbook" // nome formale dell' app sul playstore
+                minSdkVersion 23 // versione minima supportata. L' utente può installarla solo se ha API >= 23
+                targetSdkVersion 30
+                versionCode 1 // numero incrementale ed univoco e ad ogni release viene incrementato
+                versionName "1.0" // numero incrementale che identifica una nuova versione
+                testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+            }
+            signingConfigs {
+                release {
+                    storeFile file("../mycookbookkeystore.keystore")
+                    storePassword keystorePassword
+                    keyAlias "MyCookBook"
+                    keyPassword aliasPassword
+                }
+            }
+
+            buildTypes {
+                debug {
+                    manifestPlaceholders = [crashlyticsCollectionEnabled: "false"]
+                }
+                release {
+                    minifyEnabled false
+                    proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+                    manifestPlaceholders = [crashlyticsCollectionEnabled: "true"]
+                    signingConfig signingConfigs.release
+
+                }
+            }
+
+            buildFeatures {
+                viewBinding true
+            }
+
+            compileOptions {
+                sourceCompatibility JavaVersion.VERSION_1_8
+                targetCompatibility JavaVersion.VERSION_1_8
+            }
+            kotlinOptions {
+                jvmTarget = "1.8"
+            }
+
+
+            dependencies {
+                // Questa parte racchiude la collezione di librerie che useremo
+                implementation fileTree(dir: "libs", include: ["*.jar"])
+                // Ci consente di mettere il jar della libreria direttamente nella cartella libs
+                // Le librerie con implementations vengono scaricate da gradle
+                implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+                implementation 'androidx.core:core-ktx:1.3.2'
+                implementation 'androidx.appcompat:appcompat:1.2.0'
+                implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+                // Recyclerview
+                implementation "androidx.recyclerview:recyclerview:1.1.0"
+                // For control over item selection of both touch and mouse driven selection
+                implementation "androidx.recyclerview:recyclerview-selection:1.1.0"
+                // Cardview
+                implementation "androidx.cardview:cardview:1.0.0"
+                // per caricare l'immagine
+                implementation("io.coil-kt:coil:1.1.1")
+                // libreria Material.io
+                implementation 'com.google.android.material:material:1.3.0'
+                // Lifecycle
+                implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+                implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+                implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
+                // Koin AndroidX
+                implementation "org.koin:koin-androidx-scope:$koin_version"
+                implementation "org.koin:koin-androidx-viewmodel:$koin_version"
+                implementation "org.koin:koin-androidx-fragment:$koin_version"
+                // Kotlin coroutines
+                implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2'
+                // Retrofit per gestire il Json
+                implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+                // Gson: Parsing per Json
+                implementation 'com.google.code.gson:gson:2.8.6'
+                implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+                // Vediamo il log nelle chiamate di rete
+                implementation 'com.squareup.okhttp3:logging-interceptor:3.12.0'
+                // Timber
+                implementation 'com.jakewharton.timber:timber:4.7.1'
+                implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+                // AppCompat
+                def appcompat_version = "1.2.0"
+                implementation "androidx.appcompat:appcompat:$appcompat_version"
+                //firebase
+                // Import the Firebase BoM
+                implementation platform('com.google.firebase:firebase-bom:26.4.0')
+                implementation 'com.google.firebase:firebase-analytics-ktx'
+                implementation 'com.google.firebase:firebase-crashlytics-ktx'
+                implementation 'com.google.firebase:firebase-perf-ktx'
+                implementation 'com.google.firebase:firebase-config-ktx'
+                // Navigation Components
+                implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+                implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+                // Testing dependencies
+                testImplementation 'junit:junit:4.13.1'
+                androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+                androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+                // Soffritto
+                implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:10.0.5'
+
+            }
         }
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            manifestPlaceholders = [crashlyticsCollectionEnabled: "true"]
-
-        }
-    }
-
-    buildFeatures {
-        viewBinding true
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-
-
-    dependencies {
-        // Questa parte racchiude la collezione di librerie che useremo
-        implementation fileTree(dir: "libs", include: ["*.jar"])
-        // Ci consente di mettere il jar della libreria direttamente nella cartella libs
-        // Le librerie con implementations vengono scaricate da gradle
-        implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-        implementation 'androidx.core:core-ktx:1.3.2'
-        implementation 'androidx.appcompat:appcompat:1.2.0'
-        implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-        // Recyclerview
-        implementation "androidx.recyclerview:recyclerview:1.1.0"
-        // For control over item selection of both touch and mouse driven selection
-        implementation "androidx.recyclerview:recyclerview-selection:1.1.0"
-        // Cardview
-        implementation "androidx.cardview:cardview:1.0.0"
-        // per caricare l'immagine
-        implementation("io.coil-kt:coil:1.1.1")
-        // libreria Material.io
-        implementation 'com.google.android.material:material:1.3.0'
-        // Lifecycle
-        implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-        implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
-        implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
-        // Koin AndroidX
-        implementation "org.koin:koin-androidx-scope:$koin_version"
-        implementation "org.koin:koin-androidx-viewmodel:$koin_version"
-        implementation "org.koin:koin-androidx-fragment:$koin_version"
-        // Kotlin coroutines
-        implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.2'
-        // Retrofit per gestire il Json
-        implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-        // Gson: Parsing per Json
-        implementation 'com.google.code.gson:gson:2.8.6'
-        implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
-        // Vediamo il log nelle chiamate di rete
-        implementation 'com.squareup.okhttp3:logging-interceptor:3.12.0'
-        // Timber
-        implementation 'com.jakewharton.timber:timber:4.7.1'
-        implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-        // AppCompat
-        def appcompat_version = "1.2.0"
-        implementation "androidx.appcompat:appcompat:$appcompat_version"
-        //firebase
-        // Import the Firebase BoM
-        implementation platform('com.google.firebase:firebase-bom:26.4.0')
-        implementation 'com.google.firebase:firebase-analytics-ktx'
-        implementation 'com.google.firebase:firebase-crashlytics-ktx'
-        implementation 'com.google.firebase:firebase-perf-ktx'
-        implementation 'com.google.firebase:firebase-config-ktx'
-        // Navigation Components
-        implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-        implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
-        // Testing dependencies
-        testImplementation 'junit:junit:4.13.1'
-        androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-        androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-        // Soffritto
-        implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:10.0.5'
-
-    }
-}
