@@ -26,7 +26,7 @@ android
             }
             signingConfigs {
                 release {
-                    storeFile file("mycookbookkeystore.keystore")
+                    storeFile file("../mycookbookkeystore.keystore")
                     storePassword keystorePassword
                     keyAlias "MyCookBook"
                     keyPassword aliasPassword
