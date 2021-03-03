@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.ivanmorgillo.corsoandroid.teamc.R
 import com.ivanmorgillo.corsoandroid.teamc.databinding.RecipeItemBinding
 
 class RecipesAdapter(private val onclick: (RecipeUI) -> Unit, private val onFavouriteClicked: (RecipeUI) -> Unit) :
@@ -45,8 +46,17 @@ class RecipeViewHolder(private val binding: RecipeItemBinding) : RecyclerView.Vi
         binding.recipeRoot.setOnClickListener { onclick(item) }
         binding.favouriteListCheckboxLayout.icon.setOnClickListener {
             onFavouriteClicked(item)
+            if (item.isFavourite) {
+                binding.favouriteListCheckboxLayout.icon.setImageResource(R.drawable.ic_favourite_border_list)
+            } else {
+                binding.favouriteListCheckboxLayout.icon.setImageResource(R.drawable.ic_favourite_list)
+            }
         }
-        binding.favouriteListCheckboxLayout.icon.isChecked = item.isFavourite
+        if (item.isFavourite) {
+            binding.favouriteListCheckboxLayout.icon.setImageResource(R.drawable.ic_favourite_list)
+        } else {
+            binding.favouriteListCheckboxLayout.icon.setImageResource(R.drawable.ic_favourite_border_list)
+        }
     }
 }
 

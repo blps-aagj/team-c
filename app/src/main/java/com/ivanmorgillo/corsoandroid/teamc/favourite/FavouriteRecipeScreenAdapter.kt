@@ -8,7 +8,7 @@ import com.ivanmorgillo.corsoandroid.teamc.databinding.FavouriteListItemBinding
 import com.ivanmorgillo.corsoandroid.teamc.utils.imageLoader
 
 class FavouriteRecipeScreenAdapter(private val onClick: (FavouriteRecipeUI) -> Unit) : RecyclerView.Adapter<FavouriteViewHolder>() {
-    var items: List<FavouriteRecipeUI> = emptyList()
+    var items: MutableList<FavouriteRecipeUI> = mutableListOf()
         set(value) {
             field = value
             notifyDataSetChanged()

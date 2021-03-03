@@ -39,7 +39,11 @@ class FavouriteFragment : Fragment() {
         val itemTouchHelperCallback: ItemTouchHelper.SimpleCallback = RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, object :
             RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int, position: Int) {
-                lifecycleScope.launch { viewModel.send(FavouriteScreenEvents.OnItemSwiped(position)) }
+                lifecycleScope.launch {
+                    viewModel.send(FavouriteScreenEvents.OnItemSwiped(position))
+                    adapter.items.removeAt(position)
+                    adapter.notifyDataSetChanged()
+                }
             }
         })
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(favourite_recycler_view)
@@ -47,7 +51,7 @@ class FavouriteFragment : Fragment() {
         viewModel.favouriteStates.observe(viewLifecycleOwner, {
             when (it) {
                 is FavouriteScreenStates.FavouriteScreenContent -> {
-                    adapter.items = it.favouriteUiList
+                    adapter.items = it.favouriteUiList.toMutableList()
                 }
                 FavouriteScreenStates.FavouriteScreenError -> TODO()
                 FavouriteScreenStates.FavouriteScreenLoading -> TODO()

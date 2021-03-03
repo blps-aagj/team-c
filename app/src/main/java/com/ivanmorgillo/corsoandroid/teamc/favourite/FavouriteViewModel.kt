@@ -34,7 +34,9 @@ class FavouriteViewModel(
                     loadContent()
                 }
             }
-            is FavouriteScreenEvents.OnItemSwiped -> TODO()
+            is FavouriteScreenEvents.OnItemSwiped -> {
+                repository.delete(event.position)
+            }
         }.exhaustive
     }
 
@@ -54,6 +56,7 @@ class FavouriteViewModel(
 interface FavouriteRepository {
     suspend fun loadFavourites(): List<RecipeUI>
     suspend fun save(recipe: RecipeUI, isFavourite: Boolean)
+    fun delete(position: Int)
 }
 
 class FavouriteRepositoryImpl : FavouriteRepository {
@@ -69,8 +72,11 @@ class FavouriteRepositoryImpl : FavouriteRepository {
             favouriteListID.remove(recipe)
         }
     }
-}
 
+    override fun delete(position: Int) {
+        favouriteListID.removeAt(position)
+    }
+}
 
 sealed class FavouriteScreenAction {
     data class NavigateToDetailFromFavourite(val recipe: FavouriteRecipeUI) : FavouriteScreenAction()

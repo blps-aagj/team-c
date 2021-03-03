@@ -40,7 +40,7 @@
 
         <include
             android:id="@+id/favourite_list_checkbox_layout"
-            layout="@layout/favourite_checkbox"
+            layout="@layout/favourite_list_foreground"
             android:visibility="visible" />
 
 
