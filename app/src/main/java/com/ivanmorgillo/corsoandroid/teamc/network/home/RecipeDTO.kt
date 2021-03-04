@@ -2,6 +2,7 @@ package com.ivanmorgillo.corsoandroid.teamc.network.home
 
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
+import com.ivanmorgillo.corsoandroid.teamc.domain.Recipe
 
 @Keep
 data class RecipeDTO(
@@ -17,4 +18,17 @@ data class RecipeDTO(
         @SerializedName("strMealThumb")
         val strMealThumb: String
     )
+}
+
+fun RecipeDTO.Meal.toDomain(): Recipe? {
+    val id = idMeal.toLongOrNull()
+    return if (id != null) {
+        Recipe(
+            name = strMeal,
+            image = strMealThumb,
+            idMeal = id
+        )
+    } else {
+        null
+    }
 }
