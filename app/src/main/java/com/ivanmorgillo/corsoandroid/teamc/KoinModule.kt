@@ -10,10 +10,15 @@ import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.firebase.TrackingImpl
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipeRepositoryImpl
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipesRepository
-import com.ivanmorgillo.corsoandroid.teamc.network.detail.RecipeDetailAPI
-import com.ivanmorgillo.corsoandroid.teamc.network.home.RecipeAPI
+import com.ivanmorgillo.corsoandroid.teamc.network.detail.RecipeDetailAPIImpl
+import com.ivanmorgillo.corsoandroid.teamc.network.home.RecipeAPIImpl
+import com.ivanmorgillo.corsoandroid.teamc.network.home.RecipeService
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 /**
  * App module
@@ -26,16 +31,29 @@ val appModule = module {
      * il tipo di ogg che voglio creare, poi viene specificato nelle graffe il "come" con la lambda
      */
     single<RecipesRepository> {
-        RecipeRepositoryImpl(recipeAPI = get())
+        RecipeRepositoryImpl(recipeAPI = RecipeAPIImpl(get()))
     }
     single { // spiego a Koin come creare un RecipeAPI, ho soppresso il tipo per ridondanza
-        RecipeAPI()
+        RecipeAPIImpl(service = get())
     }
     single<Tracking> {
         TrackingImpl()
     }
+    single<RecipeService> {
+        val logging = HttpLoggingInterceptor()
+        logging.level = HttpLoggingInterceptor.Level.BODY
+        val client = OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .build()
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://www.themealdb.com/api/json/v1/1/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
+        retrofit.create(RecipeService::class.java)
+    }
     single<RecipesDetailsRepository> {
-        RecipesDetailRepositoryImpl(recipeDetailAPI = RecipeDetailAPI())
+        RecipesDetailRepositoryImpl(recipeDetailAPI = RecipeDetailAPIImpl(get()))
     }
     single<FavouriteRepository> {
         FavouriteRepositoryImpl()

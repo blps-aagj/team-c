@@ -1,33 +1,20 @@
 package com.ivanmorgillo.corsoandroid.teamc.network.detail
 
 import com.ivanmorgillo.corsoandroid.teamc.domain.RecipeDetail
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
+import com.ivanmorgillo.corsoandroid.teamc.network.home.RecipeService
 import org.json.JSONException
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
 import java.io.IOException
 
-class RecipeDetailAPI {
+interface RecipeDetailAPI {
+    suspend fun loadDetailsRecipe(id: Long): LoadRecipesDetailResult
 
-    private val service: RecipeDetailService
+    suspend fun loadDetailsRecipeRandom(): LoadRecipesDetailResult
+}
 
-    init {
-        val logging = HttpLoggingInterceptor()
-        logging.level = HttpLoggingInterceptor.Level.BODY
-        val client = OkHttpClient.Builder()
-            .addInterceptor(logging)
-            .build()
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://www.themealdb.com/api/json/v1/1/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(client)
-            .build()
-        service = retrofit.create(RecipeDetailService::class.java)
-    }
+class RecipeDetailAPIImpl(private val service: RecipeService) : RecipeDetailAPI {
 
-    suspend fun loadDetailsRecipe(id: Long): LoadRecipesDetailResult {
+    override suspend fun loadDetailsRecipe(id: Long): LoadRecipesDetailResult {
         return try {
             val recipeDetailList = service.loadDetailsRecipe(id.toString())
             //            Timber.d("recipeDetailList $recipeDetailList") // id non funziona ancora
@@ -45,7 +32,7 @@ class RecipeDetailAPI {
         }
     }
 
-    suspend fun loadDetailsRecipeRandom(): LoadRecipesDetailResult {
+    override suspend fun loadDetailsRecipeRandom(): LoadRecipesDetailResult {
         try {
             val recipeDetailList = service.loadDetailsRecipeRandom()
 //            Timber.d("recipeDetailList $recipeDetailList") // id non funziona ancora

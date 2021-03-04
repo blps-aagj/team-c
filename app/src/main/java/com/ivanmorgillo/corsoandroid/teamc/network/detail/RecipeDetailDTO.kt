@@ -2,6 +2,8 @@ package com.ivanmorgillo.corsoandroid.teamc.network.detail
 
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
+import com.ivanmorgillo.corsoandroid.teamc.domain.Ingredient
+import com.ivanmorgillo.corsoandroid.teamc.domain.RecipeDetail
 
 @Keep
 data class RecipeDetailDTO(
@@ -114,3 +116,42 @@ data class RecipeDetailDTO(
         val strYoutube: String?
     )
 }
+
+fun RecipeDetailDTO.Meal.toDomain(): RecipeDetail {
+
+    // da migliorare la soluzione
+    val ingredientList: List<Ingredient> = getIngredients()
+
+    return RecipeDetail(
+        recipeName = strMeal,
+        recipeCategory = strCategory,
+        recipeArea = strArea,
+        recipeInstructions = loadRecipeInstruction(strInstructions),
+        recipeImage = strMealThumb,
+        recipeIngredientsAndMeasures = ingredientList,
+        recipeVideoInstructions = getVideoID(strYoutube)
+    )
+}
+
+private fun RecipeDetailDTO.Meal.getIngredients() = listOfNotNull(
+    validateIngredientsAndMeasures(strIngredient1, strMeasure1),
+    validateIngredientsAndMeasures(strIngredient2, strMeasure2),
+    validateIngredientsAndMeasures(strIngredient3, strMeasure3),
+    validateIngredientsAndMeasures(strIngredient4, strMeasure4),
+    validateIngredientsAndMeasures(strIngredient5, strMeasure5),
+    validateIngredientsAndMeasures(strIngredient6, strMeasure6),
+    validateIngredientsAndMeasures(strIngredient7, strMeasure7),
+    validateIngredientsAndMeasures(strIngredient8, strMeasure8),
+    validateIngredientsAndMeasures(strIngredient9, strMeasure9),
+    validateIngredientsAndMeasures(strIngredient10, strMeasure10),
+    validateIngredientsAndMeasures(strIngredient11, strMeasure11),
+    validateIngredientsAndMeasures(strIngredient12, strMeasure12),
+    validateIngredientsAndMeasures(strIngredient13, strMeasure13),
+    validateIngredientsAndMeasures(strIngredient14, strMeasure14),
+    validateIngredientsAndMeasures(strIngredient15, strMeasure15),
+    validateIngredientsAndMeasures(strIngredient16, strMeasure16),
+    validateIngredientsAndMeasures(strIngredient17, strMeasure17),
+    validateIngredientsAndMeasures(strIngredient18, strMeasure18),
+    validateIngredientsAndMeasures(strIngredient19, strMeasure19),
+    validateIngredientsAndMeasures(strIngredient20, strMeasure20),
+)
