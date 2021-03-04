@@ -40,9 +40,7 @@ class FavouriteFragment : Fragment(R.layout.fragment_favourite_list) {
 
         viewModel.favouriteStates.observe(viewLifecycleOwner, {
             when (it) {
-                is FavouriteScreenStates.FavouriteScreenContent -> {
-                    adapter.items = it.favouriteUiList
-                }
+                is FavouriteScreenStates.FavouriteScreenContent -> adapter.items = it.favouriteUiList
                 FavouriteScreenStates.FavouriteScreenError -> TODO()
                 FavouriteScreenStates.FavouriteScreenLoading -> TODO()
             }.exhaustive

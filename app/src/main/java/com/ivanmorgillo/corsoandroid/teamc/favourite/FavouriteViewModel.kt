@@ -34,7 +34,7 @@ class FavouriteViewModel(
                     loadContent()
                 }
             }
-            is FavouriteScreenEvents.OnItemSwiped -> TODO()
+            is FavouriteScreenEvents.OnItemSwiped -> tracking.logEvent("favourite_recipe_swiped")
         }.exhaustive
     }
 
@@ -70,7 +70,6 @@ class FavouriteRepositoryImpl : FavouriteRepository {
         }
     }
 }
-
 
 sealed class FavouriteScreenAction {
     data class NavigateToDetailFromFavourite(val recipe: FavouriteRecipeUI) : FavouriteScreenAction()

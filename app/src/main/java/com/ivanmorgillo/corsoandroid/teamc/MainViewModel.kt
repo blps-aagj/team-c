@@ -21,26 +21,25 @@ class MainViewModel(
     val actions = SingleLiveEvent<MainScreenAction>()
     fun send(event: MainScreenEvent) {
         when (event) {
-            MainScreenEvent.OnReady -> {
-                loadContent(false)
-            }
+            MainScreenEvent.OnReady -> loadContent(false)
             is MainScreenEvent.OnRecipeClick -> {
                 // Tracking click on recipe
-                tracking.logEvent("recipe_clicked")
+                tracking.logEvent("home_recipe_clicked")
                 actions.postValue(NavigateToDetail(event.recipe))
             }
             MainScreenEvent.OnRefreshClick -> {
                 // Tracking refresh
-                tracking.logEvent("Refresh requested")
+                tracking.logEvent("home_refresh_clicked")
                 loadContent(true)
             }
             is MainScreenEvent.OnFavouriteClicked -> {
+                tracking.logEvent("home_favorite_clicked")
                 val isFavourite = !event.recipe.isFavourite
                 viewModelScope.launch {
                     favouriteRepository.save(event.recipe, isFavourite)
                 }
             }
-            is MainScreenEvent.OnRandomClick -> TODO()
+            is MainScreenEvent.OnRandomClick -> tracking.logEvent("home_random_clicked")
         }.exhaustive
     }
 
