@@ -35,8 +35,6 @@ class FavouriteFragment : Fragment(R.layout.fragment_favourite_list) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int, position: Int) {
                 lifecycleScope.launch {
                     viewModel.send(FavouriteScreenEvents.OnItemSwiped(position))
-                    adapter.items.removeAt(position)
-                    adapter.notifyDataSetChanged()
                 }
             }
         })
