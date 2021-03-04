@@ -21,12 +21,10 @@ class MainViewModel(
     val actions = SingleLiveEvent<MainScreenAction>()
     fun send(event: MainScreenEvent) {
         when (event) {
-            MainScreenEvent.OnReady -> {
-                loadContent(false)
-            }
+            MainScreenEvent.OnReady -> loadContent(false)
             is MainScreenEvent.OnRecipeClick -> {
                 // Tracking click on recipe
-                tracking.logEvent("recipe_clicked")
+                tracking.logEvent("home_recipe_clicked")
                 actions.postValue(NavigateToDetail(event.recipe))
             }
             MainScreenEvent.OnRefreshClick -> {

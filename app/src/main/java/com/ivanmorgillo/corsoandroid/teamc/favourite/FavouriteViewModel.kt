@@ -71,7 +71,6 @@ class FavouriteRepositoryImpl : FavouriteRepository {
     }
 }
 
-
 sealed class FavouriteScreenAction {
     data class NavigateToDetailFromFavourite(val recipe: FavouriteRecipeUI) : FavouriteScreenAction()
 }
