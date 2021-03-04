@@ -39,7 +39,7 @@ class MainViewModel(
                     favouriteRepository.save(event.recipe, isFavourite)
                 }
             }
-            is MainScreenEvent.OnRandomClick -> TODO()
+            is MainScreenEvent.OnRandomClick -> tracking.logEvent("home_random_clicked")
         }.exhaustive
     }
 
