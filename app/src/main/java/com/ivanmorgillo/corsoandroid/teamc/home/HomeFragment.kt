@@ -30,7 +30,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private val binding by viewBinding(FragmentHomeBinding::bind)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        setHasOptionsMenu(true)
         val adapter = RecipeByAreaAdapter(
             { viewModel.send(OnRecipeClick(it)) },
             { viewModel.send((OnFavouriteClicked(it))) }
@@ -78,6 +78,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.refresh, menu)
+        Timber.d("onCreateOptionsMenu ${R.menu.refresh}, $menu")
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
