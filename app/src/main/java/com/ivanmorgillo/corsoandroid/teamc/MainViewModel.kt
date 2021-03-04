@@ -33,6 +33,7 @@ class MainViewModel(
                 loadContent(true)
             }
             is MainScreenEvent.OnFavouriteClicked -> {
+                tracking.logEvent("home_favorite_clicked")
                 val isFavourite = !event.recipe.isFavourite
                 viewModelScope.launch {
                     favouriteRepository.save(event.recipe, isFavourite)
