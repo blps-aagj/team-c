@@ -36,8 +36,8 @@ class FavouriteViewModel(
             }
             is FavouriteScreenEvents.OnItemSwiped -> {
                 repository.delete(event.position)
+                tracking.logEvent("favourite_recipe_swiped")
             }
-            is FavouriteScreenEvents.OnItemSwiped -> tracking.logEvent("favourite_recipe_swiped")
         }.exhaustive
     }
 
