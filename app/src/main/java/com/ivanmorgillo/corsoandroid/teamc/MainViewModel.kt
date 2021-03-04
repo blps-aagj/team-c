@@ -29,7 +29,7 @@ class MainViewModel(
             }
             MainScreenEvent.OnRefreshClick -> {
                 // Tracking refresh
-                tracking.logEvent("Refresh requested")
+                tracking.logEvent("home_refresh_clicked")
                 loadContent(true)
             }
             is MainScreenEvent.OnFavouriteClicked -> {
