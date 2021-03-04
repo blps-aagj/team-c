@@ -13,6 +13,18 @@
         android:layout_height="wrap_content">
 
         <ImageView
+            android:id="@+id/placeholder_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintHeight_max="400dp"
+            app:layout_constraintWidth_max="400dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription"
+            tools:src="@drawable/ic_no_recipe_icon" />
+
+        <ImageView
             android:id="@+id/recipe_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
