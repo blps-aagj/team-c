@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.ivanmorgillo.corsoandroid.teamc.R
 import com.ivanmorgillo.corsoandroid.teamc.databinding.RecipeItemBinding
 import com.ivanmorgillo.corsoandroid.teamc.utils.imageLoader
 
@@ -39,7 +40,10 @@ class RecipeViewHolder(private val binding: RecipeItemBinding) : RecyclerView.Vi
 
     fun bind(item: RecipeUI, onclick: (RecipeUI) -> Unit, onFavouriteClicked: (RecipeUI) -> Unit) {
         binding.recipeTitle.text = item.recipeName
-        binding.recipeImage.load(item.recipeImageUrl, imageLoader(binding.root.context))
+        binding.recipeImage.load(item.recipeImageUrl, imageLoader(binding.root.context)) {
+            placeholder(R.drawable.loading)
+            error(R.drawable.ic_broken_image)
+        }
         binding.recipeImage.contentDescription = item.recipeName
         binding.recipeRoot.setOnClickListener { onclick(item) }
         binding.favouriteListCheckboxLayout.icon.setOnClickListener {
