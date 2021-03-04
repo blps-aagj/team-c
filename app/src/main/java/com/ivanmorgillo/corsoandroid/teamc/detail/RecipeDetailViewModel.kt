@@ -3,8 +3,10 @@ package com.ivanmorgillo.corsoandroid.teamc.detail
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetailScreenStates.Error.NoRecipeFound
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
-import com.ivanmorgillo.corsoandroid.teamc.network.detail.LoadRecipesDetailResult
+import com.ivanmorgillo.corsoandroid.teamc.network.detail.LoadRecipesDetailResult.Failure
+import com.ivanmorgillo.corsoandroid.teamc.network.detail.LoadRecipesDetailResult.Success
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -15,12 +17,8 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
     fun send(event: RecipeDetailScreenEvent) {
         Timber.d("send ViewModelDetail")
         when (event) {
-            RecipeDetailScreenEvent.OnScreenRecipeDetailReady -> {
-                loadRecipeDetailContent(recipeId)
-            }
-            RecipeDetailScreenEvent.OnScreenRecipeDetailRandomReady -> {
-                loadRecipeDetailRandomContent()
-            }
+            RecipeDetailScreenEvent.OnScreenRecipeDetailReady -> loadRecipeDetailContent(recipeId)
+            RecipeDetailScreenEvent.OnScreenRecipeDetailRandomReady -> loadRecipeDetailRandomContent()
         }.exhaustive
     }
 
@@ -28,35 +26,8 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
         states.postValue(RecipeDetailScreenStates.Loading)
         viewModelScope.launch {
             when (val result = recipeDetailRepository.loadDetailsRecipesRandom()) {
-                is LoadRecipesDetailResult.Failure -> states.postValue(RecipeDetailScreenStates.Error.NoRecipeFound)
-                is LoadRecipesDetailResult.Success -> {
-                    val recipesDetails: List<DetailScreenItems> = listOf(
-                        DetailScreenItems.Image(
-                            result.recipesDetail.recipeImage,
-                        ),
-                        DetailScreenItems.TitleCategoryArea(
-                            result.recipesDetail.recipeName,
-                            result.recipesDetail.recipeCategory,
-                            result.recipesDetail.recipeArea
-                        ),
-                        DetailScreenItems.Ingredients(
-                            result.recipesDetail.recipeIngredientsAndMeasures
-                                .map { ingredient ->
-                                    IngredientUI(name = ingredient.ingredientName, measure = ingredient.ingredientQuantity)
-                                }
-                        ),
-                        DetailScreenItems.Instructions(
-                            result.recipesDetail.recipeInstructions
-                        ),
-                        DetailScreenItems.VideoInstructions(
-                            result.recipesDetail.recipeVideoInstructions
-                        )
-                    )
-                    states.postValue(
-                        // RecipeDetailScreenStates.Error.NoRecipeFound
-                        RecipeDetailScreenStates.Content(recipesDetails)
-                    )
-                }
+                is Failure -> states.postValue(NoRecipeFound)
+                is Success -> recipesDetailsResultSuccess(result)
             }.exhaustive
         }
     }
@@ -65,37 +36,38 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
         states.postValue(RecipeDetailScreenStates.Loading)
         viewModelScope.launch {
             when (val result = recipeDetailRepository.loadDetailsRecipes(id)) {
-                is LoadRecipesDetailResult.Failure -> states.postValue(RecipeDetailScreenStates.Error.NoRecipeFound)
-                is LoadRecipesDetailResult.Success -> {
-                    val recipesDetails: List<DetailScreenItems> = listOf(
-                        DetailScreenItems.Image(
-                            result.recipesDetail.recipeImage,
-                        ),
-                        DetailScreenItems.TitleCategoryArea(
-                            result.recipesDetail.recipeName,
-                            result.recipesDetail.recipeCategory,
-                            result.recipesDetail.recipeArea
-                        ),
-                        DetailScreenItems.Ingredients(
-                            result.recipesDetail.recipeIngredientsAndMeasures
-                                .map { ingredient ->
-                                    IngredientUI(name = ingredient.ingredientName, measure = ingredient.ingredientQuantity)
-                                }
-                        ),
-                        DetailScreenItems.Instructions(
-                            result.recipesDetail.recipeInstructions
-                        ),
-                        DetailScreenItems.VideoInstructions(
-                            result.recipesDetail.recipeVideoInstructions
-                        )
-                    )
-                    states.postValue(
-//                        RecipeDetailScreenStates.Error.NoRecipeFound
-                        RecipeDetailScreenStates.Content(recipesDetails)
-                    )
-                }
+                is Failure -> states.postValue(NoRecipeFound)
+                is Success -> recipesDetailsResultSuccess(result)
             }.exhaustive
         }
+    }
+
+    private fun recipesDetailsResultSuccess(result: Success) {
+        val recipesDetails: List<DetailScreenItems> = listOf(
+            DetailScreenItems.Image(
+                result.recipesDetail.recipeImage,
+            ),
+            DetailScreenItems.TitleCategoryArea(
+                result.recipesDetail.recipeName,
+                result.recipesDetail.recipeCategory,
+                result.recipesDetail.recipeArea
+            ),
+            DetailScreenItems.Ingredients(
+                result.recipesDetail.recipeIngredientsAndMeasures
+                    .map { ingredient ->
+                        IngredientUI(name = ingredient.ingredientName, measure = ingredient.ingredientQuantity)
+                    }
+            ),
+            DetailScreenItems.Instructions(
+                result.recipesDetail.recipeInstructions
+            ),
+            DetailScreenItems.VideoInstructions(
+                result.recipesDetail.recipeVideoInstructions
+            )
+        )
+        states.postValue(
+            RecipeDetailScreenStates.Content(recipesDetails)
+        )
     }
 
     fun setRecipeId(recipeId: Long) {

@@ -9,33 +9,22 @@ import com.ivanmorgillo.corsoandroid.teamc.home.AllRecipesByAreaResult.Failure
 import com.ivanmorgillo.corsoandroid.teamc.network.home.LoadRecipesError.GenericError
 import com.ivanmorgillo.corsoandroid.teamc.network.home.LoadRecipesError.NoInternet
 import com.ivanmorgillo.corsoandroid.teamc.network.home.LoadRecipesError.NoRecipeFound
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
 import java.io.IOException
 import java.net.SocketTimeoutException
 
-class RecipeAPI {
-    private val service: RecipeService
-
-    init {
-        val logging = HttpLoggingInterceptor()
-        logging.level = HttpLoggingInterceptor.Level.BODY
-        val client = OkHttpClient.Builder()
-            .addInterceptor(logging)
-            .build()
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://www.themealdb.com/api/json/v1/1/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(client)
-            .build()
-        service = retrofit.create(RecipeService::class.java)
-    }
+interface RecipeAPI {
+    @Suppress("TooGenericExceptionCaught")
+    suspend fun loadRecipes(area: String): LoadRecipesResult
 
     @Suppress("TooGenericExceptionCaught")
-    suspend fun loadRecipes(area: String): LoadRecipesResult {
+    suspend fun loadAllRecipesByArea(): AllRecipesByAreaResult
+}
+
+class RecipeAPIImpl(private val service: RecipeService) : RecipeAPI {
+
+    @Suppress("TooGenericExceptionCaught")
+    override suspend fun loadRecipes(area: String): LoadRecipesResult {
         try {
             val recipeList = service.loadRecipes(area)
             val recipes = recipeList.meals.mapNotNull {
@@ -57,21 +46,8 @@ class RecipeAPI {
         }
     }
 
-    private fun RecipeDTO.Meal.toDomain(): Recipe? {
-        val id = idMeal.toLongOrNull()
-        return if (id != null) {
-            Recipe(
-                name = strMeal,
-                image = strMealThumb,
-                idMeal = id
-            )
-        } else {
-            null
-        }
-    }
-
     @Suppress("TooGenericExceptionCaught")
-    suspend fun loadAllRecipesByArea(): AllRecipesByAreaResult {
+    override suspend fun loadAllRecipesByArea(): AllRecipesByAreaResult {
         return try {
             val areasList = service.loadAreas().areas
             val recipesByArea = areasList.map { areaDTO ->
