@@ -34,7 +34,7 @@ class FavouriteViewModel(
                     loadContent()
                 }
             }
-            is FavouriteScreenEvents.OnItemSwiped -> TODO()
+            is FavouriteScreenEvents.OnItemSwiped -> tracking.logEvent("favourite_recipe_swiped")
         }.exhaustive
     }
 
