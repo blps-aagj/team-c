@@ -3,7 +3,6 @@ package com.ivanmorgillo.corsoandroid.teamc.favourite
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -12,7 +11,6 @@ import com.ivanmorgillo.corsoandroid.teamc.R
 import com.ivanmorgillo.corsoandroid.teamc.databinding.FragmentFavouriteListBinding
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.utils.bindings.viewBinding
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavouriteFragment : Fragment(R.layout.fragment_favourite_list) {
@@ -33,9 +31,7 @@ class FavouriteFragment : Fragment(R.layout.fragment_favourite_list) {
         val itemTouchHelperCallback: ItemTouchHelper.SimpleCallback = RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, object :
             RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int, position: Int) {
-                lifecycleScope.launch {
-                    viewModel.send(FavouriteScreenEvents.OnItemSwiped(position))
-                }
+                viewModel.send(FavouriteScreenEvents.OnItemSwiped(position))
             }
         })
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.favouriteRecyclerView)

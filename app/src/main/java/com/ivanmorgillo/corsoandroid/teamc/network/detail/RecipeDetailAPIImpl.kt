@@ -1,7 +1,7 @@
 package com.ivanmorgillo.corsoandroid.teamc.network.detail
 
 import com.ivanmorgillo.corsoandroid.teamc.domain.RecipeDetail
-import com.ivanmorgillo.corsoandroid.teamc.network.home.RecipeService
+import com.ivanmorgillo.corsoandroid.teamc.network.RecipeService
 import org.json.JSONException
 import timber.log.Timber
 import java.io.IOException

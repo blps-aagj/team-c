@@ -10,9 +10,9 @@ import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.firebase.TrackingImpl
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipeRepositoryImpl
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipesRepository
+import com.ivanmorgillo.corsoandroid.teamc.network.RecipeService
 import com.ivanmorgillo.corsoandroid.teamc.network.detail.RecipeDetailAPIImpl
 import com.ivanmorgillo.corsoandroid.teamc.network.home.RecipeAPIImpl
-import com.ivanmorgillo.corsoandroid.teamc.network.home.RecipeService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.androidx.viewmodel.dsl.viewModel
