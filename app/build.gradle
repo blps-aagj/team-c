@@ -113,8 +113,8 @@ android
                 // Navigation Components
                 implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
                 implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
-                // Novoda
-                implementation 'com.novoda:simple-chrome-custom-tabs:0.1.6'
+                // Custom tabs Google
+                implementation "androidx.browser:browser:1.3.0"
                 // Testing dependencies
                 testImplementation 'junit:junit:4.13.1'
                 androidTestImplementation 'androidx.test.ext:junit:1.1.2'

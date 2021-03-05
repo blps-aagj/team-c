@@ -1,19 +1,18 @@
 package com.ivanmorgillo.corsoandroid.teamc
 
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.view.GravityCompat
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.ivanmorgillo.corsoandroid.teamc.databinding.ActivityMainBinding
-import com.novoda.simplechromecustomtabs.SimpleChromeCustomTabs
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModel()
@@ -46,7 +45,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.feedback -> {
                     viewModel.send(MainScreenEvent.OnFeedbackClicked)
-                    SimpleChromeCustomTabs.getInstance().navigateTo("https://forms.gle/SbtkKSk5T7eC9J4z7".toUri(), this)
+                    val url = "https://forms.gle/SbtkKSk5T7eC9J4z7"
+                    val builder = CustomTabsIntent.Builder()
+                    val customTabsIntent = builder.build()
+                    customTabsIntent.launchUrl(this, Uri.parse(url))
                     true
                 }
                 else -> {
@@ -63,21 +65,11 @@ class MainActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
-    override fun onResume() {
-        super.onResume()
-        SimpleChromeCustomTabs.getInstance().connectTo(this)
-    }
-
-    override fun onPause() {
-        SimpleChromeCustomTabs.getInstance().disconnectFrom(this)
-        super.onPause()
-    }
 }
 
-fun AppCompatActivity.openUrl(url: String) {
+/*fun AppCompatActivity.openUrl(url: String) {
     val intent = Intent(Intent.ACTION_VIEW)
     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     intent.data = Uri.parse(url)
     startActivity(intent)
-}
+}*/
