@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/recipe_root"
     android:layout_width="250dp"
-    android:layout_height="250dp"
+    android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardCornerRadius="20dp">
 
@@ -15,36 +15,39 @@
         <ImageView
             android:id="@+id/recipe_image"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="240dp"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription"
+            android:layout_margin="8dp"
             tools:src="@drawable/arabbiata" />
 
-        <TextView
+        <ProgressBar
             android:layout_width="wrap_content"
+            android:id="@+id/progress_bar_recipe_item"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/recipe_image"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:visibility="visible"
-            tools:text="Ciao" />
+            app:layout_constraintEnd_toEndOf="@id/recipe_image"
+            app:layout_constraintStart_toStartOf="@id/recipe_image"
+            app:layout_constraintTop_toTopOf="@id/recipe_image"
+            app:layout_constraintBottom_toBottomOf="@id/recipe_image" />
 
-        <!--<TextView
+        <TextView
             android:id="@+id/recipe_title"
             style="@style/TextAppearance.MaterialComponents.Headline3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textSize="20sp"
-            android:maxEms="10"
-            android:singleLine="false"
+            android:ellipsize="end"
+            android:maxLines="2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/recipe_image"
-            tools:text="@string/app_name" />-->
+            android:text="@string/app_name"
+            android:layout_marginBottom="16dp"
+            android:padding="8dp" />
 
         <include
             android:id="@+id/favourite_list_checkbox_layout"

@@ -6,7 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.ivanmorgillo.corsoandroid.teamc.R
 import com.ivanmorgillo.corsoandroid.teamc.databinding.RecipeItemBinding
+import com.ivanmorgillo.corsoandroid.teamc.gone
 import com.ivanmorgillo.corsoandroid.teamc.utils.imageLoader
+import timber.log.Timber
 
 class RecipesAdapter(private val onclick: (RecipeUI) -> Unit, private val onFavouriteClicked: (RecipeUI) -> Unit) :
     RecyclerView.Adapter<RecipeViewHolder>() {
@@ -41,7 +43,15 @@ class RecipeViewHolder(private val binding: RecipeItemBinding) : RecyclerView.Vi
     fun bind(item: RecipeUI, onclick: (RecipeUI) -> Unit, onFavouriteClicked: (RecipeUI) -> Unit) {
         binding.recipeTitle.text = item.recipeName
         binding.recipeImage.load(item.recipeImageUrl, imageLoader(binding.root.context)) {
-            placeholder(R.drawable.loading)
+            target(
+                onError = {
+                    Timber.e("Image not load ${item.recipeImageUrl}")
+                },
+                onSuccess = { result ->
+                    binding.progressBarRecipeItem.gone()
+                    binding.recipeImage.setImageDrawable(result)
+                }
+            )
             error(R.drawable.ic_broken_image)
         }
         binding.recipeImage.contentDescription = item.recipeName
