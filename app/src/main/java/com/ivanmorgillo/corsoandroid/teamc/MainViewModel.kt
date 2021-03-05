@@ -29,12 +29,10 @@ class MainViewModel(
         when (event) {
             MainScreenEvent.OnReady -> loadContent(false)
             is MainScreenEvent.OnRecipeClick -> {
-                // Tracking click on recipe
                 tracking.logEvent("home_recipe_clicked")
                 actions.postValue(NavigateToDetail(event.recipe))
             }
             MainScreenEvent.OnRefreshClick -> {
-                // Tracking utils_menu
                 tracking.logEvent("home_refresh_clicked")
                 loadContent(true)
             }

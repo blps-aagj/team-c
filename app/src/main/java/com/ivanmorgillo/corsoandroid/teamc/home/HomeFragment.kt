@@ -67,14 +67,14 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     findNavController().navigate(directions)
                 }
                 is MainScreenAction.NavigateToDetailRandom -> {
-
+                    // gestire con NavigateToDetail
                     val recipeId = action.recipe.recipeId.toLongOrNull()
                     if (recipeId == null) {
                         binding.recipesListProgressBar.gone()
                         binding.recipesListRoot.gone()
                         binding.mainScreenNoRecipe.root.visible()
                     } else {
-                        val directions = actionHomeFragmentToDetailFragment(recipeId) // Da vedere se arriva null
+                        val directions = actionHomeFragmentToDetailFragment(recipeId)
                         Timber.d("Invio al detail RecipeId = ${action.recipe.recipeId}")
                         findNavController().navigate(directions)
                     }
