@@ -4,15 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:menu="@menu/refresh"
+    app:menu="@menu/utils_menu"
     tools:context=".MainActivity">
     <!--android:id="@+id/recipes_list_root"-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/recipes_list_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-
+        
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recipes_list"
             android:layout_width="0dp"
