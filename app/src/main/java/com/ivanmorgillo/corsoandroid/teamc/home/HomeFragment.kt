@@ -36,6 +36,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             { viewModel.send((OnFavouriteClicked(it))) }
         )
         binding.recipesList.adapter = adapter
+        binding.randomBtnFloating.setOnClickListener(View.OnClickListener {
+//            viewModel.send(MainScreenEvent.OnRandomClick(it))
+        })
         viewModel.states.observe(viewLifecycleOwner, { state ->
             when (state) {
                 is Content -> setupContent(adapter, state)

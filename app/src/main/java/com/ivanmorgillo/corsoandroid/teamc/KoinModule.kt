@@ -58,7 +58,14 @@ val appModule = module {
     single<FavouriteRepository> {
         FavouriteRepositoryImpl()
     }
-    viewModel { MainViewModel(repository = get(), tracking = get(), favouriteRepository = get()) } // Il get costruisce in base al tipo e a single
-    viewModel { RecipeDetailViewModel(recipeDetailRepository = get()) }
+    viewModel {
+        MainViewModel(
+            repository = get(),
+            tracking = get(),
+            favouriteRepository = get(),
+            detailsRepository = get()
+        )
+    } // Il get costruisce in base al tipo e a single
+    viewModel { RecipeDetailViewModel(recipeDetailRepository = get(), tracking = get()) }
     viewModel { FavouriteViewModel(tracking = get(), repository = get()) }
 }
