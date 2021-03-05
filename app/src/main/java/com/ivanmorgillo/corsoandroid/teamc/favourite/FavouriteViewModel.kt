@@ -21,7 +21,7 @@ class FavouriteViewModel(
 ) : ViewModel() {
 
     val favouriteStates = MutableLiveData<FavouriteScreenStates>()
-    private val favouriteActions = SingleLiveEvent<FavouriteScreenAction>()
+    val favouriteActions = SingleLiveEvent<FavouriteScreenAction>()
 
     fun send(event: FavouriteScreenEvents) {
         when (event) {

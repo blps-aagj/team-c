@@ -38,5 +38,9 @@
         android:id="@+id/favouriteFragment"
         android:name="com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteFragment"
         android:label="FavouriteFragment"
-        tools:layout="@layout/fragment_favourite_list" />
+        tools:layout="@layout/fragment_favourite_list">
+        <action
+            android:id="@+id/action_favouriteFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
 </navigation>

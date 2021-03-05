@@ -3,6 +3,7 @@ package com.ivanmorgillo.corsoandroid.teamc.favourite
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -12,6 +13,7 @@ import com.ivanmorgillo.corsoandroid.teamc.databinding.FragmentFavouriteListBind
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.utils.bindings.viewBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 class FavouriteFragment : Fragment(R.layout.fragment_favourite_list) {
 
@@ -43,6 +45,15 @@ class FavouriteFragment : Fragment(R.layout.fragment_favourite_list) {
                 }
                 FavouriteScreenStates.FavouriteScreenError -> TODO()
                 FavouriteScreenStates.FavouriteScreenLoading -> TODO()
+            }.exhaustive
+        })
+        viewModel.favouriteActions.observe(viewLifecycleOwner, { action ->
+            when (action) {
+                is FavouriteScreenAction.NavigateToDetailFromFavourite -> {
+                    val directions = FavouriteFragmentDirections.actionFavouriteFragmentToDetailFragment(action.recipe.idRecipe)
+                    Timber.d("Invio al detail RecipeId = ${action.recipe.idRecipe}")
+                    findNavController().navigate(directions)
+                }
             }.exhaustive
         })
         viewModel.send(FavouriteScreenEvents.OnFavouriteScreenReady)
