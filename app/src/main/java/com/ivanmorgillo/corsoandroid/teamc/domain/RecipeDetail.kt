@@ -1,6 +1,7 @@
 package com.ivanmorgillo.corsoandroid.teamc.domain
 
 data class RecipeDetail(
+    val recipeId: String,
     val recipeName: String,
     val recipeCategory: String,
     val recipeArea: String,

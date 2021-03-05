@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.NavigateToDetail
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenEvent
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenEvent.OnFavouriteClicked
@@ -36,9 +37,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             { viewModel.send((OnFavouriteClicked(it))) }
         )
         binding.recipesList.adapter = adapter
-        binding.randomBtnFloating.setOnClickListener(View.OnClickListener {
-//            viewModel.send(MainScreenEvent.OnRandomClick(it))
-        })
+        binding.randomBtnFloating.setOnClickListener {
+            viewModel.send(MainScreenEvent.OnRandomClick)
+        }
         viewModel.states.observe(viewLifecycleOwner, { state ->
             when (state) {
                 is Content -> setupContent(adapter, state)
@@ -64,6 +65,19 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     val directions = actionHomeFragmentToDetailFragment(action.recipe.id)
                     Timber.d("Invio al detail RecipeId = ${action.recipe.id}")
                     findNavController().navigate(directions)
+                }
+                is MainScreenAction.NavigateToDetailRandom -> {
+
+                    val recipeId = action.recipe.recipeId.toLongOrNull()
+                    if (recipeId == null) {
+                        binding.recipesListProgressBar.gone()
+                        binding.recipesListRoot.gone()
+                        binding.mainScreenNoRecipe.root.visible()
+                    } else {
+                        val directions = actionHomeFragmentToDetailFragment(recipeId) // Da vedere se arriva null
+                        Timber.d("Invio al detail RecipeId = ${action.recipe.recipeId}")
+                        findNavController().navigate(directions)
+                    }
                 }
             }.exhaustive
         })

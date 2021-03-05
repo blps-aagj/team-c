@@ -123,13 +123,14 @@ fun RecipeDetailDTO.Meal.toDomain(): RecipeDetail {
     val ingredientList: List<Ingredient> = getIngredients()
 
     return RecipeDetail(
+        recipeId = idMeal,
         recipeName = strMeal,
         recipeCategory = strCategory,
         recipeArea = strArea,
         recipeInstructions = loadRecipeInstruction(strInstructions),
         recipeImage = strMealThumb,
         recipeIngredientsAndMeasures = ingredientList,
-        recipeVideoInstructions = getVideoID(strYoutube)
+        recipeVideoInstructions = getVideoID(strYoutube),
     )
 }
 

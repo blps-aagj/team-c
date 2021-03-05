@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.NavigateToDetail
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipesDetailsRepository
+import com.ivanmorgillo.corsoandroid.teamc.domain.RecipeDetail
 import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteRepository
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.home.AllRecipesByAreaResult
@@ -13,6 +14,7 @@ import com.ivanmorgillo.corsoandroid.teamc.home.RecipesRepository
 import com.ivanmorgillo.corsoandroid.teamc.network.detail.LoadRecipesDetailResult
 import com.ivanmorgillo.corsoandroid.teamc.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class MainViewModel(
     private val repository: RecipesRepository,
@@ -43,19 +45,18 @@ class MainViewModel(
                 }
             }
             is MainScreenEvent.OnRandomClick -> {
-                tracking.logEvent("home_random_clicked")
+                tracking.logEvent("home_random_clicked_fab")
                 states.postValue(MainScreenStates.Loading)
                 viewModelScope.launch {
                     when (val result = detailsRepository.loadDetailsRecipesRandom()) {
-                        is LoadRecipesDetailResult.Failure -> TODO()
+                        is LoadRecipesDetailResult.Failure -> Timber.d("RecipeId failure")
                         is LoadRecipesDetailResult.Success -> {
-                            val recipe = result.recipesDetail
-
+                            Timber.d("RecipeId passed")
+                            val recipeDetail = result.recipesDetail
+                            actions.postValue(MainScreenAction.NavigateToDetailRandom(recipeDetail))
                         }
                     }.exhaustive
                 }
-
-
             }
         }.exhaustive
     }
@@ -94,6 +95,7 @@ data class RecipeByAreaUI(val nameArea: String, val recipeByArea: List<RecipeUI>
 
 sealed class MainScreenAction {
     data class NavigateToDetail(val recipe: RecipeUI) : MainScreenAction()
+    data class NavigateToDetailRandom(val recipe: RecipeDetail) : MainScreenAction()
 }
 
 sealed class MainScreenEvent {
@@ -103,7 +105,6 @@ sealed class MainScreenEvent {
 
     object OnReady : MainScreenEvent()
     object OnRefreshClick : MainScreenEvent()
-
 }
 
 sealed class MainScreenStates {
