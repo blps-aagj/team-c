@@ -26,26 +26,26 @@ class RecipeDetailAPIImpl(private val service: RecipeService) : RecipeDetailAPI 
                 LoadRecipesDetailResult.Failure(LoadRecipesDetailError.NoRecipeDetailFound)
             }
         } catch (e: IOException) {
-            TODO()
+            LoadRecipesDetailResult.Failure(LoadRecipesDetailError.NoInternet)
         } catch (e: JSONException) {
-            TODO()
+            LoadRecipesDetailResult.Failure(LoadRecipesDetailError.NoRecipeDetailFound)
         }
     }
 
     override suspend fun loadDetailsRecipeRandom(): LoadRecipesDetailResult {
-        try {
+        return try {
             val recipeDetailList = service.loadDetailsRecipeRandom()
 //            Timber.d("recipeDetailList $recipeDetailList") // id non funziona ancora
-            val recipeDetail = recipeDetailList.meals.firstOrNull()
+            val recipeDetail = recipeDetailList.meals?.firstOrNull()
             return if (recipeDetail == null) {
                 LoadRecipesDetailResult.Failure(LoadRecipesDetailError.NoRecipeDetailFound)
             } else {
                 LoadRecipesDetailResult.Success(recipeDetail.toDomain())
             }
         } catch (e: IOException) {
-            TODO()
+            LoadRecipesDetailResult.Failure(LoadRecipesDetailError.NoInternet)
         } catch (e: JSONException) {
-            TODO()
+            LoadRecipesDetailResult.Failure(LoadRecipesDetailError.NoRecipeDetailFound)
         }
     }
 }
@@ -54,8 +54,6 @@ class RecipeDetailAPIImpl(private val service: RecipeService) : RecipeDetailAPI 
 sealed class LoadRecipesDetailError {
     object NoRecipeDetailFound : LoadRecipesDetailError()
     object NoInternet : LoadRecipesDetailError()
-    object SlowInternet : LoadRecipesDetailError()
-    object ServerError : LoadRecipesDetailError()
 }
 
 // Gestisce i due casi possibili del load

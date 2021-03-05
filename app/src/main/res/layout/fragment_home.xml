@@ -9,11 +9,9 @@
     <!--android:id="@+id/recipes_list_root"-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/recipes_list_root"
-        tools:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-
+        
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recipes_list"
             android:layout_width="0dp"
@@ -59,6 +57,7 @@
     <include
         android:id="@+id/main_screen_no_recipe"
         layout="@layout/no_recipe_found"
-        android:visibility="gone" />
+        android:visibility="gone"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

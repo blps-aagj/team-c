@@ -13,6 +13,7 @@ import com.ivanmorgillo.corsoandroid.teamc.home.RecipeUI
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipesRepository
 import com.ivanmorgillo.corsoandroid.teamc.network.detail.LoadRecipesDetailResult
 import com.ivanmorgillo.corsoandroid.teamc.utils.SingleLiveEvent
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -28,37 +29,52 @@ class MainViewModel(
         when (event) {
             MainScreenEvent.OnReady -> loadContent(false)
             is MainScreenEvent.OnRecipeClick -> {
-                // Tracking click on recipe
                 tracking.logEvent("home_recipe_clicked")
                 actions.postValue(NavigateToDetail(event.recipe))
             }
             MainScreenEvent.OnRefreshClick -> {
-                // Tracking utils_menu
                 tracking.logEvent("home_refresh_clicked")
                 loadContent(true)
             }
             is MainScreenEvent.OnFavouriteClicked -> {
                 tracking.logEvent("home_favorite_clicked")
-                val isFavourite = !event.recipe.isFavourite
-                viewModelScope.launch {
-                    favouriteRepository.save(event.recipe, isFavourite)
-                }
+                saveFavourite(event)
             }
             is MainScreenEvent.OnRandomClick -> {
                 tracking.logEvent("home_random_clicked")
-                states.postValue(MainScreenStates.Loading)
-                viewModelScope.launch {
-                    when (val result = detailsRepository.loadDetailsRecipesRandom()) {
-                        is LoadRecipesDetailResult.Failure -> Timber.d("RecipeId failure")
-                        is LoadRecipesDetailResult.Success -> {
-                            Timber.d("RecipeId passed")
-                            val recipeDetail = result.recipesDetail
-                            actions.postValue(MainScreenAction.NavigateToDetailRandom(recipeDetail))
-                        }
-                    }.exhaustive
-                }
+                loadDetailRandomRecipe()
+            }
+            MainScreenEvent.OnFeedbackClicked -> {
+                tracking.logEvent("drawer_feedback_clicked")
+            }
+            MainScreenEvent.OnFavouriteListMenuClicked -> {
+                tracking.logEvent("drawer_favourite_list_clicked")
             }
         }.exhaustive
+    }
+
+    private fun saveFavourite(event: MainScreenEvent.OnFavouriteClicked): Job {
+        val isFavourite = !event.recipe.isFavourite
+        return viewModelScope.launch {
+            favouriteRepository.save(event.recipe, isFavourite)
+        }
+    }
+
+    private fun loadDetailRandomRecipe(): Job {
+        states.postValue(MainScreenStates.Loading)
+        return viewModelScope.launch {
+            when (val result = detailsRepository.loadDetailsRecipesRandom()) {
+                is LoadRecipesDetailResult.Failure -> {
+                    Timber.d("RecipeId failure")
+                    states.postValue(MainScreenStates.Error.NoNetwork)
+                }
+                is LoadRecipesDetailResult.Success -> {
+                    Timber.d("RecipeId passed")
+                    val recipeDetail = result.recipesDetail
+                    actions.postValue(MainScreenAction.NavigateToDetailRandom(recipeDetail))
+                }
+            }.exhaustive
+        }
     }
 
     private fun loadContent(forced: Boolean) {
@@ -103,6 +119,8 @@ sealed class MainScreenEvent {
     data class OnFavouriteClicked(val recipe: RecipeUI) : MainScreenEvent()
     object OnRandomClick : MainScreenEvent()
 
+    object OnFavouriteListMenuClicked : MainScreenEvent()
+    object OnFeedbackClicked : MainScreenEvent()
     object OnReady : MainScreenEvent()
     object OnRefreshClick : MainScreenEvent()
 }
