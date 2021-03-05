@@ -12,6 +12,7 @@ import com.ivanmorgillo.corsoandroid.teamc.home.RecipesRepository
 import com.ivanmorgillo.corsoandroid.teamc.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
 
+@Suppress("IMPLICIT_CAST_TO_ANY")
 class MainViewModel(
     private val repository: RecipesRepository,
     private val favouriteRepository: FavouriteRepository,
@@ -40,6 +41,12 @@ class MainViewModel(
                 }
             }
             is MainScreenEvent.OnRandomClick -> tracking.logEvent("home_random_clicked")
+            MainScreenEvent.OnFeedbackClicked -> {
+                tracking.logEvent("drawer_feedback_clicked")
+            }
+            MainScreenEvent.OnFavouriteListMenuClicked -> {
+                tracking.logEvent("drawer_favourite_list_clicked")
+            }
         }.exhaustive
     }
 
@@ -82,7 +89,8 @@ sealed class MainScreenAction {
 sealed class MainScreenEvent {
     data class OnRecipeClick(val recipe: RecipeUI) : MainScreenEvent()
     data class OnFavouriteClicked(val recipe: RecipeUI) : MainScreenEvent()
-
+    object OnFavouriteListMenuClicked : MainScreenEvent()
+    object OnFeedbackClicked : MainScreenEvent()
     object OnReady : MainScreenEvent()
     object OnRefreshClick : MainScreenEvent()
     data class OnRandomClick(val recipe: RecipeUI) : MainScreenEvent()

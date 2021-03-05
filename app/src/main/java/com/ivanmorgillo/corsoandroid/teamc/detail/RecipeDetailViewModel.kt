@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetailScreenStates.Error.NoRecipeFound
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
+import com.ivanmorgillo.corsoandroid.teamc.home.RecipeUI
 import com.ivanmorgillo.corsoandroid.teamc.network.detail.LoadRecipesDetailResult.Failure
 import com.ivanmorgillo.corsoandroid.teamc.network.detail.LoadRecipesDetailResult.Success
 import kotlinx.coroutines.launch
@@ -19,6 +20,7 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
         when (event) {
             RecipeDetailScreenEvent.OnScreenRecipeDetailReady -> loadRecipeDetailContent(recipeId)
             RecipeDetailScreenEvent.OnScreenRecipeDetailRandomReady -> loadRecipeDetailRandomContent()
+            is RecipeDetailScreenEvent.OnScreenRecipeDetailFavouriteClicked -> TODO()
         }.exhaustive
     }
 
@@ -78,6 +80,7 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
 sealed class RecipeDetailScreenEvent {
     object OnScreenRecipeDetailReady : RecipeDetailScreenEvent()
     object OnScreenRecipeDetailRandomReady : RecipeDetailScreenEvent()
+    data class OnScreenRecipeDetailFavouriteClicked(val recipe: RecipeUI) : RecipeDetailScreenEvent()
 }
 
 sealed class RecipeDetailScreenStates {

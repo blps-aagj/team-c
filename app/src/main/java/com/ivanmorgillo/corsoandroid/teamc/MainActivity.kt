@@ -1,5 +1,7 @@
 package com.ivanmorgillo.corsoandroid.teamc
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
@@ -9,8 +11,10 @@ import androidx.core.view.GravityCompat
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.ivanmorgillo.corsoandroid.teamc.databinding.ActivityMainBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
+    private val viewModel: MainViewModel by viewModel()
     private lateinit var actionBarToggle: ActionBarDrawerToggle
     private val navController: NavController by lazy { Navigation.findNavController(this, R.id.nav_host_fragment) }
 
@@ -38,6 +42,11 @@ class MainActivity : AppCompatActivity() {
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
                     true
                 }
+                R.id.feedback -> {
+                    viewModel.send(MainScreenEvent.OnFeedbackClicked)
+                    openUrl("https://forms.gle/SbtkKSk5T7eC9J4z7")
+                    true
+                }
                 else -> {
                     Toast.makeText(this, "Antani", Toast.LENGTH_SHORT).show()
                     false
@@ -52,4 +61,11 @@ class MainActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+}
+
+fun AppCompatActivity.openUrl(url: String) {
+    val intent = Intent(Intent.ACTION_VIEW)
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    intent.data = Uri.parse(url)
+    startActivity(intent)
 }
