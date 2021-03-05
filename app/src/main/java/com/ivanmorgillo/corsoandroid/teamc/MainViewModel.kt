@@ -4,18 +4,22 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.NavigateToDetail
+import com.ivanmorgillo.corsoandroid.teamc.detail.RecipesDetailsRepository
+import com.ivanmorgillo.corsoandroid.teamc.domain.RecipeDetail
 import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteRepository
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.home.AllRecipesByAreaResult
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipeUI
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipesRepository
+import com.ivanmorgillo.corsoandroid.teamc.network.detail.LoadRecipesDetailResult
 import com.ivanmorgillo.corsoandroid.teamc.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
-@Suppress("IMPLICIT_CAST_TO_ANY")
 class MainViewModel(
     private val repository: RecipesRepository,
     private val favouriteRepository: FavouriteRepository,
+    private val detailsRepository: RecipesDetailsRepository,
     private val tracking: Tracking
 ) : ViewModel() {
     val states = MutableLiveData<MainScreenStates>()
@@ -29,7 +33,7 @@ class MainViewModel(
                 actions.postValue(NavigateToDetail(event.recipe))
             }
             MainScreenEvent.OnRefreshClick -> {
-                // Tracking refresh
+                // Tracking utils_menu
                 tracking.logEvent("home_refresh_clicked")
                 loadContent(true)
             }
@@ -38,6 +42,20 @@ class MainViewModel(
                 val isFavourite = !event.recipe.isFavourite
                 viewModelScope.launch {
                     favouriteRepository.save(event.recipe, isFavourite)
+                }
+            }
+            is MainScreenEvent.OnRandomClick -> {
+                tracking.logEvent("home_random_clicked")
+                states.postValue(MainScreenStates.Loading)
+                viewModelScope.launch {
+                    when (val result = detailsRepository.loadDetailsRecipesRandom()) {
+                        is LoadRecipesDetailResult.Failure -> Timber.d("RecipeId failure")
+                        is LoadRecipesDetailResult.Success -> {
+                            Timber.d("RecipeId passed")
+                            val recipeDetail = result.recipesDetail
+                            actions.postValue(MainScreenAction.NavigateToDetailRandom(recipeDetail))
+                        }
+                    }.exhaustive
                 }
             }
             is MainScreenEvent.OnRandomClick -> tracking.logEvent("home_random_clicked")
@@ -84,16 +102,18 @@ data class RecipeByAreaUI(val nameArea: String, val recipeByArea: List<RecipeUI>
 
 sealed class MainScreenAction {
     data class NavigateToDetail(val recipe: RecipeUI) : MainScreenAction()
+    data class NavigateToDetailRandom(val recipe: RecipeDetail) : MainScreenAction()
 }
 
 sealed class MainScreenEvent {
     data class OnRecipeClick(val recipe: RecipeUI) : MainScreenEvent()
     data class OnFavouriteClicked(val recipe: RecipeUI) : MainScreenEvent()
+    object OnRandomClick : MainScreenEvent()
+
     object OnFavouriteListMenuClicked : MainScreenEvent()
     object OnFeedbackClicked : MainScreenEvent()
     object OnReady : MainScreenEvent()
     object OnRefreshClick : MainScreenEvent()
-    data class OnRandomClick(val recipe: RecipeUI) : MainScreenEvent()
 }
 
 sealed class MainScreenStates {

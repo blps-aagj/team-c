@@ -16,5 +16,6 @@
     <string name="ic_favourite_border">Ic Favourite border</string>
     <string name="favourite_list">Favourite List</string>
     <string name="feedback">Feedback</string>
+    <string name="random">Random</string>
 
 </resources>

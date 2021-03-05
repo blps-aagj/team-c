@@ -5,13 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetailScreenStates.Error.NoRecipeFound
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
-import com.ivanmorgillo.corsoandroid.teamc.home.RecipeUI
+import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.network.detail.LoadRecipesDetailResult.Failure
 import com.ivanmorgillo.corsoandroid.teamc.network.detail.LoadRecipesDetailResult.Success
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRepository) : ViewModel() {
+class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRepository, private val tracking: Tracking) : ViewModel() {
 
     val states = MutableLiveData<RecipeDetailScreenStates>()
     private var recipeId = 0L
@@ -19,8 +19,10 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
         Timber.d("send ViewModelDetail")
         when (event) {
             RecipeDetailScreenEvent.OnScreenRecipeDetailReady -> loadRecipeDetailContent(recipeId)
-            RecipeDetailScreenEvent.OnScreenRecipeDetailRandomReady -> loadRecipeDetailRandomContent()
-            is RecipeDetailScreenEvent.OnScreenRecipeDetailFavouriteClicked -> TODO()
+            RecipeDetailScreenEvent.OnErrorRandomClick -> {
+                tracking.logEvent("error_random_clicked")
+                loadRecipeDetailRandomContent()
+            }
         }.exhaustive
     }
 
@@ -79,8 +81,7 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
 
 sealed class RecipeDetailScreenEvent {
     object OnScreenRecipeDetailReady : RecipeDetailScreenEvent()
-    object OnScreenRecipeDetailRandomReady : RecipeDetailScreenEvent()
-    data class OnScreenRecipeDetailFavouriteClicked(val recipe: RecipeUI) : RecipeDetailScreenEvent()
+    object OnErrorRandomClick : RecipeDetailScreenEvent()
 }
 
 sealed class RecipeDetailScreenStates {
