@@ -8,7 +8,7 @@ import com.ivanmorgillo.corsoandroid.teamc.domain.RecipeDetail
 @Keep
 data class RecipeDetailDTO(
     @SerializedName("meals")
-    val meals: List<Meal>
+    val meals: List<Meal>?
 ) {
     @Keep
     data class Meal(

@@ -64,7 +64,10 @@ class MainViewModel(
         states.postValue(MainScreenStates.Loading)
         return viewModelScope.launch {
             when (val result = detailsRepository.loadDetailsRecipesRandom()) {
-                is LoadRecipesDetailResult.Failure -> Timber.d("RecipeId failure")
+                is LoadRecipesDetailResult.Failure -> {
+                    Timber.d("RecipeId failure")
+                    states.postValue(MainScreenStates.Error.NoNetwork)
+                }
                 is LoadRecipesDetailResult.Success -> {
                     Timber.d("RecipeId passed")
                     val recipeDetail = result.recipesDetail
