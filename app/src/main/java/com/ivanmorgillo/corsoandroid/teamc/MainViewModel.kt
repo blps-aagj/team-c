@@ -4,17 +4,20 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.NavigateToDetail
+import com.ivanmorgillo.corsoandroid.teamc.detail.RecipesDetailsRepository
 import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteRepository
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.home.AllRecipesByAreaResult
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipeUI
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipesRepository
+import com.ivanmorgillo.corsoandroid.teamc.network.detail.LoadRecipesDetailResult
 import com.ivanmorgillo.corsoandroid.teamc.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val repository: RecipesRepository,
     private val favouriteRepository: FavouriteRepository,
+    private val detailsRepository: RecipesDetailsRepository,
     private val tracking: Tracking
 ) : ViewModel() {
     val states = MutableLiveData<MainScreenStates>()
@@ -39,7 +42,21 @@ class MainViewModel(
                     favouriteRepository.save(event.recipe, isFavourite)
                 }
             }
-            is MainScreenEvent.OnRandomClick -> tracking.logEvent("home_random_clicked")
+            is MainScreenEvent.OnRandomClick -> {
+                tracking.logEvent("home_random_clicked")
+                states.postValue(MainScreenStates.Loading)
+                viewModelScope.launch {
+                    when (val result = detailsRepository.loadDetailsRecipesRandom()) {
+                        is LoadRecipesDetailResult.Failure -> TODO()
+                        is LoadRecipesDetailResult.Success -> {
+                            val recipe = result.recipesDetail
+
+                        }
+                    }.exhaustive
+                }
+
+
+            }
         }.exhaustive
     }
 
@@ -82,10 +99,11 @@ sealed class MainScreenAction {
 sealed class MainScreenEvent {
     data class OnRecipeClick(val recipe: RecipeUI) : MainScreenEvent()
     data class OnFavouriteClicked(val recipe: RecipeUI) : MainScreenEvent()
+    object OnRandomClick : MainScreenEvent()
 
     object OnReady : MainScreenEvent()
     object OnRefreshClick : MainScreenEvent()
-    data class OnRandomClick(val recipe: RecipeUI) : MainScreenEvent()
+
 }
 
 sealed class MainScreenStates {
