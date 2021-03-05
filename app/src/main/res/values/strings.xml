@@ -15,4 +15,5 @@
     <string name="random_recipe_text_btn">Search for a Random Recipe!</string>
     <string name="remove">remove</string>
     <string name="favourite_recipe_image">Favourite Recipe Image</string>
+    <string name="ic_favourite_border">Ic Favourite border</string>
 </resources>

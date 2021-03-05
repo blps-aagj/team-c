@@ -6,6 +6,7 @@ import com.ivanmorgillo.corsoandroid.teamc.home.AllRecipesByAreaResult
 import com.ivanmorgillo.corsoandroid.teamc.home.AllRecipesByAreaResult.AllRecipesByAreaError.GenericErrorByArea
 import com.ivanmorgillo.corsoandroid.teamc.home.AllRecipesByAreaResult.AllRecipesByAreaError.NoInternetByArea
 import com.ivanmorgillo.corsoandroid.teamc.home.AllRecipesByAreaResult.Failure
+import com.ivanmorgillo.corsoandroid.teamc.network.RecipeService
 import com.ivanmorgillo.corsoandroid.teamc.network.home.LoadRecipesError.GenericError
 import com.ivanmorgillo.corsoandroid.teamc.network.home.LoadRecipesError.NoInternet
 import com.ivanmorgillo.corsoandroid.teamc.network.home.LoadRecipesError.NoRecipeFound

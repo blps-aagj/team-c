@@ -10,11 +10,11 @@ import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteScreenEvents.OnFav
 import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteScreenStates.FavouriteScreenContent
 import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteScreenStates.FavouriteScreenLoading
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
-import com.ivanmorgillo.corsoandroid.teamc.home.RecipeUI
 import com.ivanmorgillo.corsoandroid.teamc.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
 
 // Aggiungere DB
+
 class FavouriteViewModel(
     private val repository: FavouriteRepository,
     private val tracking: Tracking
@@ -34,7 +34,13 @@ class FavouriteViewModel(
                     loadContent()
                 }
             }
-            is FavouriteScreenEvents.OnItemSwiped -> tracking.logEvent("favourite_recipe_swiped")
+            is FavouriteScreenEvents.OnItemSwiped -> {
+                tracking.logEvent("favourite_recipe_swiped")
+                repository.delete(event.position)
+                viewModelScope.launch {
+                    loadContent()
+                }
+            }
         }.exhaustive
     }
 
@@ -48,26 +54,6 @@ class FavouriteViewModel(
             )
         }
         favouriteStates.postValue(FavouriteScreenContent(favouriteUiList))
-    }
-}
-
-interface FavouriteRepository {
-    suspend fun loadFavourites(): List<RecipeUI>
-    suspend fun save(recipe: RecipeUI, isFavourite: Boolean)
-}
-
-class FavouriteRepositoryImpl : FavouriteRepository {
-    private val favouriteListID: MutableList<RecipeUI> = mutableListOf()
-    override suspend fun loadFavourites(): List<RecipeUI> {
-        return favouriteListID
-    }
-
-    override suspend fun save(recipe: RecipeUI, isFavourite: Boolean) {
-        if (isFavourite) {
-            favouriteListID.add(recipe)
-        } else {
-            favouriteListID.remove(recipe)
-        }
     }
 }
 

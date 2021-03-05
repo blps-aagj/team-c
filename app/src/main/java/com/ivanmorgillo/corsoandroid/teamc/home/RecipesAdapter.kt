@@ -46,10 +46,26 @@ class RecipeViewHolder(private val binding: RecipeItemBinding) : RecyclerView.Vi
         }
         binding.recipeImage.contentDescription = item.recipeName
         binding.recipeRoot.setOnClickListener { onclick(item) }
+        favouriteSetOnClickListener(onFavouriteClicked, item)
+    }
+
+    private fun favouriteSetOnClickListener(
+        onFavouriteClicked: (RecipeUI) -> Unit,
+        item: RecipeUI
+    ) {
         binding.favouriteListCheckboxLayout.icon.setOnClickListener {
             onFavouriteClicked(item)
+            if (item.isFavourite) {
+                binding.favouriteListCheckboxLayout.icon.setImageResource(R.drawable.ic_favourite_border_list)
+            } else {
+                binding.favouriteListCheckboxLayout.icon.setImageResource(R.drawable.ic_favourite_list)
+            }
         }
-        binding.favouriteListCheckboxLayout.icon.isChecked = item.isFavourite
+        if (item.isFavourite) {
+            binding.favouriteListCheckboxLayout.icon.setImageResource(R.drawable.ic_favourite_list)
+        } else {
+            binding.favouriteListCheckboxLayout.icon.setImageResource(R.drawable.ic_favourite_border_list)
+        }
     }
 }
 

@@ -1,6 +1,8 @@
-package com.ivanmorgillo.corsoandroid.teamc.network.home
+package com.ivanmorgillo.corsoandroid.teamc.network
 
 import com.ivanmorgillo.corsoandroid.teamc.network.detail.RecipeDetailDTO
+import com.ivanmorgillo.corsoandroid.teamc.network.home.AreaDTO
+import com.ivanmorgillo.corsoandroid.teamc.network.home.RecipeDTO
 import retrofit2.http.GET
 import retrofit2.http.Query
 
