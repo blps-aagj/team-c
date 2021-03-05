@@ -37,7 +37,7 @@ class RecipeDetailFragment : Fragment(R.layout.fragment_detail) {
         binding.recipesListRoot.adapter = adapter
         binding.detailScreenNoRecipe.noRecipeFoundRandomBtn.setOnClickListener {
             Timber.d("setOnClickListener random")
-            recipeDetailViewModel.send(RecipeDetailScreenEvent.OnScreenRecipeDetailRandomReady)
+            recipeDetailViewModel.send(RecipeDetailScreenEvent.OnErrorRandomClick)
         }
         if (recipeId == 0L) {
             // Torna nella schermata precedente
