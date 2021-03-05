@@ -24,6 +24,15 @@
             tools:src="@drawable/arabbiata" />
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/recipe_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="visible"
+            tools:text="Ciao" />
+
+        <!--<TextView
             android:id="@+id/recipe_title"
             style="@style/TextAppearance.MaterialComponents.Headline3"
             android:layout_width="wrap_content"
@@ -35,7 +44,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/recipe_image"
-            tools:text="@string/app_name" />
+            tools:text="@string/app_name" />-->
 
         <include
             android:id="@+id/favourite_list_checkbox_layout"
