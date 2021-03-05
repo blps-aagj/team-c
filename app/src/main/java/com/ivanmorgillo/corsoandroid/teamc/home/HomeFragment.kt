@@ -100,6 +100,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.refresh_btn) viewModel.send(OnRefreshClick)
+        else if (item.itemId == R.id.random_btn) viewModel.send(MainScreenEvent.OnRandomClick)
         return super.onOptionsItemSelected(item)
     }
 }
