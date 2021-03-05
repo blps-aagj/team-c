@@ -45,7 +45,7 @@ class MainViewModel(
                 }
             }
             is MainScreenEvent.OnRandomClick -> {
-                tracking.logEvent("home_random_clicked_fab")
+                tracking.logEvent("home_random_clicked")
                 states.postValue(MainScreenStates.Loading)
                 viewModelScope.launch {
                     when (val result = detailsRepository.loadDetailsRecipesRandom()) {
