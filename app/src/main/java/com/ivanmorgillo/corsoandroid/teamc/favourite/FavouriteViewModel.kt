@@ -14,7 +14,7 @@ import com.ivanmorgillo.corsoandroid.teamc.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
 
 // Aggiungere DB
-@Suppress("IMPLICIT_CAST_TO_ANY")
+
 class FavouriteViewModel(
     private val repository: FavouriteRepository,
     private val tracking: Tracking
