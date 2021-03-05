@@ -94,8 +94,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.refresh, menu)
-        Timber.d("onCreateOptionsMenu ${R.menu.refresh}, $menu")
+        inflater.inflate(R.menu.utils_menu, menu)
+        Timber.d("onCreateOptionsMenu ${R.menu.utils_menu}, $menu")
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -33,7 +33,7 @@ class MainViewModel(
                 actions.postValue(NavigateToDetail(event.recipe))
             }
             MainScreenEvent.OnRefreshClick -> {
-                // Tracking refresh
+                // Tracking utils_menu
                 tracking.logEvent("home_refresh_clicked")
                 loadContent(true)
             }
