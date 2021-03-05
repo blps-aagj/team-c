@@ -7,10 +7,12 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.core.view.GravityCompat
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.ivanmorgillo.corsoandroid.teamc.databinding.ActivityMainBinding
+import com.novoda.simplechromecustomtabs.SimpleChromeCustomTabs
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
@@ -44,7 +46,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.feedback -> {
                     viewModel.send(MainScreenEvent.OnFeedbackClicked)
-                    openUrl("https://forms.gle/SbtkKSk5T7eC9J4z7")
+                    SimpleChromeCustomTabs.getInstance().navigateTo("https://forms.gle/SbtkKSk5T7eC9J4z7".toUri(), this)
                     true
                 }
                 else -> {
@@ -60,6 +62,16 @@ class MainActivity : AppCompatActivity() {
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        SimpleChromeCustomTabs.getInstance().connectTo(this)
+    }
+
+    override fun onPause() {
+        SimpleChromeCustomTabs.getInstance().disconnectFrom(this)
+        super.onPause()
     }
 }
 
