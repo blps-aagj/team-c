@@ -19,4 +19,8 @@
     <string name="favourite_list">Favourite List</string>
     <string name="feedback">Feedback</string>
     <string name="random">Random</string>
+    <string name="home">Home</string>
+    <string name="settings">Settings</string>
+    <string name="about">About</string>
+    <string name="shopping_list">Shopping List</string>
 </resources>

@@ -1,11 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/favourite_list"
-        android:icon="@drawable/ic_favourite_list"
-        android:title="@string/favourite_list" />
-    <item
-        android:id="@+id/feedback"
-        android:icon="@drawable/ic_feedback"
-        android:title="@string/feedback" />
+    <group
+        android:id="@+id/drawer_top"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/home"
+            android:icon="@drawable/ic_home"
+            android:title="@string/home" />
+        <item
+            android:id="@+id/favourite_list"
+            android:icon="@drawable/ic_favourite_list"
+            android:title="@string/favourite_list" />
+        <item
+            android:id="@+id/shopping_list"
+            android:icon="@drawable/ic_shopping_list"
+            android:title="@string/shopping_list" />
+    </group>
+    <group
+        android:id="@+id/drawer_bottom"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/feedback"
+            android:icon="@drawable/ic_feedback"
+            android:title="@string/feedback" />
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/settings" />
+        <item
+            android:id="@+id/about"
+            android:icon="@drawable/ic_info"
+            android:title="@string/about" />
+    </group>
 </menu>
