@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.feedback -> {
                     viewModel.send(MainScreenEvent.OnFeedbackClicked)
-                    val url = "https://forms.gle/SbtkKSk5T7eC9J4z7"
+                    val url = "https://docs.google.com/forms/d/e/1FAIpQLScDBfn5FxLD2H48W-NTjJJttWkIhDiFeHegUyj5H_EBTzYokQ/viewform?usp=sf_link"
                     val builder = CustomTabsIntent.Builder()
                     val customTabsIntent = builder.build()
                     customTabsIntent.launchUrl(this, Uri.parse(url))
