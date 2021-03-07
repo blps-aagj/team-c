@@ -13,12 +13,10 @@ import androidx.navigation.Navigation
 import com.ivanmorgillo.corsoandroid.teamc.databinding.ActivityMainBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-
 class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModel()
     private lateinit var actionBarToggle: ActionBarDrawerToggle
     private val navController: NavController by lazy { Navigation.findNavController(this, R.id.nav_host_fragment) }
-
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,10 +64,3 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 }
-
-/*fun AppCompatActivity.openUrl(url: String) {
-    val intent = Intent(Intent.ACTION_VIEW)
-    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-    intent.data = Uri.parse(url)
-    startActivity(intent)
-}*/
