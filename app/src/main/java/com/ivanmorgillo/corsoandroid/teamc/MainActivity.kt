@@ -74,6 +74,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun setCheckedItem(id: Int) {
+        binding.navView.setCheckedItem(id)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (actionBarToggle.onOptionsItemSelected(item)) {
             return true

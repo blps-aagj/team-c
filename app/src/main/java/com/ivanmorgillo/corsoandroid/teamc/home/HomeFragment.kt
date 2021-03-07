@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.ivanmorgillo.corsoandroid.teamc.MainActivity
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.NavigateToDetail
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenEvent
@@ -102,5 +103,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         if (item.itemId == R.id.refresh_btn) viewModel.send(OnRefreshClick)
         else if (item.itemId == R.id.random_btn) viewModel.send(MainScreenEvent.OnRandomClick)
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val mainActivity: MainActivity = activity as MainActivity
+        mainActivity.setCheckedItem(R.id.home_page)
     }
 }

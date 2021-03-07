@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.ivanmorgillo.corsoandroid.teamc.MainActivity
 import com.ivanmorgillo.corsoandroid.teamc.R
 import com.ivanmorgillo.corsoandroid.teamc.databinding.FragmentFavouriteListBinding
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
@@ -57,5 +58,11 @@ class FavouriteFragment : Fragment(R.layout.fragment_favourite_list) {
             }.exhaustive
         })
         viewModel.send(FavouriteScreenEvents.OnFavouriteScreenReady)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val mainActivity: MainActivity = activity as MainActivity
+        mainActivity.setCheckedItem(R.id.favourite_list)
     }
 }
