@@ -55,6 +55,7 @@ class MainActivity : AppCompatActivity() {
                     val builder = CustomTabsIntent.Builder()
                     val customTabsIntent = builder.build()
                     customTabsIntent.launchUrl(this, Uri.parse(url))
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
                     true
                 }
                 R.id.settings -> {
