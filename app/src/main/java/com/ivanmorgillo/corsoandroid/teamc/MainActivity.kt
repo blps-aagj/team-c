@@ -35,10 +35,18 @@ class MainActivity : AppCompatActivity() {
 
         binding.navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
+                R.id.home_page -> {
+                    navController.navigate(R.id.homeFragment)
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
+                    true
+                }
                 R.id.favourite_list -> {
-                    Toast.makeText(this, "favourite list is clicked", Toast.LENGTH_SHORT).show()
                     navController.navigate(R.id.favouriteFragment)
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
+                    true
+                }
+                R.id.shopping_list -> {
+                    Toast.makeText(this, "Lista della spesa da implementare", Toast.LENGTH_SHORT).show()
                     true
                 }
                 R.id.feedback -> {
@@ -47,6 +55,14 @@ class MainActivity : AppCompatActivity() {
                     val builder = CustomTabsIntent.Builder()
                     val customTabsIntent = builder.build()
                     customTabsIntent.launchUrl(this, Uri.parse(url))
+                    true
+                }
+                R.id.settings -> {
+                    Toast.makeText(this, "Impostazioni da implementare", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                R.id.about -> {
+                    Toast.makeText(this, "About da implementare", Toast.LENGTH_SHORT).show()
                     true
                 }
                 else -> {
