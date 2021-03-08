@@ -9,6 +9,7 @@ import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteScreenEvents.OnFav
 import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteScreenEvents.OnFavouriteScreenReady
 import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteScreenStates.FavouriteScreenContent
 import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteScreenStates.FavouriteScreenLoading
+import com.ivanmorgillo.corsoandroid.teamc.firebase.Screens
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
@@ -22,6 +23,10 @@ class FavouriteViewModel(
 
     val favouriteStates = MutableLiveData<FavouriteScreenStates>()
     val favouriteActions = SingleLiveEvent<FavouriteScreenAction>()
+
+    init {
+        tracking.logScreen(Screens.Favourites)
+    }
 
     fun send(event: FavouriteScreenEvents) {
         when (event) {

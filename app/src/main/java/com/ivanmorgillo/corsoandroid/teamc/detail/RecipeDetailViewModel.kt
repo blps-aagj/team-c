@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetailScreenStates.Error.NoRecipeFound
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
+import com.ivanmorgillo.corsoandroid.teamc.firebase.Screens
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.network.detail.LoadRecipesDetailResult.Failure
 import com.ivanmorgillo.corsoandroid.teamc.network.detail.LoadRecipesDetailResult.Success
@@ -15,6 +16,11 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
 
     val states = MutableLiveData<RecipeDetailScreenStates>()
     private var recipeId = 0L
+
+    init {
+        tracking.logScreen(Screens.Details)
+    }
+
     fun send(event: RecipeDetailScreenEvent) {
         Timber.d("send ViewModelDetail")
         when (event) {

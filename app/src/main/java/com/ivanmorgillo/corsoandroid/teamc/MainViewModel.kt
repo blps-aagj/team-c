@@ -7,6 +7,7 @@ import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.NavigateToDetail
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipesDetailsRepository
 import com.ivanmorgillo.corsoandroid.teamc.domain.RecipeDetail
 import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteRepository
+import com.ivanmorgillo.corsoandroid.teamc.firebase.Screens
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.home.AllRecipesByAreaResult
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipeUI
@@ -25,6 +26,11 @@ class MainViewModel(
 ) : ViewModel() {
     val states = MutableLiveData<MainScreenStates>()
     val actions = SingleLiveEvent<MainScreenAction>()
+
+    init {
+        tracking.logScreen(Screens.Home)
+    }
+
     fun send(event: MainScreenEvent) {
         when (event) {
             MainScreenEvent.OnReady -> loadContent(false)
