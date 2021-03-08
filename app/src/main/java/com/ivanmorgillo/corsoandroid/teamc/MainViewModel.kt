@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.NavigateToDetail
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipesDetailsRepository
+import com.ivanmorgillo.corsoandroid.teamc.domain.RecipeByArea
 import com.ivanmorgillo.corsoandroid.teamc.domain.RecipeDetail
 import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteRepository
-import com.ivanmorgillo.corsoandroid.teamc.firebase.Screens
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.home.AllRecipesByAreaResult
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipeUI
@@ -26,10 +26,7 @@ class MainViewModel(
 ) : ViewModel() {
     val states = MutableLiveData<MainScreenStates>()
     val actions = SingleLiveEvent<MainScreenAction>()
-
-    init {
-        tracking.logScreen(Screens.Home)
-    }
+    private var recipes: List<RecipeByArea>? = null
 
     fun send(event: MainScreenEvent) {
         when (event) {
@@ -62,7 +59,18 @@ class MainViewModel(
     private fun saveFavourite(event: MainScreenEvent.OnFavouriteClicked): Job {
         val isFavourite = !event.recipe.isFavourite
         return viewModelScope.launch {
-            favouriteRepository.save(event.recipe, isFavourite)
+            val recipeUI = event.recipe
+            recipes
+                ?.map {
+                    it.recipeByArea
+                }
+                ?.flatten()
+                ?.find {
+                    recipeUI.id == it.idMeal
+                }
+                ?.run {
+                    favouriteRepository.save(this, isFavourite)
+                }
         }
     }
 
@@ -86,18 +94,20 @@ class MainViewModel(
     private fun loadContent(forced: Boolean) {
         states.postValue(MainScreenStates.Loading)
         viewModelScope.launch {
-            when (val result = repository.loadAllRecipesByArea(forced)) {
+            val result = repository.loadAllRecipesByArea(forced)
+            when (result) {
                 is AllRecipesByAreaResult.Failure -> states.postValue(MainScreenStates.Error.NoNetwork)
                 is AllRecipesByAreaResult.Success -> {
-                    val recipes = successRecipeByArea(result)
+                    recipes = result.contentListRecipes
+                    val recipes = result.contentListRecipes.toUI()
                     states.postValue(MainScreenStates.Content(recipes))
                 }
             }
         }
     }
 
-    private fun successRecipeByArea(result: AllRecipesByAreaResult.Success): List<RecipeByAreaUI> {
-        return result.contentListRecipes.map {
+    private fun List<RecipeByArea>.toUI(): List<RecipeByAreaUI> {
+        return map {
             RecipeByAreaUI(
                 nameArea = it.nameArea,
                 recipeByArea = it.recipeByArea.map { recipe ->

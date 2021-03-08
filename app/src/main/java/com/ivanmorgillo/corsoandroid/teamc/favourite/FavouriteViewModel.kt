@@ -53,9 +53,9 @@ class FavouriteViewModel(
         favouriteStates.postValue(FavouriteScreenLoading)
         val favouriteUiList = repository.loadFavourites().map {
             FavouriteRecipeUI(
-                idRecipe = it.id,
-                titleRecipe = it.recipeName,
-                imageRecipe = it.recipeImageUrl,
+                idRecipe = it.idMeal,
+                titleRecipe = it.name,
+                imageRecipe = it.image,
             )
         }
         favouriteStates.postValue(FavouriteScreenContent(favouriteUiList))
