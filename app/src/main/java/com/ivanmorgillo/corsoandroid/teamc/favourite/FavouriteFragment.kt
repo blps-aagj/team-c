@@ -2,6 +2,7 @@ package com.ivanmorgillo.corsoandroid.teamc.favourite
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -13,6 +14,7 @@ import com.ivanmorgillo.corsoandroid.teamc.R
 import com.ivanmorgillo.corsoandroid.teamc.databinding.FragmentFavouriteListBinding
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.utils.bindings.viewBinding
+import com.ivanmorgillo.corsoandroid.teamc.visible
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -45,8 +47,10 @@ class FavouriteFragment : Fragment(R.layout.fragment_favourite_list) {
                     adapter.items = it.favouriteUiList.toMutableList()
                 }
                 FavouriteScreenStates.FavouriteScreenError -> {
+                    Toast.makeText(context, "Aggiungi preferiti per iniziare", Toast.LENGTH_SHORT).show()
                 }
                 FavouriteScreenStates.FavouriteScreenLoading -> {
+                    binding.recipesListProgressBar.root.visible()
                 }
             }.exhaustive
         })

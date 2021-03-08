@@ -11,7 +11,7 @@
         android:id="@+id/recipes_list_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recipes_list"
             android:layout_width="0dp"
@@ -22,17 +22,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:listitem="@layout/area_item" />
-
-        <ProgressBar
-            android:id="@+id/recipes_list_progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/random_btn_floating"
@@ -57,6 +46,12 @@
     <include
         android:id="@+id/main_screen_no_recipe"
         layout="@layout/no_recipe_found"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <include
+        android:id="@+id/recipes_list_progressBar"
+        layout="@layout/progress_bar"
         android:visibility="gone"
         tools:visibility="visible" />
 
