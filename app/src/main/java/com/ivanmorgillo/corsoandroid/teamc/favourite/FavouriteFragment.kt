@@ -13,6 +13,7 @@ import com.ivanmorgillo.corsoandroid.teamc.MainActivity
 import com.ivanmorgillo.corsoandroid.teamc.R
 import com.ivanmorgillo.corsoandroid.teamc.databinding.FragmentFavouriteListBinding
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
+import com.ivanmorgillo.corsoandroid.teamc.gone
 import com.ivanmorgillo.corsoandroid.teamc.utils.bindings.viewBinding
 import com.ivanmorgillo.corsoandroid.teamc.visible
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -44,6 +45,7 @@ class FavouriteFragment : Fragment(R.layout.fragment_favourite_list) {
         viewModel.favouriteStates.observe(viewLifecycleOwner, {
             when (it) {
                 is FavouriteScreenStates.FavouriteScreenContent -> {
+                    binding.recipesListProgressBar.root.gone()
                     adapter.items = it.favouriteUiList.toMutableList()
                 }
                 FavouriteScreenStates.FavouriteScreenError -> {
