@@ -28,6 +28,7 @@ class MainViewModel(
     val actions = SingleLiveEvent<MainScreenAction>()
     private var recipes: List<RecipeByArea>? = null
 
+    @Suppress("IMPLICIT_CAST_TO_ANY")
     fun send(event: MainScreenEvent) {
         when (event) {
             MainScreenEvent.OnReady -> loadContent(false)
@@ -99,26 +100,23 @@ class MainViewModel(
                 is AllRecipesByAreaResult.Failure -> states.postValue(MainScreenStates.Error.NoNetwork)
                 is AllRecipesByAreaResult.Success -> {
                     recipes = result.contentListRecipes
-                    val recipes = result.contentListRecipes.toUI()
+                    val recipes = result.contentListRecipes
+                        .map {
+                            RecipeByAreaUI(
+                                nameArea = it.nameArea,
+                                recipeByArea = it.recipeByArea.map { recipe ->
+                                    RecipeUI(
+                                        id = recipe.idMeal,
+                                        recipeName = recipe.name,
+                                        recipeImageUrl = recipe.image,
+                                        isFavourite = favouriteRepository.isFavourite(recipe.idMeal)
+                                    )
+                                }
+                            )
+                        }
                     states.postValue(MainScreenStates.Content(recipes))
                 }
             }
-        }
-    }
-
-    private fun List<RecipeByArea>.toUI(): List<RecipeByAreaUI> {
-        return map {
-            RecipeByAreaUI(
-                nameArea = it.nameArea,
-                recipeByArea = it.recipeByArea.map { recipe ->
-                    RecipeUI(
-                        id = recipe.idMeal,
-                        recipeName = recipe.name,
-                        recipeImageUrl = recipe.image,
-                        isFavourite = false
-                    )
-                }
-            )
         }
     }
 }

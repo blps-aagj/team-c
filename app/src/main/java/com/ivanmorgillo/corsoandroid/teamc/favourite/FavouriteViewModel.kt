@@ -3,6 +3,7 @@ package com.ivanmorgillo.corsoandroid.teamc.favourite
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ivanmorgillo.corsoandroid.teamc.domain.Recipe
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteScreenAction.NavigateToDetailFromFavourite
 import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteScreenEvents.OnFavouriteRecipeClick
@@ -21,6 +22,7 @@ class FavouriteViewModel(
     private val tracking: Tracking
 ) : ViewModel() {
 
+    private var recipes: List<Recipe>? = null
     val favouriteStates = MutableLiveData<FavouriteScreenStates>()
     val favouriteActions = SingleLiveEvent<FavouriteScreenAction>()
 
@@ -30,28 +32,37 @@ class FavouriteViewModel(
 
     fun send(event: FavouriteScreenEvents) {
         when (event) {
-            is OnFavouriteRecipeClick -> {
-                tracking.logEvent("favourite_recipe_clicked")
-                favouriteActions.postValue(NavigateToDetailFromFavourite(event.favouriteRecipe))
-            }
-            OnFavouriteScreenReady -> {
-                viewModelScope.launch {
-                    loadContent()
-                }
-            }
-            is FavouriteScreenEvents.OnItemSwiped -> {
-                tracking.logEvent("favourite_recipe_swiped")
-                repository.delete(event.position)
-                viewModelScope.launch {
-                    loadContent()
-                }
-            }
+            is OnFavouriteRecipeClick -> onFavouriteRecipeClick(event)
+            OnFavouriteScreenReady -> onFavouriteScreenReady()
+            is FavouriteScreenEvents.OnItemSwiped -> onItemSwiped(event.position)
         }.exhaustive
+    }
+
+    private fun onItemSwiped(position: Int) {
+        tracking.logEvent("favourite_recipe_swiped")
+        val recipeToDelete = recipes?.get(position) ?: return
+        viewModelScope.launch {
+            repository.delete(recipeToDelete.idMeal)
+            loadContent()
+        }
+    }
+
+    private fun onFavouriteScreenReady() {
+        viewModelScope.launch {
+            loadContent()
+        }
+    }
+
+    private fun onFavouriteRecipeClick(event: OnFavouriteRecipeClick) {
+        tracking.logEvent("favourite_recipe_clicked")
+        favouriteActions.postValue(NavigateToDetailFromFavourite(event.favouriteRecipe))
     }
 
     private suspend fun loadContent() {
         favouriteStates.postValue(FavouriteScreenLoading)
-        val favouriteUiList = repository.loadFavourites().map {
+        val recipes = repository.loadAll()
+        this.recipes = recipes
+        val favouriteUiList = recipes.map {
             FavouriteRecipeUI(
                 idRecipe = it.idMeal,
                 titleRecipe = it.name,
