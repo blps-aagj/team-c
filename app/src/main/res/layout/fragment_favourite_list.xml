@@ -17,4 +17,10 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/favourite_list_item" />
 
+    <include
+        android:id="@+id/recipes_list_progressBar"
+        layout="@layout/progress_bar"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

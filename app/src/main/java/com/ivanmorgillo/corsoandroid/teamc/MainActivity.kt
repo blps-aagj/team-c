@@ -17,7 +17,6 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModel()
     private lateinit var actionBarToggle: ActionBarDrawerToggle
     private val navController: NavController by lazy { Navigation.findNavController(this, R.id.nav_host_fragment) }
-
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,18 +35,35 @@ class MainActivity : AppCompatActivity() {
 
         binding.navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
+                R.id.home_page -> {
+                    navController.navigate(R.id.homeFragment)
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
+                    true
+                }
                 R.id.favourite_list -> {
-                    Toast.makeText(this, "favourite list is clicked", Toast.LENGTH_SHORT).show()
                     navController.navigate(R.id.favouriteFragment)
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
                     true
                 }
+                R.id.shopping_list -> {
+                    Toast.makeText(this, "Lista della spesa da implementare", Toast.LENGTH_SHORT).show()
+                    true
+                }
                 R.id.feedback -> {
                     viewModel.send(MainScreenEvent.OnFeedbackClicked)
-                    val url = "https://forms.gle/SbtkKSk5T7eC9J4z7"
+                    val url = "https://docs.google.com/forms/d/e/1FAIpQLScDBfn5FxLD2H48W-NTjJJttWkIhDiFeHegUyj5H_EBTzYokQ/viewform?usp=sf_link"
                     val builder = CustomTabsIntent.Builder()
                     val customTabsIntent = builder.build()
                     customTabsIntent.launchUrl(this, Uri.parse(url))
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
+                    true
+                }
+                R.id.settings -> {
+                    Toast.makeText(this, "Impostazioni da implementare", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                R.id.about -> {
+                    Toast.makeText(this, "About da implementare", Toast.LENGTH_SHORT).show()
                     true
                 }
                 else -> {
@@ -58,6 +74,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun setCheckedItem(id: Int) {
+        binding.navView.setCheckedItem(id)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (actionBarToggle.onOptionsItemSelected(item)) {
             return true
@@ -65,10 +85,3 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 }
-
-/*fun AppCompatActivity.openUrl(url: String) {
-    val intent = Intent(Intent.ACTION_VIEW)
-    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-    intent.data = Uri.parse(url)
-    startActivity(intent)
-}*/

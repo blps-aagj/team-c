@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.ivanmorgillo.corsoandroid.teamc.MainActivity
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.NavigateToDetail
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenEvent
@@ -44,16 +45,16 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             when (state) {
                 is Content -> setupContent(adapter, state)
                 MainScreenStates.Loading -> {
-                    binding.recipesListProgressBar.visible()
+                    binding.recipesListProgressBar.root.visible()
                     Timber.d("MainscreenStates Loading")
                 }
                 MainScreenStates.Error.NoNetwork -> {
-                    binding.recipesListProgressBar.gone()
+                    binding.recipesListProgressBar.root.gone()
                     binding.recipesListRoot.gone()
                     binding.mainScreenNoNetwork.root.visible()
                 }
                 MainScreenStates.Error.NoRecipeFound -> {
-                    binding.recipesListProgressBar.gone()
+                    binding.recipesListProgressBar.root.gone()
                     binding.recipesListRoot.gone()
                     binding.mainScreenNoRecipe.root.visible()
                 }
@@ -70,7 +71,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     // gestire con NavigateToDetail
                     val recipeId = action.recipe.recipeId.toLongOrNull()
                     if (recipeId == null) {
-                        binding.recipesListProgressBar.gone()
+                        binding.recipesListProgressBar.root.gone()
                         binding.recipesListRoot.gone()
                         binding.mainScreenNoRecipe.root.visible()
                     } else {
@@ -86,7 +87,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun setupContent(adapter: RecipeByAreaAdapter, state: Content) {
-        binding.recipesListProgressBar.gone()
+        binding.recipesListProgressBar.root.gone()
         binding.mainScreenNoNetwork.root.gone()
         binding.recipesListRoot.visible()
         adapter.setRecipesByArea(state.recipes)
@@ -102,5 +103,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         if (item.itemId == R.id.refresh_btn) viewModel.send(OnRefreshClick)
         else if (item.itemId == R.id.random_btn) viewModel.send(MainScreenEvent.OnRandomClick)
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val mainActivity: MainActivity = activity as MainActivity
+        mainActivity.setCheckedItem(R.id.home_page)
     }
 }
