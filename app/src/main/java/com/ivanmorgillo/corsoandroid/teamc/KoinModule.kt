@@ -1,5 +1,6 @@
 package com.ivanmorgillo.corsoandroid.teamc
 
+import com.google.gson.Gson
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetailViewModel
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipesDetailRepositoryImpl
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipesDetailsRepository
@@ -15,6 +16,7 @@ import com.ivanmorgillo.corsoandroid.teamc.network.detail.RecipeDetailAPIImpl
 import com.ivanmorgillo.corsoandroid.teamc.network.home.RecipeAPIImpl
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -56,7 +58,7 @@ val appModule = module {
         RecipesDetailRepositoryImpl(recipeDetailAPI = RecipeDetailAPIImpl(get()))
     }
     single<FavouriteRepository> {
-        FavouriteRepositoryImpl()
+        FavouriteRepositoryImpl(context = androidContext(), gson = Gson())
     }
     viewModel {
         MainViewModel(
