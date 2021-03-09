@@ -45,6 +45,7 @@ class FavouriteFragment : Fragment(R.layout.fragment_favourite_list) {
         viewModel.favouriteStates.observe(viewLifecycleOwner, {
             when (it) {
                 is FavouriteScreenStates.FavouriteScreenContent -> {
+                    binding.favouriteInfoMessage.gone()
                     binding.recipesListProgressBar.root.gone()
                     adapter.items = it.favouriteUiList.toMutableList()
                 }
@@ -53,6 +54,11 @@ class FavouriteFragment : Fragment(R.layout.fragment_favourite_list) {
                 }
                 FavouriteScreenStates.FavouriteScreenLoading -> {
                     binding.recipesListProgressBar.root.visible()
+                }
+                FavouriteScreenStates.FavouriteScreenEmpty -> {
+                    binding.recipesListProgressBar.root.gone()
+                    binding.favouriteRecyclerView.gone()
+                    binding.favouriteInfoMessage.visible()
                 }
             }.exhaustive
         })

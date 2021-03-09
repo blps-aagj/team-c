@@ -1,6 +1,5 @@
-package com.ivanmorgillo.corsoandroid.teamc.home
+package com.blps.aagj.cookbook.domain
 
-import com.blps.aagj.cookbook.domain.RecipeAPI
 import com.ivanmorgillo.corsoandroid.teamc.domain.RecipeByArea
 import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesResult
 
@@ -9,6 +8,7 @@ interface RecipesRepository {
     suspend fun loadRecipes(area: String): LoadRecipesResult
 }
 
+// chiedere se deve essere spostata nel modulo di networking
 class RecipeRepositoryImpl(private val recipeAPI: RecipeAPI) : RecipesRepository {
     private var cached: AllRecipesByAreaResult? = null
     override suspend fun loadAllRecipesByArea(forced: Boolean): AllRecipesByAreaResult {

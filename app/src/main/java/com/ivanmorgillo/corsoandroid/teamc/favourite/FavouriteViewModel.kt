@@ -3,6 +3,7 @@ package com.ivanmorgillo.corsoandroid.teamc.favourite
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.blps.aagj.cookbook.domain.FavouriteRepository
 import com.ivanmorgillo.corsoandroid.teamc.domain.Recipe
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteScreenAction.NavigateToDetailFromFavourite
@@ -61,15 +62,19 @@ class FavouriteViewModel(
     private suspend fun loadContent() {
         favouriteStates.postValue(FavouriteScreenLoading)
         val recipes = repository.loadAll()
-        this.recipes = recipes
-        val favouriteUiList = recipes.map {
-            FavouriteRecipeUI(
-                idRecipe = it.idMeal,
-                titleRecipe = it.name,
-                imageRecipe = it.image,
-            )
+        if (recipes.isEmpty()) {
+            favouriteStates.postValue((FavouriteScreenStates.FavouriteScreenEmpty))
+        } else {
+            this.recipes = recipes
+            val favouriteUiList = recipes.map {
+                FavouriteRecipeUI(
+                    idRecipe = it.idMeal,
+                    titleRecipe = it.name,
+                    imageRecipe = it.image,
+                )
+            }
+            favouriteStates.postValue(FavouriteScreenContent(favouriteUiList))
         }
-        favouriteStates.postValue(FavouriteScreenContent(favouriteUiList))
     }
 }
 
@@ -86,5 +91,6 @@ sealed class FavouriteScreenEvents {
 sealed class FavouriteScreenStates {
     object FavouriteScreenLoading : FavouriteScreenStates()
     object FavouriteScreenError : FavouriteScreenStates()
+    object FavouriteScreenEmpty : FavouriteScreenStates()
     data class FavouriteScreenContent(val favouriteUiList: List<FavouriteRecipeUI>) : FavouriteScreenStates()
 }
