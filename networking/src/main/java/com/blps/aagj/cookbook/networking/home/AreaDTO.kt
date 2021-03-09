@@ -1,4 +1,4 @@
-package com.blps.aagj.cookbook.networking
+package com.blps.aagj.cookbook.networking.home
 
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName

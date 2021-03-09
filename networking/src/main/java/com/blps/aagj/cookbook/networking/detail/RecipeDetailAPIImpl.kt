@@ -1,8 +1,9 @@
-package com.blps.aagj.cookbook.networking
+package com.blps.aagj.cookbook.networking.detail
 
-import com.blps.aagj.cookbook.domain.LoadRecipesDetailError
-import com.blps.aagj.cookbook.domain.LoadRecipesDetailResult
-import com.blps.aagj.cookbook.domain.RecipeDetailAPI
+import LoadRecipesDetailError
+import LoadRecipesDetailResult
+import com.blps.aagj.cookbook.domain.detail.RecipeDetailAPI
+import com.blps.aagj.cookbook.networking.RecipeService
 import org.json.JSONException
 import timber.log.Timber
 import java.io.IOException

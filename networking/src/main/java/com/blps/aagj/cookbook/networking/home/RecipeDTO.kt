@@ -1,8 +1,8 @@
-package com.blps.aagj.cookbook.networking
+package com.blps.aagj.cookbook.networking.home
 
+import Recipe
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
-import com.ivanmorgillo.corsoandroid.teamc.domain.Recipe
 
 @Keep
 data class RecipeDTO(

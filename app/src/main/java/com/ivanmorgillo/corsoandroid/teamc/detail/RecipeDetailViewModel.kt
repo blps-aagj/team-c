@@ -1,11 +1,10 @@
 package com.ivanmorgillo.corsoandroid.teamc.detail
 
+import LoadRecipesDetailResult
+import RecipesDetailsRepository
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.blps.aagj.cookbook.domain.LoadRecipesDetailResult.Failure
-import com.blps.aagj.cookbook.domain.LoadRecipesDetailResult.Success
-import com.blps.aagj.cookbook.domain.RecipesDetailsRepository
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetailScreenStates.Error.NoRecipeFound
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Screens
@@ -37,8 +36,8 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
         states.postValue(RecipeDetailScreenStates.Loading)
         viewModelScope.launch {
             when (val result = recipeDetailRepository.loadDetailsRecipesRandom()) {
-                is Failure -> states.postValue(NoRecipeFound)
-                is Success -> recipesDetailsResultSuccess(result)
+                is LoadRecipesDetailResult.Failure -> states.postValue(NoRecipeFound)
+                is LoadRecipesDetailResult.Success -> recipesDetailsResultSuccess(result)
             }.exhaustive
         }
     }
@@ -47,13 +46,13 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
         states.postValue(RecipeDetailScreenStates.Loading)
         viewModelScope.launch {
             when (val result = recipeDetailRepository.loadDetailsRecipes(id)) {
-                is Failure -> states.postValue(NoRecipeFound)
-                is Success -> recipesDetailsResultSuccess(result)
+                is LoadRecipesDetailResult.Failure -> states.postValue(NoRecipeFound)
+                is LoadRecipesDetailResult.Success -> recipesDetailsResultSuccess(result)
             }.exhaustive
         }
     }
 
-    private fun recipesDetailsResultSuccess(result: Success) {
+    private fun recipesDetailsResultSuccess(result: LoadRecipesDetailResult.Success) {
         val recipesDetails: List<DetailScreenItems> = listOf(
             DetailScreenItems.Image(
                 result.recipesDetail.recipeImage,

@@ -1,19 +1,17 @@
-package com.ivanmorgillo.corsoandroid.teamc.network.home
+package com.blps.aagj.cookbook.networking.home
 
-import com.blps.aagj.cookbook.domain.AllRecipesByAreaResult
-import com.blps.aagj.cookbook.domain.AllRecipesByAreaResult.AllRecipesByAreaError.GenericErrorByArea
-import com.blps.aagj.cookbook.domain.AllRecipesByAreaResult.AllRecipesByAreaError.NoInternetByArea
-import com.blps.aagj.cookbook.domain.AllRecipesByAreaResult.Failure
+import RecipeByArea
+import com.blps.aagj.cookbook.domain.home.LoadRecipesByAreaError
+import com.blps.aagj.cookbook.domain.home.LoadRecipesByAreaResult
+import com.blps.aagj.cookbook.domain.home.LoadRecipesError
+import com.blps.aagj.cookbook.domain.home.LoadRecipesResult
+import com.blps.aagj.cookbook.domain.home.RecipeAPI
 import com.blps.aagj.cookbook.networking.RecipeService
-import com.blps.aagj.cookbook.networking.toDomain
-import com.ivanmorgillo.corsoandroid.teamc.domain.RecipeByArea
-import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesError
-import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesResult
 import timber.log.Timber
 import java.io.IOException
 import java.net.SocketTimeoutException
 
-class RecipeAPIImpl(private val service: RecipeService) : com.blps.aagj.cookbook.domain.RecipeAPI {
+class RecipeAPIImpl(private val service: RecipeService) : RecipeAPI {
 
     @Suppress("TooGenericExceptionCaught")
     override suspend fun loadRecipes(area: String): LoadRecipesResult {
@@ -39,7 +37,7 @@ class RecipeAPIImpl(private val service: RecipeService) : com.blps.aagj.cookbook
     }
 
     @Suppress("TooGenericExceptionCaught")
-    override suspend fun loadAllRecipesByArea(): AllRecipesByAreaResult {
+    override suspend fun loadAllRecipesByArea(): LoadRecipesByAreaResult {
         return try {
             val areasList = service.loadAreas().areas
             val recipesByArea = areasList.map { areaDTO ->
@@ -52,14 +50,14 @@ class RecipeAPIImpl(private val service: RecipeService) : com.blps.aagj.cookbook
                     recipeByArea = recipes
                 )
             }
-            AllRecipesByAreaResult.Success(recipesByArea)
+            LoadRecipesByAreaResult.Success(recipesByArea)
         } catch (e: IOException) {
-            Failure(NoInternetByArea)
+            LoadRecipesByAreaResult.Failure(LoadRecipesByAreaError.NoInternetByArea)
         } catch (e: SocketTimeoutException) {
-            Failure(NoInternetByArea)
+            LoadRecipesByAreaResult.Failure(LoadRecipesByAreaError.NoInternetByArea)
         } catch (e: Exception) {
             Timber.e(e, "Generic Exception on LoadAreaResult")
-            Failure(GenericErrorByArea)
+            LoadRecipesByAreaResult.Failure(LoadRecipesByAreaError.GenericErrorByArea)
         }
     }
 }

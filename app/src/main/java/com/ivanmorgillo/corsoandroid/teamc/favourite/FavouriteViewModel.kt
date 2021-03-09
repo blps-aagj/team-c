@@ -1,10 +1,10 @@
 package com.ivanmorgillo.corsoandroid.teamc.favourite
 
+import FavouriteRepository
+import Recipe
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.blps.aagj.cookbook.domain.FavouriteRepository
-import com.ivanmorgillo.corsoandroid.teamc.domain.Recipe
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteScreenAction.NavigateToDetailFromFavourite
 import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteScreenEvents.OnFavouriteRecipeClick
