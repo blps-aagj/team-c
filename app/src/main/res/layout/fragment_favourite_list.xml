@@ -17,17 +17,36 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/favourite_list_item" />
 
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/favourite_info_message"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        style="@style/TextAppearance.MaterialComponents.Headline4"
-        android:textSize="24sp"
-        android:gravity="center"
-        android:text="@string/there_are_no_favorite_recipes_yet" />
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/favourite_image_info_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/favourite_text_info_message"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:src="@drawable/ic_favourite_border_list"
+            android:layout_margin="8dp" />
+
+        <TextView
+            android:id="@+id/favourite_text_info_message"
+            style="@style/TextAppearance.MaterialComponents.Headline4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:gravity="center"
+            android:text="@string/there_are_no_favorite_recipes_yet"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
         android:id="@+id/recipes_list_progressBar"
