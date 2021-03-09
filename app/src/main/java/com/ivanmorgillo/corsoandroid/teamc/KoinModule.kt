@@ -11,16 +11,9 @@ import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.firebase.TrackingImpl
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipeRepositoryImpl
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipesRepository
-import com.ivanmorgillo.corsoandroid.teamc.network.RecipeService
-import com.ivanmorgillo.corsoandroid.teamc.network.detail.RecipeDetailAPIImpl
-import com.ivanmorgillo.corsoandroid.teamc.network.home.RecipeAPIImpl
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 /**
  * App module
@@ -33,29 +26,15 @@ val appModule = module {
      * il tipo di ogg che voglio creare, poi viene specificato nelle graffe il "come" con la lambda
      */
     single<RecipesRepository> {
-        RecipeRepositoryImpl(recipeAPI = RecipeAPIImpl(get()))
+        RecipeRepositoryImpl(recipeAPI = get())
     }
-    single { // spiego a Koin come creare un RecipeAPI, ho soppresso il tipo per ridondanza
-        RecipeAPIImpl(service = get())
-    }
+
     single<Tracking> {
         TrackingImpl()
     }
-    single<RecipeService> {
-        val logging = HttpLoggingInterceptor()
-        logging.level = HttpLoggingInterceptor.Level.BODY
-        val client = OkHttpClient.Builder()
-            .addInterceptor(logging)
-            .build()
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://www.themealdb.com/api/json/v1/1/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(client)
-            .build()
-        retrofit.create(RecipeService::class.java)
-    }
+
     single<RecipesDetailsRepository> {
-        RecipesDetailRepositoryImpl(recipeDetailAPI = RecipeDetailAPIImpl(get()))
+        RecipesDetailRepositoryImpl(recipeDetailAPI = get())
     }
     single<FavouriteRepository> {
         FavouriteRepositoryImpl(context = androidContext(), gson = Gson())

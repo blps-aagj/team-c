@@ -11,7 +11,9 @@ import com.ivanmorgillo.corsoandroid.teamc.utils.imageLoader
 
 class RecipeByAreaAdapter(private val onclick: (RecipeUI) -> Unit, private val onFavouriteClicked: (RecipeUI) -> Unit) :
     RecyclerView.Adapter<RecipeByAreaViewHolder>() {
+
     private var recipeByArea: List<RecipeByAreaUI> = emptyList()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeByAreaViewHolder {
         val binding = AreaItemBinding.inflate(
             LayoutInflater.from(parent.context),

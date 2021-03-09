@@ -1,8 +1,8 @@
 package com.ivanmorgillo.corsoandroid.teamc.home
 
+import com.blps.aagj.cookbook.domain.RecipeAPI
 import com.ivanmorgillo.corsoandroid.teamc.domain.RecipeByArea
-import com.ivanmorgillo.corsoandroid.teamc.network.home.LoadRecipesResult
-import com.ivanmorgillo.corsoandroid.teamc.network.home.RecipeAPI
+import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesResult
 
 interface RecipesRepository {
     suspend fun loadAllRecipesByArea(forced: Boolean = false): AllRecipesByAreaResult

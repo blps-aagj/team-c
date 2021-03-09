@@ -1,16 +1,11 @@
-package com.ivanmorgillo.corsoandroid.teamc.network.detail
+package com.blps.aagj.cookbook.networking
 
-import com.ivanmorgillo.corsoandroid.teamc.domain.RecipeDetail
-import com.ivanmorgillo.corsoandroid.teamc.network.RecipeService
+import com.blps.aagj.cookbook.domain.LoadRecipesDetailError
+import com.blps.aagj.cookbook.domain.LoadRecipesDetailResult
+import com.blps.aagj.cookbook.domain.RecipeDetailAPI
 import org.json.JSONException
 import timber.log.Timber
 import java.io.IOException
-
-interface RecipeDetailAPI {
-    suspend fun loadDetailsRecipe(id: Long): LoadRecipesDetailResult
-
-    suspend fun loadDetailsRecipeRandom(): LoadRecipesDetailResult
-}
 
 class RecipeDetailAPIImpl(private val service: RecipeService) : RecipeDetailAPI {
 
@@ -20,8 +15,12 @@ class RecipeDetailAPIImpl(private val service: RecipeService) : RecipeDetailAPI 
             //            Timber.d("recipeDetailList $recipeDetailList") // id non funziona ancora
             Timber.d("recipeDetailList${recipeDetailList.meals}")
             if (recipeDetailList.meals != null) {
-                val recipeDetail = recipeDetailList.meals.first()
-                LoadRecipesDetailResult.Success(recipeDetail.toDomain())
+                val recipeDetail = recipeDetailList.meals?.firstOrNull()
+                if (recipeDetail == null) {
+                    LoadRecipesDetailResult.Failure(LoadRecipesDetailError.NoRecipeDetailFound)
+                } else {
+                    LoadRecipesDetailResult.Success(recipeDetail.toDomain())
+                }
             } else {
                 LoadRecipesDetailResult.Failure(LoadRecipesDetailError.NoRecipeDetailFound)
             }
@@ -48,16 +47,4 @@ class RecipeDetailAPIImpl(private val service: RecipeService) : RecipeDetailAPI 
             LoadRecipesDetailResult.Failure(LoadRecipesDetailError.NoRecipeDetailFound)
         }
     }
-}
-
-// Gestisce il caso di un qualsiasi errore
-sealed class LoadRecipesDetailError {
-    object NoRecipeDetailFound : LoadRecipesDetailError()
-    object NoInternet : LoadRecipesDetailError()
-}
-
-// Gestisce i due casi possibili del load
-sealed class LoadRecipesDetailResult {
-    data class Success(val recipesDetail: RecipeDetail) : LoadRecipesDetailResult()
-    data class Failure(val error: LoadRecipesDetailError) : LoadRecipesDetailResult()
 }

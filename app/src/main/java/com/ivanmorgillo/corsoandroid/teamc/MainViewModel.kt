@@ -3,6 +3,7 @@ package com.ivanmorgillo.corsoandroid.teamc
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.blps.aagj.cookbook.domain.LoadRecipesDetailResult
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.NavigateToDetail
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipesDetailsRepository
 import com.ivanmorgillo.corsoandroid.teamc.domain.RecipeByArea
@@ -12,7 +13,6 @@ import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.home.AllRecipesByAreaResult
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipeUI
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipesRepository
-import com.ivanmorgillo.corsoandroid.teamc.network.detail.LoadRecipesDetailResult
 import com.ivanmorgillo.corsoandroid.teamc.utils.SingleLiveEvent
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch

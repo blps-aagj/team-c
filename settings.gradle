@@ -1,2 +1,5 @@
+include ':domain'
+include ':di'
+include ':networking'
 include ':app'
 rootProject.name = "Team C"

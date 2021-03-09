@@ -3,12 +3,12 @@ package com.ivanmorgillo.corsoandroid.teamc.detail
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.blps.aagj.cookbook.domain.LoadRecipesDetailResult.Failure
+import com.blps.aagj.cookbook.domain.LoadRecipesDetailResult.Success
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetailScreenStates.Error.NoRecipeFound
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Screens
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
-import com.ivanmorgillo.corsoandroid.teamc.network.detail.LoadRecipesDetailResult.Failure
-import com.ivanmorgillo.corsoandroid.teamc.network.detail.LoadRecipesDetailResult.Success
 import kotlinx.coroutines.launch
 import timber.log.Timber
 

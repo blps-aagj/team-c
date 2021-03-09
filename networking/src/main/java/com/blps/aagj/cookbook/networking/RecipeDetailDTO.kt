@@ -1,9 +1,12 @@
-package com.ivanmorgillo.corsoandroid.teamc.network.detail
+package com.blps.aagj.cookbook.networking
 
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import com.ivanmorgillo.corsoandroid.teamc.domain.Ingredient
 import com.ivanmorgillo.corsoandroid.teamc.domain.RecipeDetail
+import com.ivanmorgillo.corsoandroid.teamc.network.detail.getVideoID
+import com.ivanmorgillo.corsoandroid.teamc.network.detail.loadRecipeInstruction
+import com.ivanmorgillo.corsoandroid.teamc.network.detail.validateIngredientsAndMeasures
 
 @Keep
 data class RecipeDetailDTO(
