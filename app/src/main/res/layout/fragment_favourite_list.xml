@@ -40,7 +40,7 @@
             android:layout_margin="8dp"
             android:gravity="center"
             android:text="@string/there_are_no_favorite_recipes_yet"
-            android:textSize="16sp"
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
