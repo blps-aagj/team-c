@@ -1,4 +1,4 @@
-package com.ivanmorgillo.corsoandroid.teamc.favourite
+package com.blps.aagj.cookbook.domain
 
 import android.annotation.SuppressLint
 import android.content.Context

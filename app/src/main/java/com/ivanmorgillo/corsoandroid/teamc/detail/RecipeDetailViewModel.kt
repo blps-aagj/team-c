@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.blps.aagj.cookbook.domain.LoadRecipesDetailResult.Failure
 import com.blps.aagj.cookbook.domain.LoadRecipesDetailResult.Success
+import com.blps.aagj.cookbook.domain.RecipesDetailsRepository
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetailScreenStates.Error.NoRecipeFound
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Screens
