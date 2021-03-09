@@ -1,28 +1,19 @@
 package com.ivanmorgillo.corsoandroid.teamc.network.home
 
-import com.ivanmorgillo.corsoandroid.teamc.domain.Recipe
+import com.blps.aagj.cookbook.networking.RecipeService
+import com.blps.aagj.cookbook.networking.toDomain
 import com.ivanmorgillo.corsoandroid.teamc.domain.RecipeByArea
 import com.ivanmorgillo.corsoandroid.teamc.home.AllRecipesByAreaResult
 import com.ivanmorgillo.corsoandroid.teamc.home.AllRecipesByAreaResult.AllRecipesByAreaError.GenericErrorByArea
 import com.ivanmorgillo.corsoandroid.teamc.home.AllRecipesByAreaResult.AllRecipesByAreaError.NoInternetByArea
 import com.ivanmorgillo.corsoandroid.teamc.home.AllRecipesByAreaResult.Failure
-import com.ivanmorgillo.corsoandroid.teamc.network.RecipeService
-import com.ivanmorgillo.corsoandroid.teamc.network.home.LoadRecipesError.GenericError
-import com.ivanmorgillo.corsoandroid.teamc.network.home.LoadRecipesError.NoInternet
-import com.ivanmorgillo.corsoandroid.teamc.network.home.LoadRecipesError.NoRecipeFound
+import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesError
+import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesResult
 import timber.log.Timber
 import java.io.IOException
 import java.net.SocketTimeoutException
 
-interface RecipeAPI {
-    @Suppress("TooGenericExceptionCaught")
-    suspend fun loadRecipes(area: String): LoadRecipesResult
-
-    @Suppress("TooGenericExceptionCaught")
-    suspend fun loadAllRecipesByArea(): AllRecipesByAreaResult
-}
-
-class RecipeAPIImpl(private val service: RecipeService) : RecipeAPI {
+class RecipeAPIImpl(private val service: RecipeService) : com.blps.aagj.cookbook.domain.RecipeAPI {
 
     @Suppress("TooGenericExceptionCaught")
     override suspend fun loadRecipes(area: String): LoadRecipesResult {
@@ -33,17 +24,17 @@ class RecipeAPIImpl(private val service: RecipeService) : RecipeAPI {
             }
             // caso lista vuota
             return if (recipes.isEmpty()) {
-                LoadRecipesResult.Failure(NoRecipeFound)
+                LoadRecipesResult.Failure(LoadRecipesError.NoRecipeFound)
             } else {
                 LoadRecipesResult.Success(recipes)
             }
         } catch (e: IOException) {
-            return LoadRecipesResult.Failure(NoInternet)
+            return LoadRecipesResult.Failure(LoadRecipesError.NoInternet)
         } catch (e: SocketTimeoutException) {
-            return LoadRecipesResult.Failure(NoInternet)
+            return LoadRecipesResult.Failure(LoadRecipesError.NoInternet)
         } catch (e: Exception) {
             Timber.e(e, "Generic Exception on LoadRecipes")
-            return LoadRecipesResult.Failure(GenericError)
+            return LoadRecipesResult.Failure(LoadRecipesError.GenericError)
         }
     }
 
@@ -71,15 +62,4 @@ class RecipeAPIImpl(private val service: RecipeService) : RecipeAPI {
             Failure(GenericErrorByArea)
         }
     }
-}
-
-sealed class LoadRecipesError {
-    object NoRecipeFound : LoadRecipesError()
-    object NoInternet : LoadRecipesError()
-    object GenericError : LoadRecipesError()
-}
-
-sealed class LoadRecipesResult {
-    data class Success(val recipes: List<Recipe>) : LoadRecipesResult()
-    data class Failure(val error: LoadRecipesError) : LoadRecipesResult()
 }

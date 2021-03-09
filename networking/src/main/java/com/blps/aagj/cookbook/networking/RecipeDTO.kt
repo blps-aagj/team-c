@@ -1,4 +1,4 @@
-package com.ivanmorgillo.corsoandroid.teamc.network.home
+package com.blps.aagj.cookbook.networking
 
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName

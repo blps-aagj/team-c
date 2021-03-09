@@ -1,7 +1,7 @@
 package com.ivanmorgillo.corsoandroid.teamc.detail
 
-import com.ivanmorgillo.corsoandroid.teamc.network.detail.LoadRecipesDetailResult
-import com.ivanmorgillo.corsoandroid.teamc.network.detail.RecipeDetailAPI
+import com.blps.aagj.cookbook.domain.LoadRecipesDetailResult
+import com.blps.aagj.cookbook.domain.RecipeDetailAPI
 
 interface RecipesDetailsRepository {
     suspend fun loadDetailsRecipes(id: Long): LoadRecipesDetailResult
