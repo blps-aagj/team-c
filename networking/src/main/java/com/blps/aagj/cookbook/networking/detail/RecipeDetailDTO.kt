@@ -1,12 +1,9 @@
-package com.blps.aagj.cookbook.networking
+package com.blps.aagj.cookbook.networking.detail
 
+import Ingredient
+import RecipeDetail
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
-import com.ivanmorgillo.corsoandroid.teamc.domain.Ingredient
-import com.ivanmorgillo.corsoandroid.teamc.domain.RecipeDetail
-import com.ivanmorgillo.corsoandroid.teamc.network.detail.getVideoID
-import com.ivanmorgillo.corsoandroid.teamc.network.detail.loadRecipeInstruction
-import com.ivanmorgillo.corsoandroid.teamc.network.detail.validateIngredientsAndMeasures
 
 @Keep
 data class RecipeDetailDTO(
@@ -159,3 +156,28 @@ private fun RecipeDetailDTO.Meal.getIngredients() = listOfNotNull(
     validateIngredientsAndMeasures(strIngredient19, strMeasure19),
     validateIngredientsAndMeasures(strIngredient20, strMeasure20),
 )
+
+fun getVideoID(videoUri: String?): String {
+    return if (videoUri != null && videoUri.isNotBlank()) {
+        videoUri.replace("https://www.youtube.com/watch?v=", "")
+    } else {
+        ""
+    }
+}
+
+fun loadRecipeInstruction(instructions: String): List<String> {
+    return instructions.split("/r/n")
+}
+
+fun validateIngredientsAndMeasures(ingredientName: String?, ingredientQuantity: String?): Ingredient? {
+    // inserire check per vedere se la stringa è fatta solo di numeri
+    return if (ingredientName.isNullOrBlank()) {
+        null
+    } else {
+        if (ingredientQuantity.isNullOrBlank()) {
+            Ingredient(ingredientName, "q.s.")
+        } else {
+            Ingredient(ingredientName, ingredientQuantity)
+        }
+    }
+}

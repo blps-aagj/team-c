@@ -1,10 +1,10 @@
 package com.blps.aagj.cookbook.di
 
-import com.blps.aagj.cookbook.domain.RecipeAPI
-import com.blps.aagj.cookbook.domain.RecipeDetailAPI
-import com.blps.aagj.cookbook.networking.RecipeDetailAPIImpl
+import com.blps.aagj.cookbook.domain.detail.RecipeDetailAPI
+import com.blps.aagj.cookbook.domain.home.RecipeAPI
 import com.blps.aagj.cookbook.networking.RecipeService
-import com.ivanmorgillo.corsoandroid.teamc.network.home.RecipeAPIImpl
+import com.blps.aagj.cookbook.networking.detail.RecipeDetailAPIImpl
+import com.blps.aagj.cookbook.networking.home.RecipeAPIImpl
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module

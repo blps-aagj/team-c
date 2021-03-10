@@ -1,11 +1,11 @@
 package com.ivanmorgillo.corsoandroid.teamc
 
-import com.blps.aagj.cookbook.domain.FavouriteRepository
-import com.blps.aagj.cookbook.domain.FavouriteRepositoryImpl
-import com.blps.aagj.cookbook.domain.RecipeRepositoryImpl
-import com.blps.aagj.cookbook.domain.RecipesDetailRepositoryImpl
-import com.blps.aagj.cookbook.domain.RecipesDetailsRepository
-import com.blps.aagj.cookbook.domain.RecipesRepository
+import FavouriteRepository
+import FavouriteRepositoryImpl
+import RecipesDetailRepositoryImpl
+import RecipesDetailsRepository
+import com.blps.aagj.cookbook.domain.home.RecipeRepositoryImpl
+import com.blps.aagj.cookbook.domain.home.RecipesRepository
 import com.google.gson.Gson
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetailViewModel
 import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteViewModel

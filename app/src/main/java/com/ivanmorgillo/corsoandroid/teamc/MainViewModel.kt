@@ -1,16 +1,16 @@
 package com.ivanmorgillo.corsoandroid.teamc
 
+import FavouriteRepository
+import LoadRecipesDetailResult
+import RecipeByArea
+import RecipeDetail
+import RecipesDetailsRepository
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.blps.aagj.cookbook.domain.AllRecipesByAreaResult
-import com.blps.aagj.cookbook.domain.FavouriteRepository
-import com.blps.aagj.cookbook.domain.LoadRecipesDetailResult
-import com.blps.aagj.cookbook.domain.RecipesDetailsRepository
-import com.blps.aagj.cookbook.domain.RecipesRepository
+import com.blps.aagj.cookbook.domain.home.LoadRecipesByAreaResult
+import com.blps.aagj.cookbook.domain.home.RecipesRepository
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.NavigateToDetail
-import com.ivanmorgillo.corsoandroid.teamc.domain.RecipeByArea
-import com.ivanmorgillo.corsoandroid.teamc.domain.RecipeDetail
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipeUI
 import com.ivanmorgillo.corsoandroid.teamc.utils.SingleLiveEvent
@@ -97,8 +97,8 @@ class MainViewModel(
         viewModelScope.launch {
             val result = repository.loadAllRecipesByArea(forced)
             when (result) {
-                is AllRecipesByAreaResult.Failure -> states.postValue(MainScreenStates.Error.NoNetwork)
-                is AllRecipesByAreaResult.Success -> {
+                is LoadRecipesByAreaResult.Failure -> states.postValue(MainScreenStates.Error.NoNetwork)
+                is LoadRecipesByAreaResult.Success -> {
                     recipes = result.contentListRecipes
                     val recipes = result.contentListRecipes
                         .map {
