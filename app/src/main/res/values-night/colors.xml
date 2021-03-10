@@ -4,5 +4,6 @@
     <color name="color_backgroundFab">#FFFFFF</color>
     <color name="color_iconFab">#000000</color>
     <color name="color_background_item">#000000</color>
+    <color name="background_home">#212121</color>
 
 </resources>
