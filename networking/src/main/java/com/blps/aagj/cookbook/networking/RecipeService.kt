@@ -18,4 +18,7 @@ interface RecipeService {
 
     @GET("random.php")
     suspend fun loadDetailsRecipeRandom(): RecipeDetailDTO
+
+    @GET("search.php")
+    suspend fun loadRecipeSearchByName(@Query("s") name: String): RecipeDetailDTO
 }

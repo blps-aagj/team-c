@@ -6,4 +6,5 @@ interface RecipeAPI {
 
     @Suppress("TooGenericExceptionCaught")
     suspend fun loadAllRecipesByArea(): LoadRecipesByAreaResult
+    suspend fun loadRecipeSearchByName(name: String): LoadRecipeSearchByNameResult
 }

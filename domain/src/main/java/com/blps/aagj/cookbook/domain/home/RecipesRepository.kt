@@ -49,3 +49,13 @@ sealed class LoadRecipesResult {
     data class Success(val recipes: List<Recipe>) : LoadRecipesResult()
     data class Failure(val error: LoadRecipesError) : LoadRecipesResult()
 }
+
+sealed class LoadRecipeSearchByNameResult {
+    data class Failure(val error: LoadRecipeSearchByNameError) : LoadRecipeSearchByNameResult()
+    data class Success(val content: List<Recipe>) : LoadRecipeSearchByNameResult()
+}
+
+sealed class LoadRecipeSearchByNameError {
+    object NoInternet : LoadRecipeSearchByNameError()
+    object GenericError : LoadRecipeSearchByNameError()
+}

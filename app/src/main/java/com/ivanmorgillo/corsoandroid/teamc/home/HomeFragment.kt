@@ -98,8 +98,15 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.refresh_btn) viewModel.send(OnRefreshClick)
-        else if (item.itemId == R.id.random_btn) viewModel.send(MainScreenEvent.OnRandomClick)
+        /* if (item.itemId == R.id.refresh_btn) viewModel.send(OnRefreshClick)
+        else if (item.itemId == R.id.random_btn) viewModel.send(MainScreenEvent.OnRandomClick) */
+        when (item.itemId) {
+            R.id.refresh_btn -> viewModel.send(OnRefreshClick)
+            R.id.random_btn -> viewModel.send(MainScreenEvent.OnRandomClick)
+            R.id.search_btn -> viewModel.send(MainScreenEvent.OnSearchClick)
+            else -> error("boh")
+        }.exhaustive
+
         return super.onOptionsItemSelected(item)
     }
 
