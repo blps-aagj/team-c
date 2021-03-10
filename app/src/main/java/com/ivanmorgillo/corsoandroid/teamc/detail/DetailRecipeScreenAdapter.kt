@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import coil.load
+import com.ivanmorgillo.corsoandroid.teamc.R
 import com.ivanmorgillo.corsoandroid.teamc.databinding.DetailRecipeScreenImageBinding
 import com.ivanmorgillo.corsoandroid.teamc.databinding.DetailRecipeScreenIngredientItemBinding
 import com.ivanmorgillo.corsoandroid.teamc.databinding.DetailRecipeScreenIngredientsBinding
@@ -34,7 +35,7 @@ sealed class DetailScreenItems {
     data class TitleCategoryArea(val title: String, val category: String, val area: String) :
         DetailScreenItems() // modellare il titolo della schermata
 
-    data class Image(val image: String) : DetailScreenItems()
+    data class Image(val image: String, val isFavourite: Boolean) : DetailScreenItems()
     data class Ingredients(val ingredients: List<IngredientUI>) : DetailScreenItems()
     data class Instructions(val instructions: List<String>) : DetailScreenItems()
     data class VideoInstructions(val videoInstructions: String) : DetailScreenItems()
@@ -123,8 +124,13 @@ sealed class DetailRecipeScreenViewHolder(itemView: View) : ViewHolder(itemView)
     }
 
     class ImageViewHolder(private val binding: DetailRecipeScreenImageBinding) : DetailRecipeScreenViewHolder(binding.root) {
-        fun bind(image: Image) {
-            binding.detailRecipeScreenImage.load(image.image, imageLoader(itemView.context))
+        fun bind(item: Image) {
+            binding.detailRecipeScreenImage.load(item.image, imageLoader(itemView.context))
+            if (item.isFavourite) {
+                binding.favouriteListDetailLayout.icon.setImageResource(R.drawable.ic_favourite_list)
+            } else {
+                binding.favouriteListDetailLayout.icon.setImageResource(R.drawable.ic_favourite_border_list)
+            }
         }
     }
 
@@ -184,7 +190,7 @@ class IngredientsAdapter : RecyclerView.Adapter<IngredientsItemViewHolder>() {
 
 class IngredientsItemViewHolder(private val binding: DetailRecipeScreenIngredientItemBinding) : ViewHolder(binding.root) {
     fun bind(item: IngredientUI) {
-        binding.ingredientImage.load("https://www.themealdb.com/images/ingredients/${item.name}-Small.png") {
+        binding.ingredientImage.load("https://www.themealdb.com/images/ingredients/${item.name}-Small.png", imageLoader(itemView.context)) {
             crossfade(true)
         }
         binding.detailScreenIngredientName.text = item.name

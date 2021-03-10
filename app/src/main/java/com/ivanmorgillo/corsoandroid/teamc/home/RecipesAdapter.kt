@@ -55,26 +55,14 @@ class RecipeViewHolder(private val binding: RecipeItemBinding) : RecyclerView.Vi
             error(R.drawable.ic_broken_image)
         }
         binding.recipeImage.contentDescription = item.recipeName
-        binding.recipeRoot.setOnClickListener { onclick(item) }
-        favouriteSetOnClickListener(onFavouriteClicked, item)
-    }
-
-    private fun favouriteSetOnClickListener(
-        onFavouriteClicked: (RecipeUI) -> Unit,
-        item: RecipeUI
-    ) {
-        binding.favouriteListCheckboxLayout.icon.setOnClickListener {
-            onFavouriteClicked(item)
-            if (item.isFavourite) {
-                binding.favouriteListCheckboxLayout.icon.setImageResource(R.drawable.ic_favourite_border_list)
-            } else {
-                binding.favouriteListCheckboxLayout.icon.setImageResource(R.drawable.ic_favourite_list)
-            }
-        }
         if (item.isFavourite) {
-            binding.favouriteListCheckboxLayout.icon.setImageResource(R.drawable.ic_favourite_list)
+            binding.favouriteListDetailLayout.icon.setImageResource(R.drawable.ic_favourite_list)
         } else {
-            binding.favouriteListCheckboxLayout.icon.setImageResource(R.drawable.ic_favourite_border_list)
+            binding.favouriteListDetailLayout.icon.setImageResource(R.drawable.ic_favourite_border_list)
+        }
+        binding.recipeRoot.setOnClickListener { onclick(item) }
+        binding.favouriteListDetailLayout.icon.setOnClickListener {
+            onFavouriteClicked(item)
         }
     }
 }

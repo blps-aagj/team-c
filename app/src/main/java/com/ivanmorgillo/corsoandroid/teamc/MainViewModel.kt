@@ -42,7 +42,8 @@ class MainViewModel(
             }
             is MainScreenEvent.OnFavouriteClicked -> {
                 tracking.logEvent("home_favorite_clicked")
-                saveFavourite(event)
+                saveFavourite(event.recipe)
+
             }
             is MainScreenEvent.OnRandomClick -> {
                 tracking.logEvent("home_random_clicked")
@@ -57,10 +58,10 @@ class MainViewModel(
         }.exhaustive
     }
 
-    private fun saveFavourite(event: MainScreenEvent.OnFavouriteClicked): Job {
-        val isFavourite = !event.recipe.isFavourite
+    private fun saveFavourite(recipe: RecipeUI): Job {
+        val isFavourite = !recipe.isFavourite
         return viewModelScope.launch {
-            val recipeUI = event.recipe
+            val recipeUI = recipe
             recipes
                 ?.map {
                     it.recipeByArea
@@ -72,6 +73,9 @@ class MainViewModel(
                 ?.run {
                     favouriteRepository.save(this, isFavourite)
                 }
+            val updateRecipes = recipes.map {
+
+            }
         }
     }
 

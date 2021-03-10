@@ -24,7 +24,7 @@
             tools:src="@drawable/arabbiata" />
 
         <include
-            android:id="@+id/favourite_list_checkbox_layout"
+            android:id="@+id/favourite_list_detail_layout"
             layout="@layout/favourite_list_foreground"
             android:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
