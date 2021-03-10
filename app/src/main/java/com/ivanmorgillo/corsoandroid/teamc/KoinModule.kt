@@ -1,16 +1,16 @@
 package com.ivanmorgillo.corsoandroid.teamc
 
+import com.blps.aagj.cookbook.domain.FavouriteRepository
+import com.blps.aagj.cookbook.domain.FavouriteRepositoryImpl
+import com.blps.aagj.cookbook.domain.RecipeRepositoryImpl
+import com.blps.aagj.cookbook.domain.RecipesDetailRepositoryImpl
+import com.blps.aagj.cookbook.domain.RecipesDetailsRepository
+import com.blps.aagj.cookbook.domain.RecipesRepository
 import com.google.gson.Gson
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetailViewModel
-import com.ivanmorgillo.corsoandroid.teamc.detail.RecipesDetailRepositoryImpl
-import com.ivanmorgillo.corsoandroid.teamc.detail.RecipesDetailsRepository
-import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteRepository
-import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteRepositoryImpl
 import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteViewModel
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.firebase.TrackingImpl
-import com.ivanmorgillo.corsoandroid.teamc.home.RecipeRepositoryImpl
-import com.ivanmorgillo.corsoandroid.teamc.home.RecipesRepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module

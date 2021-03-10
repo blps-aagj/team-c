@@ -1,12 +1,12 @@
 package com.ivanmorgillo.corsoandroid.teamc.network.home
 
+import com.blps.aagj.cookbook.domain.AllRecipesByAreaResult
+import com.blps.aagj.cookbook.domain.AllRecipesByAreaResult.AllRecipesByAreaError.GenericErrorByArea
+import com.blps.aagj.cookbook.domain.AllRecipesByAreaResult.AllRecipesByAreaError.NoInternetByArea
+import com.blps.aagj.cookbook.domain.AllRecipesByAreaResult.Failure
 import com.blps.aagj.cookbook.networking.RecipeService
 import com.blps.aagj.cookbook.networking.toDomain
 import com.ivanmorgillo.corsoandroid.teamc.domain.RecipeByArea
-import com.ivanmorgillo.corsoandroid.teamc.home.AllRecipesByAreaResult
-import com.ivanmorgillo.corsoandroid.teamc.home.AllRecipesByAreaResult.AllRecipesByAreaError.GenericErrorByArea
-import com.ivanmorgillo.corsoandroid.teamc.home.AllRecipesByAreaResult.AllRecipesByAreaError.NoInternetByArea
-import com.ivanmorgillo.corsoandroid.teamc.home.AllRecipesByAreaResult.Failure
 import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesError
 import com.ivanmorgillo.corsoandroid.teamc.network.LoadRecipesResult
 import timber.log.Timber
