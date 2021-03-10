@@ -24,4 +24,5 @@
     <string name="about">About</string>
     <string name="shopping_list">Shopping List</string>
     <string name="there_are_no_favorite_recipes_yet">There are no favorite recipes yet</string>
+    <string name="search">Search</string>
 </resources>
