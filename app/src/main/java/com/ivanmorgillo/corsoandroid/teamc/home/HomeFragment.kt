@@ -15,7 +15,7 @@ import com.ivanmorgillo.corsoandroid.teamc.MainScreenEvent.OnFavouriteClicked
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenEvent.OnRecipeClick
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenEvent.OnRefreshClick
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenStates
-import com.ivanmorgillo.corsoandroid.teamc.MainScreenStates.Content
+import com.ivanmorgillo.corsoandroid.teamc.MainScreenStates.ContentRecipeByAreaUI
 import com.ivanmorgillo.corsoandroid.teamc.MainViewModel
 import com.ivanmorgillo.corsoandroid.teamc.R
 import com.ivanmorgillo.corsoandroid.teamc.databinding.FragmentHomeBinding
@@ -37,27 +37,20 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             { viewModel.send(OnRecipeClick(it)) },
             { viewModel.send((OnFavouriteClicked(it))) }
         )
+        val searchAdapter = RecipesAdapter(
+            { viewModel.send(OnRecipeClick(it)) },
+            { viewModel.send((OnFavouriteClicked(it))) }
+        )
         binding.recipesList.adapter = adapter
+        binding.recipesSearchList.homeSearchViewRecipeRecyclerviewId.adapter = searchAdapter
 
-        viewModel.states.observe(viewLifecycleOwner, { state ->
-            when (state) {
-                is Content -> setupContent(adapter, state)
-                MainScreenStates.Loading -> {
-                    binding.recipesListProgressBar.root.visible()
-                    Timber.d("MainscreenStates Loading")
-                }
-                MainScreenStates.Error.NoNetwork -> {
-                    binding.recipesListProgressBar.root.gone()
-                    binding.recipesListRoot.gone()
-                    binding.mainScreenNoNetwork.root.visible()
-                }
-                MainScreenStates.Error.NoRecipeFound -> {
-                    binding.recipesListProgressBar.root.gone()
-                    binding.recipesListRoot.gone()
-                    binding.mainScreenNoRecipe.root.visible()
-                }
-            }.exhaustive
-        })
+        states(adapter, searchAdapter)
+        actions()
+        viewModel.send(MainScreenEvent.OnReady)
+        Timber.d("Wow")
+    }
+
+    private fun actions() {
         viewModel.actions.observe(viewLifecycleOwner, { action ->
             when (action) {
                 is NavigateToDetail -> {
@@ -80,15 +73,42 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
             }.exhaustive
         })
-        viewModel.send(MainScreenEvent.OnReady)
-        Timber.d("Wow")
     }
 
-    private fun setupContent(adapter: RecipeByAreaAdapter, state: Content) {
-        binding.recipesListProgressBar.root.gone()
-        binding.mainScreenNoNetwork.root.gone()
-        binding.recipesListRoot.visible()
-        adapter.setRecipesByArea(state.recipes)
+    private fun states(adapter: RecipeByAreaAdapter, searchAdapter: RecipesAdapter) {
+        viewModel.states.observe(viewLifecycleOwner, { state ->
+            when (state) {
+                is ContentRecipeByAreaUI -> {
+                    binding.recipesListProgressBar.root.gone()
+                    binding.mainScreenNoNetwork.root.gone()
+                    binding.recipesListRoot.visible()
+                    binding.recipesSearchList.root.gone()
+                    adapter.setRecipesByArea(state.recipes)
+                }
+                MainScreenStates.Loading -> {
+                    binding.recipesListProgressBar.root.visible()
+                    Timber.d("MainscreenStates Loading")
+                }
+                MainScreenStates.Error.NoNetwork -> {
+                    binding.recipesListProgressBar.root.gone()
+                    binding.recipesListRoot.gone()
+                    binding.mainScreenNoNetwork.root.visible()
+                }
+                MainScreenStates.Error.NoRecipeFound -> {
+                    binding.recipesListProgressBar.root.gone()
+                    binding.recipesListRoot.gone()
+                    binding.mainScreenNoRecipe.root.visible()
+                }
+                is MainScreenStates.ContentRecipeSearchByNameUI -> {
+                    binding.recipesListProgressBar.root.gone()
+                    binding.mainScreenNoNetwork.root.gone()
+                    binding.recipesListRoot.visible()
+                    binding.recipesList.gone()
+                    binding.recipesSearchList.root.visible()
+                    searchAdapter.setRecipes(state.recipes)
+                }
+            }.exhaustive
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -98,12 +118,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        /* if (item.itemId == R.id.refresh_btn) viewModel.send(OnRefreshClick)
-        else if (item.itemId == R.id.random_btn) viewModel.send(MainScreenEvent.OnRandomClick) */
         when (item.itemId) {
             R.id.refresh_btn -> viewModel.send(OnRefreshClick)
             R.id.random_btn -> viewModel.send(MainScreenEvent.OnRandomClick)
-            R.id.search_btn -> viewModel.send(MainScreenEvent.OnSearchClick)
+            R.id.search_btn -> {
+                Timber.d("onOptionsItemSelected")
+                viewModel.send(MainScreenEvent.OnSearchClick)
+            }
             else -> error("boh")
         }.exhaustive
 

@@ -6,6 +6,7 @@ import RecipeByArea
 interface RecipesRepository {
     suspend fun loadAllRecipesByArea(forced: Boolean = false): LoadRecipesByAreaResult
     suspend fun loadRecipes(area: String): LoadRecipesResult
+    suspend fun loadRecipesSearchByName(name: String): LoadRecipeSearchByNameResult
 }
 
 // chiedere se deve essere spostata nel modulo di networking
@@ -26,6 +27,10 @@ class RecipeRepositoryImpl(private val recipeAPI: RecipeAPI) : RecipesRepository
 
     override suspend fun loadRecipes(area: String): LoadRecipesResult {
         return recipeAPI.loadRecipes(area)
+    }
+
+    override suspend fun loadRecipesSearchByName(name: String): LoadRecipeSearchByNameResult {
+        return recipeAPI.loadRecipeSearchByName(name)
     }
 }
 

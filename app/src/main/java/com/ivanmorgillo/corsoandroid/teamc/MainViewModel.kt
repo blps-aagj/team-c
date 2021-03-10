@@ -8,6 +8,7 @@ import RecipesDetailsRepository
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.blps.aagj.cookbook.domain.home.LoadRecipeSearchByNameResult
 import com.blps.aagj.cookbook.domain.home.LoadRecipesByAreaResult
 import com.blps.aagj.cookbook.domain.home.RecipesRepository
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.NavigateToDetail
@@ -53,6 +54,28 @@ class MainViewModel(
             }
             MainScreenEvent.OnFavouriteListMenuClicked -> {
                 tracking.logEvent("drawer_favourite_list_clicked")
+            }
+            MainScreenEvent.OnSearchClick -> {
+                tracking.logEvent("home_search_clicked")
+                Timber.d("OnSearchClick")
+                states.postValue(MainScreenStates.Loading)
+                viewModelScope.launch {
+                    val result = repository.loadRecipesSearchByName("cake")
+                    when (result) {
+                        is LoadRecipeSearchByNameResult.Failure -> states.postValue(MainScreenStates.Error.NoNetwork)
+                        is LoadRecipeSearchByNameResult.Success -> {
+                            val recipes = result.content.map {
+                                RecipeUI(
+                                    id = it.idMeal,
+                                    recipeName = it.name,
+                                    recipeImageUrl = it.image,
+                                    isFavourite = favouriteRepository.isFavourite(it.idMeal)
+                                )
+                            }
+                            states.postValue(MainScreenStates.ContentRecipeSearchByNameUI(recipes))
+                        }
+                    }
+                }
             }
         }.exhaustive
     }
@@ -114,7 +137,7 @@ class MainViewModel(
                                 }
                             )
                         }
-                    states.postValue(MainScreenStates.Content(recipes))
+                    states.postValue(MainScreenStates.ContentRecipeByAreaUI(recipes))
                 }
             }
         }
@@ -137,6 +160,7 @@ sealed class MainScreenEvent {
     object OnFeedbackClicked : MainScreenEvent()
     object OnReady : MainScreenEvent()
     object OnRefreshClick : MainScreenEvent()
+    object OnSearchClick : MainScreenEvent()
 }
 
 sealed class MainScreenStates {
@@ -147,5 +171,6 @@ sealed class MainScreenStates {
         object NoRecipeFound : Error()
     }
 
-    data class Content(val recipes: List<RecipeByAreaUI>) : MainScreenStates()
+    data class ContentRecipeByAreaUI(val recipes: List<RecipeByAreaUI>) : MainScreenStates()
+    data class ContentRecipeSearchByNameUI(val recipes: List<RecipeUI>) : MainScreenStates()
 }
