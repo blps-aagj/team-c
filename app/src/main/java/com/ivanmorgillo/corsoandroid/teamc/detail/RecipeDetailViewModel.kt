@@ -35,7 +35,8 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
     private fun loadRecipeDetailRandomContent() {
         states.postValue(RecipeDetailScreenStates.Loading)
         viewModelScope.launch {
-            when (val result = recipeDetailRepository.loadDetailsRecipesRandom()) {
+            val result = recipeDetailRepository.loadDetailsRecipesRandom()
+            when (result) {
                 is LoadRecipesDetailResult.Failure -> states.postValue(NoRecipeFound)
                 is LoadRecipesDetailResult.Success -> recipesDetailsResultSuccess(result)
             }.exhaustive
@@ -45,7 +46,8 @@ class RecipeDetailViewModel(private val recipeDetailRepository: RecipesDetailsRe
     private fun loadRecipeDetailContent(id: Long) {
         states.postValue(RecipeDetailScreenStates.Loading)
         viewModelScope.launch {
-            when (val result = recipeDetailRepository.loadDetailsRecipes(id)) {
+            val result = recipeDetailRepository.loadDetailsRecipes(id)
+            when (result) {
                 is LoadRecipesDetailResult.Failure -> states.postValue(NoRecipeFound)
                 is LoadRecipesDetailResult.Success -> recipesDetailsResultSuccess(result)
             }.exhaustive

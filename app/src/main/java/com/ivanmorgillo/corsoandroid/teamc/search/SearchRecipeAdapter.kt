@@ -31,4 +31,3 @@ class SearchViewHolder(val binding: SearchListItemBinding) : RecyclerView.ViewHo
         binding.titleSearchRecipe.text = item.recipeName
     }
 }
-
