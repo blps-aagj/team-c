@@ -48,4 +48,22 @@
         tools:listitem="@layout/search_list_item">
 
     </androidx.recyclerview.widget.RecyclerView>
+
+    <include
+        android:id="@+id/layout_no_connection"
+        layout="@layout/no_network"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone" />
+
+    <include
+        android:visibility="gone"
+        android:id="@+id/layout_blank_content"
+        layout="@layout/fragment_search_blank_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

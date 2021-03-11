@@ -9,18 +9,15 @@ import com.blps.aagj.cookbook.domain.home.RecipesRepository
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipeUI
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class RecipeSearchViewModel(private val repository: RecipesRepository, private val favouriteRepository: FavouriteRepository) : ViewModel() {
     val states = MutableLiveData<RecipeSearchScreenStates>()
-    private var recipeSearchString = ""
     fun send(event: RecipeSearchScreenEvent) {
         when (event) {
             RecipeSearchScreenEvent.OnError -> TODO()
-            RecipeSearchScreenEvent.OnReady -> loadContent("")
+            RecipeSearchScreenEvent.OnReady -> states.postValue(RecipeSearchScreenStates.BlankContent)
             is RecipeSearchScreenEvent.OnRecipeSearch -> {
-                Timber.d("searchText$recipeSearchString")
-                loadContent(recipeSearchString)
+                loadContent(event.name)
             }
         }.exhaustive
     }
@@ -44,16 +41,12 @@ class RecipeSearchViewModel(private val repository: RecipesRepository, private v
             }
         }
     }
-
-    fun setRecipeName(recipeName: String) {
-        this.recipeSearchString = recipeName
-    }
 }
 
 sealed class RecipeSearchScreenEvent {
     object OnReady : RecipeSearchScreenEvent()
     object OnError : RecipeSearchScreenEvent()
-    data class OnRecipeSearch(private val name: String) : RecipeSearchScreenEvent()
+    data class OnRecipeSearch(val name: String) : RecipeSearchScreenEvent()
 }
 
 sealed class RecipeSearchScreenStates {
@@ -62,6 +55,6 @@ sealed class RecipeSearchScreenStates {
         object NoNetwork : Error()
         object NoRecipeFound : Error()
     }
-
+    object BlankContent : RecipeSearchScreenStates()
     data class Content(val recipe: List<RecipeUI>) : RecipeSearchScreenStates()
 }

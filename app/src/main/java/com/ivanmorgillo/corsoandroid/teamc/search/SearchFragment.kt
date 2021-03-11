@@ -8,7 +8,10 @@ import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import com.ivanmorgillo.corsoandroid.teamc.R
 import com.ivanmorgillo.corsoandroid.teamc.databinding.FragmentSearchBinding
+import com.ivanmorgillo.corsoandroid.teamc.exhaustive
+import com.ivanmorgillo.corsoandroid.teamc.gone
 import com.ivanmorgillo.corsoandroid.teamc.utils.bindings.viewBinding
+import com.ivanmorgillo.corsoandroid.teamc.visible
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -21,24 +24,29 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         super.onViewCreated(view, savedInstanceState)
 
         val adapter = SearchRecipeAdapter()
-        binding.searchEditText.setOnEditorActionListener { v, actionId, event ->
+        binding.searchViewRecipeRecyclerviewId.adapter = adapter
+
+        binding.searchEditText.setOnEditorActionListener { _, actionId, event ->
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_SEND -> {
                     val searchText = binding.searchEditText.text
-                    Timber.d("searchText$searchText")
-                    viewModel.setRecipeName(searchText.toString())
+                    Timber.d("searchText IME_ACTION_SEND $searchText")
+                    viewModel.send(RecipeSearchScreenEvent.OnRecipeSearch(searchText.toString()))
+                    true
+                }
+                EditorInfo.IME_ACTION_SEARCH -> {
+                    val searchText = binding.searchEditText.text
+                    Timber.d("searchText IME_ACTION_SEARCH $searchText")
                     viewModel.send(RecipeSearchScreenEvent.OnRecipeSearch(searchText.toString()))
                     true
                 }
                 else -> false
-            }
+            }.exhaustive
         }
         binding.searchButton.setOnClickListener {
             val searchText = binding.searchEditText.text
-            viewModel.setRecipeName(searchText.toString())
             viewModel.send(RecipeSearchScreenEvent.OnRecipeSearch(searchText.toString()))
         }
-        binding.searchViewRecipeRecyclerviewId.adapter = adapter
 
 //        binding.searchViewBarId.setOnEditorActionListener(OnEditorActionListener { v, keyAction, keyEvent ->
 //            if ( //Soft keyboard search
@@ -55,14 +63,24 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         viewModel.states.observe(viewLifecycleOwner, { state ->
             when (state) {
                 is RecipeSearchScreenStates.Content -> {
-                    Timber.d("")
+                    binding.layoutBlankContent.root.gone()
+                    binding.layoutNoConnection.root.gone()
+                    Timber.d("RecipeSearchScreenStates.Content ${state.recipe}")
                     adapter.items = state.recipe
                 }
-                RecipeSearchScreenStates.Error.NoNetwork -> TODO()
+                RecipeSearchScreenStates.Error.NoNetwork -> {
+                    binding.layoutNoConnection.root.visible()
+                }
                 RecipeSearchScreenStates.Error.NoRecipeFound -> TODO()
                 RecipeSearchScreenStates.Loading -> TODO()
+                RecipeSearchScreenStates.BlankContent -> {
+                    binding.layoutNoConnection.root.gone()
+                    binding.layoutBlankContent.root.visible()
+                }
             }
         })
+
+        viewModel.send(RecipeSearchScreenEvent.OnReady)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
