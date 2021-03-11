@@ -59,8 +59,8 @@ class MainViewModel(
         }.exhaustive
     }
 
-    private fun saveFavourite(recipe: RecipeUI): Job {
-        val isFavourite = !recipe.isFavourite
+    private fun saveFavourite(clickedRecipe: RecipeUI): Job {
+        val isFavourite = !clickedRecipe.isFavourite
         return viewModelScope.launch {
             recipes
                 ?.map {
@@ -68,23 +68,25 @@ class MainViewModel(
                 }
                 ?.flatten()
                 ?.find {
-                    recipe.id == it.idMeal
+                    clickedRecipe.id == it.idMeal
                 }
                 ?.run {
                     favouriteRepository.save(this, isFavourite)
                 }
-            updateContent(recipe, isFavourite)
+            val updatedRecipe = clickedRecipe.copy(isFavourite = isFavourite)
+            updateContent(updatedRecipe)
         }
     }
 
-    private fun updateContent(recipe: RecipeUI, isFavourite: Boolean) {
+    private fun updateContent(clickedRecipe: RecipeUI) {
         recipesByAreaUI
             ?.asSequence()
             ?.map { recipeByAreaUI ->
-                updateRecipeByAreaUI(recipeByAreaUI, recipe, isFavourite)
+                updateRecipeByAreaUI(recipeByAreaUI, clickedRecipe)
             }
             ?.toList()
             ?.run {
+                recipesByAreaUI = this
                 val content = MainScreenStates.Content(this)
                 states.postValue(content)
             }
@@ -92,14 +94,13 @@ class MainViewModel(
 
     private fun updateRecipeByAreaUI(
         recipeByAreaUI: RecipeByAreaUI,
-        recipe: RecipeUI,
-        isFavourite: Boolean
+        clickedRecipe: RecipeUI
     ): RecipeByAreaUI {
         val recipes = recipeByAreaUI.recipeByArea
             .asSequence()
             .map { recipeUI ->
-                if (recipeUI.id == recipe.id) {
-                    recipeUI.copy(isFavourite = isFavourite)
+                if (recipeUI.id == clickedRecipe.id) {
+                    clickedRecipe
                 } else {
                     recipeUI
                 }

@@ -69,6 +69,6 @@ class RecipeByAreaUIDiffCallBack(private val oldList: List<RecipeByAreaUI>, val 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
-        return oldItem == newItem
+        return oldItem.nameArea == newItem.nameArea && oldItem.recipeByArea.containsAll(newItem.recipeByArea)
     }
 }
