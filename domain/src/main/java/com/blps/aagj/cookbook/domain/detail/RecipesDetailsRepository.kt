@@ -1,3 +1,4 @@
+import com.blps.aagj.cookbook.domain.detail.RecipeDetail
 import com.blps.aagj.cookbook.domain.detail.RecipeDetailAPI
 
 interface RecipesDetailsRepository {

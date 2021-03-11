@@ -88,7 +88,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         binding.recipesListProgressBar.root.gone()
         binding.mainScreenNoNetwork.root.gone()
         binding.recipesListRoot.visible()
-        adapter.setRecipesByArea(state.recipes)
+        adapter.recipeByArea = state.recipes
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
