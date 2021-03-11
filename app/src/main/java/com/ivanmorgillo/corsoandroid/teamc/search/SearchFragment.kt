@@ -23,6 +23,19 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
         binding.searchViewRecipeRecyclerviewId.adapter = adapter
 
+//        binding.searchViewBarId.setOnEditorActionListener(OnEditorActionListener { v, keyAction, keyEvent ->
+//            if ( //Soft keyboard search
+//                keyAction == EditorInfo.IME_ACTION_SEARCH ||  //Physical keyboard enter key
+//                keyEvent != null && KeyEvent.KEYCODE_ENTER == keyEvent.keyCode && keyEvent.action == KeyEvent.ACTION_DOWN
+//            ) {
+//
+//                Toast.makeText(context,v.text.toString() ,Toast.LENGTH_LONG).show();
+//
+//                return@OnEditorActionListener true
+//            }
+//            false
+//        })
+
         viewModel.states.observe(viewLifecycleOwner, { state ->
             when (state) {
                 is RecipeSearchScreenStates.Content -> {
