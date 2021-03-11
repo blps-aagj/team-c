@@ -96,16 +96,21 @@ class MainViewModel(
         recipeByAreaUI: RecipeByAreaUI,
         clickedRecipe: RecipeUI
     ): RecipeByAreaUI {
+        var clickedRecipePosition = 0
         val recipes = recipeByAreaUI.recipeByArea
             .asSequence()
-            .map { recipeUI ->
+            .mapIndexed { index, recipeUI ->
                 if (recipeUI.id == clickedRecipe.id) {
+                    clickedRecipePosition = index
                     clickedRecipe
                 } else {
                     recipeUI
                 }
             }
-        return recipeByAreaUI.copy(recipeByArea = recipes.toList())
+        return recipeByAreaUI.copy(
+            recipeByArea = recipes.toList(),
+            selectedRecipePosition = clickedRecipePosition,
+        )
     }
 
     private fun loadDetailRandomRecipe(): Job {
@@ -144,7 +149,8 @@ class MainViewModel(
                                         recipeImageUrl = recipe.image,
                                         isFavourite = favouriteRepository.isFavourite(recipe.idMeal)
                                     )
-                                }
+                                },
+                                selectedRecipePosition = 0
                             )
                         }
                     recipesByAreaUI = recipes
@@ -155,7 +161,7 @@ class MainViewModel(
     }
 }
 
-data class RecipeByAreaUI(val nameArea: String, val recipeByArea: List<RecipeUI>)
+data class RecipeByAreaUI(val nameArea: String, val recipeByArea: List<RecipeUI>, val selectedRecipePosition: Int)
 
 sealed class MainScreenAction {
     data class NavigateToDetail(val recipe: RecipeUI) : MainScreenAction()

@@ -46,6 +46,7 @@ class RecipeByAreaViewHolder(private val binding: AreaItemBinding) : RecyclerVie
         val adapter = RecipesAdapter(onclick, onFavouriteClicked)
         binding.recipeAreaRecyclerview.adapter = adapter
         adapter.recipes = item.recipeByArea
+        binding.recipeAreaRecyclerview.scrollToPosition(item.selectedRecipePosition)
         val areaFlag = getFlag(item.nameArea)
         val flagUri = "https://www.countryflags.io/$areaFlag/shiny/64.png"
         binding.recipeAreaFlagIcon.load(flagUri, imageLoader(itemView.context))
