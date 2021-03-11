@@ -8,7 +8,6 @@ import RecipesDetailsRepository
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.blps.aagj.cookbook.domain.home.LoadRecipeSearchByNameResult
 import com.blps.aagj.cookbook.domain.home.LoadRecipesByAreaResult
 import com.blps.aagj.cookbook.domain.home.RecipesRepository
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.NavigateToDetail
@@ -58,24 +57,7 @@ class MainViewModel(
             MainScreenEvent.OnSearchClick -> {
                 tracking.logEvent("home_search_clicked")
                 Timber.d("OnSearchClick")
-                states.postValue(MainScreenStates.Loading)
-                viewModelScope.launch {
-                    val result = repository.loadRecipesSearchByName("cake")
-                    when (result) {
-                        is LoadRecipeSearchByNameResult.Failure -> states.postValue(MainScreenStates.Error.NoNetwork)
-                        is LoadRecipeSearchByNameResult.Success -> {
-                            val recipes = result.content.map {
-                                RecipeUI(
-                                    id = it.idMeal,
-                                    recipeName = it.name,
-                                    recipeImageUrl = it.image,
-                                    isFavourite = favouriteRepository.isFavourite(it.idMeal)
-                                )
-                            }
-                            states.postValue(MainScreenStates.ContentRecipeSearchByNameUI(recipes))
-                        }
-                    }
-                }
+                actions.postValue(MainScreenAction.NavigateToSearch)
             }
         }.exhaustive
     }
@@ -149,6 +131,7 @@ data class RecipeByAreaUI(val nameArea: String, val recipeByArea: List<RecipeUI>
 sealed class MainScreenAction {
     data class NavigateToDetail(val recipe: RecipeUI) : MainScreenAction()
     data class NavigateToDetailRandom(val recipe: RecipeDetail) : MainScreenAction()
+    object NavigateToSearch : MainScreenAction()
 }
 
 sealed class MainScreenEvent {
@@ -165,12 +148,9 @@ sealed class MainScreenEvent {
 
 sealed class MainScreenStates {
     object Loading : MainScreenStates()
-
     sealed class Error : MainScreenStates() {
         object NoNetwork : Error()
         object NoRecipeFound : Error()
     }
-
     data class ContentRecipeByAreaUI(val recipes: List<RecipeByAreaUI>) : MainScreenStates()
-    data class ContentRecipeSearchByNameUI(val recipes: List<RecipeUI>) : MainScreenStates()
 }

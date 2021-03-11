@@ -55,6 +55,7 @@ sealed class LoadRecipesResult {
     data class Failure(val error: LoadRecipesError) : LoadRecipesResult()
 }
 
+/* da spotare? */
 sealed class LoadRecipeSearchByNameResult {
     data class Failure(val error: LoadRecipeSearchByNameError) : LoadRecipeSearchByNameResult()
     data class Success(val content: List<Recipe>) : LoadRecipeSearchByNameResult()

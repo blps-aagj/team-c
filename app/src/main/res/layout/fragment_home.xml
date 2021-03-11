@@ -9,7 +9,6 @@
     tools:context=".MainActivity">
     <!--android:id="@+id/recipes_list_root"-->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:visibility="gone"
         android:id="@+id/recipes_list_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -25,11 +24,6 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:listitem="@layout/area_item"
             tools:visibility="visible" />
-
-        <include
-            android:id="@+id/recipes_search_list"
-            layout="@layout/fragment_home_search"
-            tools:visibility="gone" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include
