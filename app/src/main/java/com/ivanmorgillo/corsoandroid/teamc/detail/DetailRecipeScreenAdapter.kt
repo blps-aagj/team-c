@@ -47,7 +47,7 @@ private const val INSTRUCTIONS_VIEWTYPE = 3
 private const val TITLE_CATEGORY_AREA_VIEWTYPE = 4
 private const val VIDEOINSTRUCTIONS_VIEWTYPE = 5
 
-class DetailRecipeScreenAdapter : RecyclerView.Adapter<DetailRecipeScreenViewHolder>() {
+class DetailRecipeScreenAdapter(private val onDetailFavouriteClicked: () -> Unit) : RecyclerView.Adapter<DetailRecipeScreenViewHolder>() {
     var items = emptyList<DetailScreenItems>()
         set(value) {
             field = value
@@ -101,7 +101,7 @@ class DetailRecipeScreenAdapter : RecyclerView.Adapter<DetailRecipeScreenViewHol
     override fun onBindViewHolder(holder: DetailRecipeScreenViewHolder, position: Int) {
         when (holder) {
             is TitleCategoryAreaViewHolder -> holder.bind(items[position] as TitleCategoryArea)
-            is ImageViewHolder -> holder.bind(items[position] as Image)
+            is ImageViewHolder -> holder.bind(items[position] as Image, onDetailFavouriteClicked)
             is InstructionsViewHolder -> holder.bind(items[position] as Instructions)
             is VideoInstructionsViewHolder -> holder.bind(items[position] as VideoInstructions)
             is IngredientsViewHolder -> holder.bind(items[position] as Ingredients)
@@ -124,8 +124,11 @@ sealed class DetailRecipeScreenViewHolder(itemView: View) : ViewHolder(itemView)
     }
 
     class ImageViewHolder(private val binding: DetailRecipeScreenImageBinding) : DetailRecipeScreenViewHolder(binding.root) {
-        fun bind(item: Image) {
+        fun bind(item: Image, onDetailFavouriteClicked: () -> Unit) {
             binding.detailRecipeScreenImage.load(item.image, imageLoader(itemView.context))
+            binding.favouriteListDetailLayout.icon.setOnClickListener {
+                onDetailFavouriteClicked()
+            }
             if (item.isFavourite) {
                 binding.favouriteListDetailLayout.icon.setImageResource(R.drawable.ic_favourite_list)
             } else {

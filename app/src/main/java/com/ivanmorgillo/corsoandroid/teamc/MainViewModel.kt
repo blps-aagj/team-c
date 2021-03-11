@@ -3,11 +3,11 @@ package com.ivanmorgillo.corsoandroid.teamc
 import FavouriteRepository
 import LoadRecipesDetailResult
 import RecipeByArea
-import RecipeDetail
 import RecipesDetailsRepository
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.blps.aagj.cookbook.domain.detail.RecipeDetail
 import com.blps.aagj.cookbook.domain.home.LoadRecipesByAreaResult
 import com.blps.aagj.cookbook.domain.home.RecipesRepository
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.NavigateToDetail

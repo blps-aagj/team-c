@@ -1,3 +1,7 @@
+package com.blps.aagj.cookbook.domain.detail
+
+import Recipe
+
 data class RecipeDetail(
     val recipeId: String,
     val recipeName: String,
@@ -10,3 +14,11 @@ data class RecipeDetail(
 )
 
 data class Ingredient(val ingredientName: String, val ingredientQuantity: String)
+
+fun RecipeDetail.toRecipe(): Recipe {
+    return Recipe(
+        name = this.recipeName,
+        image = this.recipeImage,
+        idMeal = this.recipeId.toLong()
+    )
+}

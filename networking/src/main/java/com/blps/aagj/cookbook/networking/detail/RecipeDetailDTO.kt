@@ -1,8 +1,8 @@
 package com.blps.aagj.cookbook.networking.detail
 
-import Ingredient
-import RecipeDetail
 import androidx.annotation.Keep
+import com.blps.aagj.cookbook.domain.detail.Ingredient
+import com.blps.aagj.cookbook.domain.detail.RecipeDetail
 import com.google.gson.annotations.SerializedName
 
 @Keep

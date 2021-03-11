@@ -32,7 +32,9 @@ class RecipeDetailFragment : Fragment(R.layout.fragment_detail) {
             binding.root,
             Z_AXIS
         )
-        val adapter = DetailRecipeScreenAdapter()
+        val adapter = DetailRecipeScreenAdapter {
+            recipeDetailViewModel.send(RecipeDetailScreenEvent.OnFavouriteClicked)
+        }
         val recipeId = args.recipeId
         binding.recipesListRoot.adapter = adapter
         binding.detailScreenNoRecipe.noRecipeFoundRandomBtn.setOnClickListener {

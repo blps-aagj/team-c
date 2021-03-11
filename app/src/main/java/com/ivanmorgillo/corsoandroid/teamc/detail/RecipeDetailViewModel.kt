@@ -2,11 +2,12 @@ package com.ivanmorgillo.corsoandroid.teamc.detail
 
 import FavouriteRepository
 import LoadRecipesDetailResult
-import RecipeDetail
 import RecipesDetailsRepository
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.blps.aagj.cookbook.domain.detail.RecipeDetail
+import com.blps.aagj.cookbook.domain.detail.toRecipe
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetailScreenStates.Error.NoRecipeFound
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Screens
@@ -22,11 +23,14 @@ class RecipeDetailViewModel(
 
     val states = MutableLiveData<RecipeDetailScreenStates>()
     private var recipeId = 0L
+    private var recipeDetail: RecipeDetail? = null
+    private var isFavourite: Boolean = false
 
     init {
         tracking.logScreen(Screens.Details)
     }
 
+    @Suppress("IMPLICIT_CAST_TO_ANY")
     fun send(event: RecipeDetailScreenEvent) {
         Timber.d("send ViewModelDetail")
         when (event) {
@@ -35,21 +39,31 @@ class RecipeDetailViewModel(
                 tracking.logEvent("error_random_clicked")
                 loadRecipeDetailRandomContent()
             }
-            is RecipeDetailScreenEvent.OnFavouriteClicked -> {
+            RecipeDetailScreenEvent.OnFavouriteClicked -> {
                 tracking.logEvent("on_favourite_clicked")
-                saveFavourite(event)
+                viewModelScope.launch {
+                    saveFavourite()
+                }
             }
         }.exhaustive
     }
 
-    private fun saveFavourite(event: RecipeDetailScreenEvent.OnFavouriteClicked) {
-        TODO()
+    private suspend fun saveFavourite() {
+        val recipe = recipeDetail ?: return
+        val updatedFavourite = !isFavourite
+        favouriteRepository.save(
+            recipe = recipe.toRecipe(),
+            isFavourite = updatedFavourite
+        )
+        isFavourite = updatedFavourite
+        recipesDetailsResultSuccess(recipe)
     }
 
     private fun loadRecipeDetailRandomContent() {
         states.postValue(RecipeDetailScreenStates.Loading)
         viewModelScope.launch {
-            when (val result = recipeDetailRepository.loadDetailsRecipesRandom()) {
+            val result = recipeDetailRepository.loadDetailsRecipesRandom()
+            when (result) {
                 is LoadRecipesDetailResult.Failure -> states.postValue(NoRecipeFound)
                 is LoadRecipesDetailResult.Success -> recipesDetailsResultSuccess(result.recipesDetail)
             }.exhaustive
@@ -59,7 +73,8 @@ class RecipeDetailViewModel(
     private fun loadRecipeDetailContent(id: Long) {
         states.postValue(RecipeDetailScreenStates.Loading)
         viewModelScope.launch {
-            when (val result = recipeDetailRepository.loadDetailsRecipes(id)) {
+            val result = recipeDetailRepository.loadDetailsRecipes(id)
+            when (result) {
                 is LoadRecipesDetailResult.Failure -> states.postValue(NoRecipeFound)
                 is LoadRecipesDetailResult.Success -> recipesDetailsResultSuccess(result.recipesDetail)
             }.exhaustive
@@ -67,7 +82,8 @@ class RecipeDetailViewModel(
     }
 
     private suspend fun recipesDetailsResultSuccess(recipeDetails: RecipeDetail) {
-        val isFavourite = favouriteRepository.isFavourite(recipeDetails.recipeId.toLong())
+        recipeDetail = recipeDetails
+        isFavourite = favouriteRepository.isFavourite(recipeDetails.recipeId.toLong())
         val recipesDetails: List<DetailScreenItems> = listOf(
             DetailScreenItems.Image(
                 recipeDetails.recipeImage,
@@ -104,7 +120,7 @@ class RecipeDetailViewModel(
 sealed class RecipeDetailScreenEvent {
     object OnScreenRecipeDetailReady : RecipeDetailScreenEvent()
     object OnErrorRandomClick : RecipeDetailScreenEvent()
-    data class OnFavouriteClicked(val recipe: DetailScreenItems) : RecipeDetailScreenEvent()
+    object OnFavouriteClicked : RecipeDetailScreenEvent()
 }
 
 sealed class RecipeDetailScreenStates {
