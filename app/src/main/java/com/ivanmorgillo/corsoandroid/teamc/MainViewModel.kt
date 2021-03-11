@@ -24,9 +24,11 @@ class MainViewModel(
     private val detailsRepository: RecipesDetailsRepository,
     private val tracking: Tracking
 ) : ViewModel() {
+
     val states = MutableLiveData<MainScreenStates>()
     val actions = SingleLiveEvent<MainScreenAction>()
     private var recipes: List<RecipeByArea>? = null
+    private var recipesByAreaUI: List<RecipeByAreaUI>? = null
 
     @Suppress("IMPLICIT_CAST_TO_ANY")
     fun send(event: MainScreenEvent) {
@@ -43,7 +45,6 @@ class MainViewModel(
             is MainScreenEvent.OnFavouriteClicked -> {
                 tracking.logEvent("home_favorite_clicked")
                 saveFavourite(event.recipe)
-
             }
             is MainScreenEvent.OnRandomClick -> {
                 tracking.logEvent("home_random_clicked")
@@ -61,22 +62,49 @@ class MainViewModel(
     private fun saveFavourite(recipe: RecipeUI): Job {
         val isFavourite = !recipe.isFavourite
         return viewModelScope.launch {
-            val recipeUI = recipe
             recipes
                 ?.map {
                     it.recipeByArea
                 }
                 ?.flatten()
                 ?.find {
-                    recipeUI.id == it.idMeal
+                    recipe.id == it.idMeal
                 }
                 ?.run {
                     favouriteRepository.save(this, isFavourite)
                 }
-            val updateRecipes = recipes.map {
-
-            }
+            updateContent(recipe, isFavourite)
         }
+    }
+
+    private fun updateContent(recipe: RecipeUI, isFavourite: Boolean) {
+        recipesByAreaUI
+            ?.asSequence()
+            ?.map { recipeByAreaUI ->
+                updateRecipeByAreaUI(recipeByAreaUI, recipe, isFavourite)
+            }
+            ?.toList()
+            ?.run {
+                val content = MainScreenStates.Content(this)
+                states.postValue(content)
+            }
+    }
+
+    private fun updateRecipeByAreaUI(
+        recipeByAreaUI: RecipeByAreaUI,
+        recipe: RecipeUI,
+        isFavourite: Boolean
+    ): RecipeByAreaUI {
+        val recipes = recipeByAreaUI.recipeByArea
+            .asSequence()
+            .map { recipeUI ->
+                if (recipeUI.id == recipe.id) {
+                    recipeUI.copy(isFavourite = isFavourite)
+                } else {
+                    recipeUI
+                }
+            }
+        return recipeByAreaUI.copy(recipeByArea = recipes.toList())
     }
 
     private fun loadDetailRandomRecipe(): Job {
@@ -118,6 +146,7 @@ class MainViewModel(
                                 }
                             )
                         }
+                    recipesByAreaUI = recipes
                     states.postValue(MainScreenStates.Content(recipes))
                 }
             }

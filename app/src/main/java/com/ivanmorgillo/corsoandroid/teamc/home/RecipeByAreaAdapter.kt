@@ -2,6 +2,7 @@ package com.ivanmorgillo.corsoandroid.teamc.home
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.ivanmorgillo.corsoandroid.teamc.RecipeByAreaUI
@@ -12,7 +13,13 @@ import com.ivanmorgillo.corsoandroid.teamc.utils.imageLoader
 class RecipeByAreaAdapter(private val onclick: (RecipeUI) -> Unit, private val onFavouriteClicked: (RecipeUI) -> Unit) :
     RecyclerView.Adapter<RecipeByAreaViewHolder>() {
 
-    private var recipeByArea: List<RecipeByAreaUI> = emptyList()
+    var recipeByArea: List<RecipeByAreaUI> = emptyList()
+        set(value) {
+            val diffCallBack = RecipeByAreaUIDiffCallBack(field, value)
+            val diffResult = DiffUtil.calculateDiff(diffCallBack)
+            field = value
+            diffResult.dispatchUpdatesTo(this)
+        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeByAreaViewHolder {
         val binding = AreaItemBinding.inflate(
@@ -30,11 +37,6 @@ class RecipeByAreaAdapter(private val onclick: (RecipeUI) -> Unit, private val o
     override fun getItemCount(): Int {
         return recipeByArea.size
     }
-
-    fun setRecipesByArea(recipeByArea: List<RecipeByAreaUI>) {
-        this.recipeByArea = recipeByArea
-        notifyDataSetChanged()
-    }
 }
 
 class RecipeByAreaViewHolder(private val binding: AreaItemBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -42,9 +44,31 @@ class RecipeByAreaViewHolder(private val binding: AreaItemBinding) : RecyclerVie
         binding.recipeAreaTitle.text = item.nameArea
         val adapter = RecipesAdapter(onclick, onFavouriteClicked)
         binding.recipeAreaRecyclerview.adapter = adapter
-        adapter.setRecipes(item.recipeByArea)
+        adapter.recipes = item.recipeByArea
         val areaFlag = getFlag(item.nameArea)
         val flagUri = "https://www.countryflags.io/$areaFlag/shiny/64.png"
         binding.recipeAreaFlagIcon.load(flagUri, imageLoader(itemView.context))
+    }
+}
+
+class RecipeByAreaUIDiffCallBack(private val oldList: List<RecipeByAreaUI>, val newList: List<RecipeByAreaUI>) : DiffUtil.Callback() {
+    override fun getOldListSize(): Int {
+        return oldList.size
+    }
+
+    override fun getNewListSize(): Int {
+        return newList.size
+    }
+
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldItem = oldList[oldItemPosition]
+        val newItem = newList[newItemPosition]
+        return oldItem.nameArea == newItem.nameArea
+    }
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldItem = oldList[oldItemPosition]
+        val newItem = newList[newItemPosition]
+        return oldItem == newItem
     }
 }
