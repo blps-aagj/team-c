@@ -42,6 +42,7 @@ class RecipeByAreaAdapter(private val onclick: (RecipeUI) -> Unit, private val o
 class RecipeByAreaViewHolder(private val binding: AreaItemBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: RecipeByAreaUI, onclick: (RecipeUI) -> Unit, onFavouriteClicked: (RecipeUI) -> Unit) {
         binding.recipeAreaTitle.text = item.nameArea
+
         val adapter = RecipesAdapter(onclick, onFavouriteClicked)
         binding.recipeAreaRecyclerview.adapter = adapter
         adapter.recipes = item.recipeByArea
@@ -51,7 +52,7 @@ class RecipeByAreaViewHolder(private val binding: AreaItemBinding) : RecyclerVie
     }
 }
 
-class RecipeByAreaUIDiffCallBack(private val oldList: List<RecipeByAreaUI>, val newList: List<RecipeByAreaUI>) : DiffUtil.Callback() {
+class RecipeByAreaUIDiffCallBack(private val oldList: List<RecipeByAreaUI>, private val newList: List<RecipeByAreaUI>) : DiffUtil.Callback() {
     override fun getOldListSize(): Int {
         return oldList.size
     }
@@ -69,6 +70,6 @@ class RecipeByAreaUIDiffCallBack(private val oldList: List<RecipeByAreaUI>, val 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
-        return oldItem.nameArea == newItem.nameArea && oldItem.recipeByArea.containsAll(newItem.recipeByArea)
+        return oldItem.nameArea == newItem.nameArea && oldItem.recipeByArea == newItem.recipeByArea
     }
 }

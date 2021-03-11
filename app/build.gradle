@@ -75,7 +75,7 @@ android
                 implementation 'androidx.appcompat:appcompat:1.2.0'
                 implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
                 // Recyclerview
-                implementation "androidx.recyclerview:recyclerview:1.1.0"
+                implementation "androidx.recyclerview:recyclerview:1.2.0-beta02"
                 // For control over item selection of both touch and mouse driven selection
                 implementation "androidx.recyclerview:recyclerview-selection:1.1.0"
                 // Cardview
