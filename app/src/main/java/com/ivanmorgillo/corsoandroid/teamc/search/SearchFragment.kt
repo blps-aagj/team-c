@@ -63,7 +63,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private fun searchRecipes() {
         val searchText = binding.searchEditText.text
-//       viewModel.setRecipeName(searchText.toString())
         viewModel.send(RecipeSearchScreenEvent.OnReady(searchText.toString()))
         val imm: InputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.searchEditText.windowToken, 0)

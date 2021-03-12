@@ -11,7 +11,6 @@ import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipeUI
 import com.ivanmorgillo.corsoandroid.teamc.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class RecipeSearchViewModel(
     private val repository: RecipesRepository,
@@ -68,6 +67,5 @@ sealed class RecipeSearchScreenStates {
         object NoNetwork : Error()
         object NoRecipeFound : Error()
     }
-    object BlankContent : RecipeSearchScreenStates()
     data class Content(val recipe: List<RecipeUI>) : RecipeSearchScreenStates()
 }

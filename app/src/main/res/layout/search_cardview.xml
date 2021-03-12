@@ -52,11 +52,5 @@
             android:layout_marginBottom="8dp"
             android:padding="8dp" />
 
-        <include
-            android:id="@+id/favourite_list_checkbox_layout"
-            layout="@layout/favourite_list_foreground"
-            android:visibility="visible" />
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
