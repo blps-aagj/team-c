@@ -8,22 +8,25 @@
 
     <EditText
         android:id="@+id/search_edit_text"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/app_name"
         android:inputType="text"
         android:imeOptions="actionSend"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/search_button"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/search_button"
         app:layout_constraintBottom_toTopOf="@id/search_view_recipe_recyclerview_id"
         android:autofillHints="" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/search_button"
         android:layout_width="wrap_content"
+        android:text="@string/search"
+        app:icon="@drawable/ic_search"
+        app:iconTint="@color/md_black_1000"
+        android:backgroundTint="@color/md_grey_200"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/search_edit_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -45,6 +48,7 @@
         android:layout_height="wrap_content"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_edit_text"
         tools:listitem="@layout/search_cardview" />
 
@@ -52,6 +56,7 @@
         android:id="@+id/search_recipe_not_found_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:text="No recipe found with this name "
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

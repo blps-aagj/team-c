@@ -1,10 +1,12 @@
 package com.ivanmorgillo.corsoandroid.teamc.search
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.ivanmorgillo.corsoandroid.teamc.R
@@ -30,44 +32,33 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         binding.searchEditText.setOnEditorActionListener { v, actionId, event ->
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_SEND -> {
-                    val searchText = binding.searchEditText.text
-                    Timber.d("searchText$searchText")
-                    viewModel.setRecipeName(searchText.toString())
-                    viewModel.send(RecipeSearchScreenEvent.OnRecipeSearch(searchText.toString()))
+                    searchRecipes()
                     true
                 }
                 else -> false
             }
         }
         binding.searchButton.setOnClickListener {
-            val searchText = binding.searchEditText.text
-            viewModel.setRecipeName(searchText.toString())
-            viewModel.send(RecipeSearchScreenEvent.OnRecipeSearch(searchText.toString()))
+            searchRecipes()
         }
         binding.searchViewRecipeRecyclerviewId.adapter = adapter
-
-//        binding.searchViewBarId.setOnEditorActionListener(OnEditorActionListener { v, keyAction, keyEvent ->
-//            if ( //Soft keyboard search
-//                keyAction == EditorInfo.IME_ACTION_SEARCH ||  //Physical keyboard enter key
-//                keyEvent != null && KeyEvent.KEYCODE_ENTER == keyEvent.keyCode && keyEvent.action == KeyEvent.ACTION_DOWN
-//            ) {
-//
-//                Toast.makeText(context,v.text.toString() ,Toast.LENGTH_LONG).show();
-//
-//                return@OnEditorActionListener true
-//            }
-//            false
-//        })
         viewModel.actions.observe(viewLifecycleOwner, { action ->
             when (action) {
                 is RecipeSearchScreenAction.NavigateToDetailFromSearch -> {
                     Timber.d("navigate to detail ")
                     val directions = actionSearchFragmentToDetailFragment(action.recipe.id)
                     findNavController().navigate(directions)
-
                 }
             }.exhaustive
         })
+    }
+
+    private fun searchRecipes() {
+        val searchText = binding.searchEditText.text
+        viewModel.setRecipeName(searchText.toString())
+        viewModel.send(RecipeSearchScreenEvent.OnRecipeSearch(searchText.toString()))
+        val imm: InputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.searchEditText.windowToken, 0)
     }
 
     private fun states(adapter: SearchRecipeAdapter) {
