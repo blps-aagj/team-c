@@ -23,6 +23,11 @@ sealed class Screens {
         override val className: String = "Recipe Detail Fragment"
         override val name: String = "Details"
     }
+
+    object Search : Screens() {
+        override val className: String = "Search Fragment"
+        override val name: String = "Search"
+    }
 }
 
 interface Tracking {

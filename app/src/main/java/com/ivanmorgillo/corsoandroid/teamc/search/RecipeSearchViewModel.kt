@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.blps.aagj.cookbook.domain.home.LoadRecipeSearchByNameResult
 import com.blps.aagj.cookbook.domain.home.RecipesRepository
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
+import com.ivanmorgillo.corsoandroid.teamc.firebase.Screens
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipeUI
 import com.ivanmorgillo.corsoandroid.teamc.utils.SingleLiveEvent
@@ -17,6 +18,10 @@ class RecipeSearchViewModel(
     private val favouriteRepository: FavouriteRepository,
     private val tracking: Tracking,
 ) : ViewModel() {
+    init {
+        tracking.logScreen(Screens.Search)
+    }
+
     val actions = SingleLiveEvent<RecipeSearchScreenAction>()
     val states = MutableLiveData<RecipeSearchScreenStates>()
     fun send(event: RecipeSearchScreenEvent) {
