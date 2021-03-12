@@ -33,6 +33,13 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_SEND -> {
                     searchRecipes()
+
+                    true
+                }
+                EditorInfo.IME_ACTION_SEARCH -> {
+                    val searchText = binding.searchEditText.text
+                    Timber.d("searchText IME_ACTION_SEARCH $searchText")
+                    viewModel.send(RecipeSearchScreenEvent.OnReady(searchText.toString()))
                     true
                 }
                 else -> false
@@ -41,6 +48,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         binding.searchButton.setOnClickListener {
             searchRecipes()
         }
+
         binding.searchViewRecipeRecyclerviewId.adapter = adapter
         viewModel.actions.observe(viewLifecycleOwner, { action ->
             when (action) {
@@ -55,8 +63,8 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     private fun searchRecipes() {
         val searchText = binding.searchEditText.text
-        viewModel.setRecipeName(searchText.toString())
-        viewModel.send(RecipeSearchScreenEvent.OnRecipeSearch(searchText.toString()))
+//       viewModel.setRecipeName(searchText.toString())
+        viewModel.send(RecipeSearchScreenEvent.OnReady(searchText.toString()))
         val imm: InputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.searchEditText.windowToken, 0)
     }
@@ -86,10 +94,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 RecipeSearchScreenStates.Loading -> binding.recipesListProgressBar.root.visible()
             }.exhaustive
         })
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

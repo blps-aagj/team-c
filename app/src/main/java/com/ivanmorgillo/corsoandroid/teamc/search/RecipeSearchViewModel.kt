@@ -11,7 +11,6 @@ import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipeUI
 import com.ivanmorgillo.corsoandroid.teamc.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class RecipeSearchViewModel(
     private val repository: RecipesRepository,
@@ -20,16 +19,11 @@ class RecipeSearchViewModel(
 ) : ViewModel() {
     val actions = SingleLiveEvent<RecipeSearchScreenAction>()
     val states = MutableLiveData<RecipeSearchScreenStates>()
-    private var recipeSearchString = ""
 
     fun send(event: RecipeSearchScreenEvent) {
         when (event) {
             RecipeSearchScreenEvent.OnError -> TODO()
-            RecipeSearchScreenEvent.OnReady -> loadContent("")
-            is RecipeSearchScreenEvent.OnRecipeSearch -> {
-                Timber.d("searchText$recipeSearchString")
-                loadContent(recipeSearchString)
-            }
+            is RecipeSearchScreenEvent.OnReady -> loadContent(event.searchedRecipeName)
             is RecipeSearchScreenEvent.OnRecipeClickSearched -> {
                 tracking.logEvent("search_recipe_clicked")
                 actions.postValue(RecipeSearchScreenAction.NavigateToDetailFromSearch(event.recipe))
@@ -56,10 +50,6 @@ class RecipeSearchViewModel(
             }
         }
     }
-
-    fun setRecipeName(recipeName: String) {
-        this.recipeSearchString = recipeName
-    }
 }
 
 sealed class RecipeSearchScreenAction {
@@ -68,9 +58,8 @@ sealed class RecipeSearchScreenAction {
 
 sealed class RecipeSearchScreenEvent {
     data class OnRecipeClickSearched(val recipe: RecipeUI) : RecipeSearchScreenEvent()
-    object OnReady : RecipeSearchScreenEvent()
+    data class OnReady(val searchedRecipeName: String) : RecipeSearchScreenEvent()
     object OnError : RecipeSearchScreenEvent()
-    data class OnRecipeSearch(private val name: String) : RecipeSearchScreenEvent()
 }
 
 sealed class RecipeSearchScreenStates {
