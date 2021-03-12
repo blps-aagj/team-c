@@ -16,7 +16,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/search_button"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/search_view_recipe_recyclerview_id" />
+        app:layout_constraintBottom_toTopOf="@id/search_view_recipe_recyclerview_id"
+        android:autofillHints="" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/search_button"
@@ -45,7 +46,28 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_edit_text"
-        tools:listitem="@layout/search_list_item">
+        tools:listitem="@layout/search_cardview" />
 
-    </androidx.recyclerview.widget.RecyclerView>
+    <TextView
+        android:id="@+id/search_recipe_not_found_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No recipe found with this name "
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+
+    <include
+        android:id="@+id/search_screen_no_network"
+        layout="@layout/no_network"
+        android:visibility="gone"
+        tools:visibility="gone" />
+
+    <include
+        android:id="@+id/recipes_list_progressBar"
+        layout="@layout/progress_bar"
+        android:visibility="gone"
+        tools:visibility="gone" />
 </androidx.constraintlayout.widget.ConstraintLayout>

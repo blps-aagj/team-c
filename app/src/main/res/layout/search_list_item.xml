@@ -57,26 +57,27 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/title_search_recipe"
+            android:id="@+id/title_search_reciped"
             style="@style/TextAppearance.MaterialComponents.Subtitle1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/image_search_recipe"
+            app:layout_constraintStart_toEndOf="@id/image_search_reciped"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Amici Miei" />
 
 
         <ImageView
-            android:id="@+id/image_search_recipe"
+            android:id="@+id/image_search_reciped"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_margin="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/arabbiata" />
+            tools:src="@drawable/arabbiata"
+            android:contentDescription="Recipe Image" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
