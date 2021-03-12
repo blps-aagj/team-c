@@ -7,13 +7,21 @@ import androidx.lifecycle.viewModelScope
 import com.blps.aagj.cookbook.domain.home.LoadRecipeSearchByNameResult
 import com.blps.aagj.cookbook.domain.home.RecipesRepository
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
+import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipeUI
+import com.ivanmorgillo.corsoandroid.teamc.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class RecipeSearchViewModel(private val repository: RecipesRepository, private val favouriteRepository: FavouriteRepository) : ViewModel() {
+class RecipeSearchViewModel(
+    private val repository: RecipesRepository,
+    private val favouriteRepository: FavouriteRepository,
+    private val tracking: Tracking,
+) : ViewModel() {
+    val actions = SingleLiveEvent<RecipeSearchScreenAction>()
     val states = MutableLiveData<RecipeSearchScreenStates>()
     private var recipeSearchString = ""
+
     fun send(event: RecipeSearchScreenEvent) {
         when (event) {
             RecipeSearchScreenEvent.OnError -> TODO()
@@ -22,6 +30,10 @@ class RecipeSearchViewModel(private val repository: RecipesRepository, private v
                 Timber.d("searchText$recipeSearchString")
                 loadContent(recipeSearchString)
             }
+            is RecipeSearchScreenEvent.OnRecipeClickSearched -> {
+                tracking.logEvent("search_recipe_clicked")
+                actions.postValue(RecipeSearchScreenAction.NavigateToDetailFromSearch(event.recipe))
+            }
         }.exhaustive
     }
 
@@ -29,7 +41,7 @@ class RecipeSearchViewModel(private val repository: RecipesRepository, private v
         viewModelScope.launch {
             val result = repository.loadRecipesSearchByName(name)
             when (result) {
-                is LoadRecipeSearchByNameResult.Failure -> states.postValue(RecipeSearchScreenStates.Error.NoNetwork)
+                is LoadRecipeSearchByNameResult.Failure -> states.postValue(RecipeSearchScreenStates.Error.NoRecipeFound)
                 is LoadRecipeSearchByNameResult.Success -> {
                     val recipes = result.content.map {
                         RecipeUI(
@@ -50,7 +62,12 @@ class RecipeSearchViewModel(private val repository: RecipesRepository, private v
     }
 }
 
+sealed class RecipeSearchScreenAction {
+    data class NavigateToDetailFromSearch(val recipe: RecipeUI) : RecipeSearchScreenAction()
+}
+
 sealed class RecipeSearchScreenEvent {
+    data class OnRecipeClickSearched(val recipe: RecipeUI) : RecipeSearchScreenEvent()
     object OnReady : RecipeSearchScreenEvent()
     object OnError : RecipeSearchScreenEvent()
     data class OnRecipeSearch(private val name: String) : RecipeSearchScreenEvent()

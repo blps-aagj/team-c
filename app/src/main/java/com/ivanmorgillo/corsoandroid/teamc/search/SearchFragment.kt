@@ -6,9 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.ivanmorgillo.corsoandroid.teamc.R
 import com.ivanmorgillo.corsoandroid.teamc.databinding.FragmentSearchBinding
+import com.ivanmorgillo.corsoandroid.teamc.exhaustive
+import com.ivanmorgillo.corsoandroid.teamc.gone
+import com.ivanmorgillo.corsoandroid.teamc.search.SearchFragmentDirections.Companion.actionSearchFragmentToDetailFragment
 import com.ivanmorgillo.corsoandroid.teamc.utils.bindings.viewBinding
+import com.ivanmorgillo.corsoandroid.teamc.visible
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -20,7 +25,8 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = SearchRecipeAdapter()
+        val adapter = SearchRecipeAdapter { viewModel.send(RecipeSearchScreenEvent.OnRecipeClickSearched(it)) }
+        states(adapter)
         binding.searchEditText.setOnEditorActionListener { v, actionId, event ->
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_SEND -> {
@@ -52,16 +58,42 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 //            }
 //            false
 //        })
+        viewModel.actions.observe(viewLifecycleOwner, { action ->
+            when (action) {
+                is RecipeSearchScreenAction.NavigateToDetailFromSearch -> {
+                    Timber.d("navigate to detail ")
+                    val directions = actionSearchFragmentToDetailFragment(action.recipe.id)
+                    findNavController().navigate(directions)
+
+                }
+            }.exhaustive
+        })
+    }
+
+    private fun states(adapter: SearchRecipeAdapter) {
         viewModel.states.observe(viewLifecycleOwner, { state ->
             when (state) {
                 is RecipeSearchScreenStates.Content -> {
+                    binding.searchRecipeNotFoundText.gone()
+                    binding.searchScreenNoNetwork.root.gone()
+                    binding.recipesListProgressBar.root.gone()
                     Timber.d("")
                     adapter.items = state.recipe
                 }
-                RecipeSearchScreenStates.Error.NoNetwork -> TODO()
-                RecipeSearchScreenStates.Error.NoRecipeFound -> TODO()
-                RecipeSearchScreenStates.Loading -> TODO()
-            }
+                RecipeSearchScreenStates.Error.NoNetwork -> {
+
+                    binding.recipesListProgressBar.root.gone()
+                    binding.searchRecipeNotFoundText.gone()
+                    binding.searchViewRecipeRecyclerviewId.gone()
+                    binding.searchScreenNoNetwork.root.visible()
+                }
+                RecipeSearchScreenStates.Error.NoRecipeFound -> {
+                    binding.searchRecipeNotFoundText.visible()
+                    binding.searchScreenNoNetwork.root.gone()
+                    binding.searchViewRecipeRecyclerviewId.gone()
+                }
+                RecipeSearchScreenStates.Loading -> binding.recipesListProgressBar.root.visible()
+            }.exhaustive
         })
     }
 
