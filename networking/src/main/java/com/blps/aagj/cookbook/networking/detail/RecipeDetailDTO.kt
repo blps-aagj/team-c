@@ -157,11 +157,11 @@ private fun RecipeDetailDTO.Meal.getIngredients() = listOfNotNull(
     validateIngredientsAndMeasures(strIngredient20, strMeasure20),
 )
 
-fun getVideoID(videoUri: String?): String {
+fun getVideoID(videoUri: String?): String? {
     return if (videoUri != null && videoUri.isNotBlank()) {
         videoUri.replace("https://www.youtube.com/watch?v=", "")
     } else {
-        ""
+        null
     }
 }
 
