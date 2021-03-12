@@ -61,11 +61,21 @@
         android:visibility="gone"
         tools:visibility="gone" />
 
-    <include
-        android:id="@+id/search_screen_no_recipe"
-        layout="@layout/no_recipe_found"
-        android:visibility="gone"
-        tools:visibility="gone" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/search_edit_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <include
+            android:id="@+id/search_screen_no_recipe"
+            layout="@layout/no_recipe_found"
+            android:visibility="gone"
+            tools:visibility="gone" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <include
         android:id="@+id/recipes_list_progressBar"
