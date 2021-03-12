@@ -22,12 +22,17 @@ class RecipeSearchViewModel(
     fun send(event: RecipeSearchScreenEvent) {
         when (event) {
             RecipeSearchScreenEvent.OnError -> TODO()
-            is RecipeSearchScreenEvent.OnReady -> {
+            is RecipeSearchScreenEvent.OnSearchButtonClick -> {
+                tracking.logEvent("search_btn_click")
                 loadContent(event.searchedRecipeName)
             }
             is RecipeSearchScreenEvent.OnRecipeClickSearched -> {
                 tracking.logEvent("search_recipe_clicked")
                 actions.postValue(RecipeSearchScreenAction.NavigateToDetailFromSearch(event.recipe))
+            }
+            is RecipeSearchScreenEvent.OnSearchKeyboardClick -> {
+                tracking.logEvent("search_keyboard_click")
+                loadContent(event.searchedRecipeName)
             }
         }.exhaustive
     }
@@ -59,7 +64,8 @@ sealed class RecipeSearchScreenAction {
 
 sealed class RecipeSearchScreenEvent {
     data class OnRecipeClickSearched(val recipe: RecipeUI) : RecipeSearchScreenEvent()
-    data class OnReady(val searchedRecipeName: String) : RecipeSearchScreenEvent()
+    data class OnSearchButtonClick(val searchedRecipeName: String) : RecipeSearchScreenEvent()
+    data class OnSearchKeyboardClick(val searchedRecipeName: String) : RecipeSearchScreenEvent()
     object OnError : RecipeSearchScreenEvent()
 }
 
@@ -69,5 +75,6 @@ sealed class RecipeSearchScreenStates {
         object NoNetwork : Error()
         object NoRecipeFound : Error()
     }
+
     data class Content(val recipe: List<RecipeUI>) : RecipeSearchScreenStates()
 }

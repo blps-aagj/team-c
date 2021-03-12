@@ -27,20 +27,22 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val searchText = binding.searchEditText.text
+
         val adapter = SearchRecipeAdapter { viewModel.send(RecipeSearchScreenEvent.OnRecipeClickSearched(it)) }
         states(adapter)
         binding.searchEditText.setOnEditorActionListener { v, actionId, event ->
             Timber.d("EditorInfo $actionId")
             return@setOnEditorActionListener when (actionId) {
-                EditorInfo.IME_ACTION_SEARCH -> {//3
-                    searchRecipes()
+                EditorInfo.IME_ACTION_SEARCH -> {
+                    searchRecipes(RecipeSearchScreenEvent.OnSearchKeyboardClick(searchText.toString()))
                     true
                 }
                 else -> false
             }
         }
         binding.searchButton.setOnClickListener {
-            searchRecipes()
+            searchRecipes(RecipeSearchScreenEvent.OnSearchButtonClick(searchText.toString()))
         }
 
         binding.searchViewRecipeRecyclerviewId.adapter = adapter
@@ -55,9 +57,8 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         })
     }
 
-    private fun searchRecipes() {
-        val searchText = binding.searchEditText.text
-        viewModel.send(RecipeSearchScreenEvent.OnReady(searchText.toString()))
+    private fun searchRecipes(onSearchButtonClick: RecipeSearchScreenEvent) {
+        viewModel.send(onSearchButtonClick)
         val imm: InputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.searchEditText.windowToken, 0)
     }
