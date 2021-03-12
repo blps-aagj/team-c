@@ -53,6 +53,7 @@ class FavouriteFragment : Fragment(R.layout.fragment_favourite_list) {
                     Toast.makeText(context, "Aggiungi preferiti per iniziare", Toast.LENGTH_SHORT).show()
                 }
                 FavouriteScreenStates.FavouriteScreenLoading -> {
+                    binding.favouriteInfoMessage.gone()
                     binding.recipesListProgressBar.root.visible()
                 }
                 FavouriteScreenStates.FavouriteScreenEmpty -> {

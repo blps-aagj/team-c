@@ -3,11 +3,11 @@ package com.ivanmorgillo.corsoandroid.teamc
 import FavouriteRepository
 import LoadRecipesDetailResult
 import RecipeByArea
-import RecipeDetail
 import RecipesDetailsRepository
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.blps.aagj.cookbook.domain.detail.RecipeDetail
 import com.blps.aagj.cookbook.domain.home.LoadRecipesByAreaResult
 import com.blps.aagj.cookbook.domain.home.RecipesRepository
 import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.NavigateToDetail
@@ -24,9 +24,11 @@ class MainViewModel(
     private val detailsRepository: RecipesDetailsRepository,
     private val tracking: Tracking
 ) : ViewModel() {
+
     val states = MutableLiveData<MainScreenStates>()
     val actions = SingleLiveEvent<MainScreenAction>()
     private var recipes: List<RecipeByArea>? = null
+    private var recipesByAreaUI: List<RecipeByAreaUI>? = null
 
     @Suppress("IMPLICIT_CAST_TO_ANY")
     fun send(event: MainScreenEvent) {
@@ -42,7 +44,7 @@ class MainViewModel(
             }
             is MainScreenEvent.OnFavouriteClicked -> {
                 tracking.logEvent("home_favorite_clicked")
-                saveFavourite(event)
+                saveFavourite(event.recipe)
             }
             is MainScreenEvent.OnRandomClick -> {
                 tracking.logEvent("home_random_clicked")
@@ -62,22 +64,58 @@ class MainViewModel(
         }.exhaustive
     }
 
-    private fun saveFavourite(event: MainScreenEvent.OnFavouriteClicked): Job {
-        val isFavourite = !event.recipe.isFavourite
+    private fun saveFavourite(clickedRecipe: RecipeUI): Job {
+        val isFavourite = !clickedRecipe.isFavourite
         return viewModelScope.launch {
-            val recipeUI = event.recipe
             recipes
                 ?.map {
                     it.recipeByArea
                 }
                 ?.flatten()
                 ?.find {
-                    recipeUI.id == it.idMeal
+                    clickedRecipe.id == it.idMeal
                 }
                 ?.run {
                     favouriteRepository.save(this, isFavourite)
                 }
+            val updatedRecipe = clickedRecipe.copy(isFavourite = isFavourite)
+            updateContent(updatedRecipe)
         }
+    }
+
+    private fun updateContent(clickedRecipe: RecipeUI) {
+        recipesByAreaUI
+            ?.asSequence()
+            ?.map { recipeByAreaUI ->
+                updateRecipeByAreaUI(recipeByAreaUI, clickedRecipe)
+            }
+            ?.toList()
+            ?.run {
+                recipesByAreaUI = this
+                val content = MainScreenStates.Content(this)
+                states.postValue(content)
+            }
+    }
+
+    private fun updateRecipeByAreaUI(
+        recipeByAreaUI: RecipeByAreaUI,
+        clickedRecipe: RecipeUI
+    ): RecipeByAreaUI {
+        var clickedRecipePosition = 0
+        val recipes = recipeByAreaUI.recipeByArea
+            .asSequence()
+            .mapIndexed { index, recipeUI ->
+                if (recipeUI.id == clickedRecipe.id) {
+                    clickedRecipePosition = index
+                    clickedRecipe
+                } else {
+                    recipeUI
+                }
+            }
+        return recipeByAreaUI.copy(
+            recipeByArea = recipes.toList(),
+            selectedRecipePosition = clickedRecipePosition,
+        )
     }
 
     private fun loadDetailRandomRecipe(): Job {
@@ -116,17 +154,19 @@ class MainViewModel(
                                         recipeImageUrl = recipe.image,
                                         isFavourite = favouriteRepository.isFavourite(recipe.idMeal)
                                     )
-                                }
+                                },
+                                selectedRecipePosition = 0
                             )
                         }
-                    states.postValue(MainScreenStates.ContentRecipeByAreaUI(recipes))
+                    recipesByAreaUI = recipes
+                    states.postValue(MainScreenStates.Content(recipes))
                 }
             }
         }
     }
 }
 
-data class RecipeByAreaUI(val nameArea: String, val recipeByArea: List<RecipeUI>)
+data class RecipeByAreaUI(val nameArea: String, val recipeByArea: List<RecipeUI>, val selectedRecipePosition: Int)
 
 sealed class MainScreenAction {
     data class NavigateToDetail(val recipe: RecipeUI) : MainScreenAction()
@@ -152,5 +192,6 @@ sealed class MainScreenStates {
         object NoNetwork : Error()
         object NoRecipeFound : Error()
     }
-    data class ContentRecipeByAreaUI(val recipes: List<RecipeByAreaUI>) : MainScreenStates()
+
+    data class Content(val recipes: List<RecipeByAreaUI>) : MainScreenStates()
 }

@@ -5,7 +5,7 @@
     android:id="@+id/detail_recipe_screen_container"
     app:cardCornerRadius="20dp"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="240dp"
     android:layout_marginTop="12dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -14,7 +14,7 @@
 
         <ImageView
             android:id="@+id/detail_recipe_screen_image"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
@@ -23,9 +23,28 @@
             tools:ignore="ContentDescription"
             tools:src="@drawable/arabbiata" />
 
-        <include
-            android:id="@+id/favourite_list_checkbox_layout"
-            layout="@layout/favourite_list_foreground"
-            android:visibility="visible" />
+        <FrameLayout
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/roundimage"
+            android:backgroundTint="@color/md_red_A700"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/ic_favourite_border"
+                android:src="@drawable/ic_favourite_border_list"
+                app:tint="@color/white_border_hearth"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </FrameLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

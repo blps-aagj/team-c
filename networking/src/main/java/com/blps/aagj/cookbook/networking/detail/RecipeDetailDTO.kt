@@ -1,8 +1,8 @@
 package com.blps.aagj.cookbook.networking.detail
 
-import Ingredient
-import RecipeDetail
 import androidx.annotation.Keep
+import com.blps.aagj.cookbook.domain.detail.Ingredient
+import com.blps.aagj.cookbook.domain.detail.RecipeDetail
 import com.google.gson.annotations.SerializedName
 
 @Keep
@@ -157,11 +157,11 @@ private fun RecipeDetailDTO.Meal.getIngredients() = listOfNotNull(
     validateIngredientsAndMeasures(strIngredient20, strMeasure20),
 )
 
-fun getVideoID(videoUri: String?): String {
+fun getVideoID(videoUri: String?): String? {
     return if (videoUri != null && videoUri.isNotBlank()) {
         videoUri.replace("https://www.youtube.com/watch?v=", "")
     } else {
-        ""
+        null
     }
 }
 

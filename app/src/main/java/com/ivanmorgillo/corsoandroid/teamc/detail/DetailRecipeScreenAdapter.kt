@@ -3,9 +3,11 @@ package com.ivanmorgillo.corsoandroid.teamc.detail
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import coil.load
+import com.ivanmorgillo.corsoandroid.teamc.R
 import com.ivanmorgillo.corsoandroid.teamc.databinding.DetailRecipeScreenImageBinding
 import com.ivanmorgillo.corsoandroid.teamc.databinding.DetailRecipeScreenIngredientItemBinding
 import com.ivanmorgillo.corsoandroid.teamc.databinding.DetailRecipeScreenIngredientsBinding
@@ -29,15 +31,38 @@ import com.ivanmorgillo.corsoandroid.teamc.utils.imageLoader
 import com.ivanmorgillo.corsoandroid.teamc.visible
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import java.math.BigInteger
 
 sealed class DetailScreenItems {
-    data class TitleCategoryArea(val title: String, val category: String, val area: String) :
-        DetailScreenItems() // modellare il titolo della schermata
+    abstract val id: Long
 
-    data class Image(val image: String) : DetailScreenItems()
-    data class Ingredients(val ingredients: List<IngredientUI>) : DetailScreenItems()
-    data class Instructions(val instructions: List<String>) : DetailScreenItems()
-    data class VideoInstructions(val videoInstructions: String) : DetailScreenItems()
+    data class TitleCategoryArea(val title: String, val category: String, val area: String) : DetailScreenItems() {
+        override val id: Long = BigInteger(title.toByteArray()).toLong()
+    }
+
+    data class Image(val image: String, val isFavourite: Boolean) : DetailScreenItems() {
+        override val id: Long = BigInteger(image.toByteArray()).toLong()
+    }
+
+    data class Ingredients(val ingredients: List<IngredientUI>) : DetailScreenItems() {
+        override val id: Long
+            get() {
+                val firstIngredient = ingredients.first()
+                return BigInteger(firstIngredient.name.toByteArray()).toLong()
+            }
+    }
+
+    data class Instructions(val instructions: List<String>) : DetailScreenItems() {
+        override val id: Long
+            get() {
+                val firstInstruction = instructions.first()
+                return BigInteger(firstInstruction.toByteArray()).toLong()
+            }
+    }
+
+    data class VideoInstructions(val videoInstructions: String) : DetailScreenItems() {
+        override val id: Long = BigInteger(videoInstructions.toByteArray()).toLong()
+    }
 }
 
 private const val IMAGE_VIEWTYPE = 1
@@ -46,19 +71,19 @@ private const val INSTRUCTIONS_VIEWTYPE = 3
 private const val TITLE_CATEGORY_AREA_VIEWTYPE = 4
 private const val VIDEOINSTRUCTIONS_VIEWTYPE = 5
 
-class DetailRecipeScreenAdapter : RecyclerView.Adapter<DetailRecipeScreenViewHolder>() {
+class DetailRecipeScreenAdapter(private val onDetailFavouriteClicked: () -> Unit) : RecyclerView.Adapter<DetailRecipeScreenViewHolder>() {
     var items = emptyList<DetailScreenItems>()
         set(value) {
+            val diffCallBack = DetailScreeDiffCallBack(field, value)
+            val resultDiff = DiffUtil.calculateDiff(diffCallBack)
             field = value
-            notifyDataSetChanged()
+            resultDiff.dispatchUpdatesTo(this)
         }
 
-    /**
-     * Get item view type
-     *
-     * @param position
-     * @return un intero che rappresenta al view type
-     */
+    override fun getItemId(position: Int): Long {
+        return items[position].id
+    }
+
     override fun getItemViewType(position: Int): Int {
         val item = this.items[position]
         return when (item) {
@@ -100,7 +125,7 @@ class DetailRecipeScreenAdapter : RecyclerView.Adapter<DetailRecipeScreenViewHol
     override fun onBindViewHolder(holder: DetailRecipeScreenViewHolder, position: Int) {
         when (holder) {
             is TitleCategoryAreaViewHolder -> holder.bind(items[position] as TitleCategoryArea)
-            is ImageViewHolder -> holder.bind(items[position] as Image)
+            is ImageViewHolder -> holder.bind(items[position] as Image, onDetailFavouriteClicked)
             is InstructionsViewHolder -> holder.bind(items[position] as Instructions)
             is VideoInstructionsViewHolder -> holder.bind(items[position] as VideoInstructions)
             is IngredientsViewHolder -> holder.bind(items[position] as Ingredients)
@@ -123,8 +148,16 @@ sealed class DetailRecipeScreenViewHolder(itemView: View) : ViewHolder(itemView)
     }
 
     class ImageViewHolder(private val binding: DetailRecipeScreenImageBinding) : DetailRecipeScreenViewHolder(binding.root) {
-        fun bind(image: Image) {
-            binding.detailRecipeScreenImage.load(image.image, imageLoader(itemView.context))
+        fun bind(item: Image, onDetailFavouriteClicked: () -> Unit) {
+            binding.detailRecipeScreenImage.load(item.image, imageLoader(itemView.context))
+            binding.icon.setOnClickListener {
+                onDetailFavouriteClicked()
+            }
+            if (item.isFavourite) {
+                binding.icon.setImageResource(R.drawable.ic_favourite_list)
+            } else {
+                binding.icon.setImageResource(R.drawable.ic_favourite_border_list)
+            }
         }
     }
 
@@ -184,7 +217,7 @@ class IngredientsAdapter : RecyclerView.Adapter<IngredientsItemViewHolder>() {
 
 class IngredientsItemViewHolder(private val binding: DetailRecipeScreenIngredientItemBinding) : ViewHolder(binding.root) {
     fun bind(item: IngredientUI) {
-        binding.ingredientImage.load("https://www.themealdb.com/images/ingredients/${item.name}-Small.png") {
+        binding.ingredientImage.load("https://www.themealdb.com/images/ingredients/${item.name}-Small.png", imageLoader(itemView.context)) {
             crossfade(true)
         }
         binding.detailScreenIngredientName.text = item.name
@@ -220,3 +253,40 @@ class InstructionsItemViewHolder(private val binding: DetailTextInstructionBindi
 }
 
 data class IngredientUI(val name: String, val measure: String)
+
+class DetailScreeDiffCallBack(val oldList: List<DetailScreenItems>, val newList: List<DetailScreenItems>) : DiffUtil.Callback() {
+    override fun getOldListSize(): Int {
+        return oldList.size
+    }
+
+    override fun getNewListSize(): Int {
+        return newList.size
+    }
+
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        return oldList[oldItemPosition].id == newList[newItemPosition].id
+    }
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldItem = oldList[oldItemPosition]
+        val newItem = newList[newItemPosition]
+        return oldItem == newItem
+        /*when (oldItem) {
+            is Image -> {
+                newItem as Image
+                oldItem.image == newItem.image && oldItem.isFavourite == newItem.isFavourite
+            }
+            is Ingredients -> TODO()
+            is Instructions -> TODO()
+            is TitleCategoryArea -> {
+                newItem as TitleCategoryArea
+                oldItem == newItem
+            }
+            is VideoInstructions -> {
+                newItem as VideoInstructions
+                oldItem.videoInstructions == newItem.videoInstructions
+            }
+        }.exhaustive*/
+    }
+
+}

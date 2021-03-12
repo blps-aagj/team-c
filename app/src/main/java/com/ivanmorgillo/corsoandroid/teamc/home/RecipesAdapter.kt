@@ -2,6 +2,7 @@ package com.ivanmorgillo.corsoandroid.teamc.home
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.ivanmorgillo.corsoandroid.teamc.R
@@ -12,7 +13,13 @@ import timber.log.Timber
 
 class RecipesAdapter(private val onclick: (RecipeUI) -> Unit, private val onFavouriteClicked: (RecipeUI) -> Unit) :
     RecyclerView.Adapter<RecipeViewHolder>() {
-    private var recipes: List<RecipeUI> = emptyList()
+    var recipes: List<RecipeUI> = emptyList()
+        set(value) {
+            val diffCallBack = RecipeUIDiffCallBack(field, value)
+            val diffResult = DiffUtil.calculateDiff(diffCallBack)
+            field = value
+            diffResult.dispatchUpdatesTo(this)
+        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeViewHolder {
         val binding = RecipeItemBinding.inflate(
@@ -29,12 +36,6 @@ class RecipesAdapter(private val onclick: (RecipeUI) -> Unit, private val onFavo
 
     override fun getItemCount(): Int {
         return recipes.size
-    }
-
-    fun setRecipes(listOfRecipes: List<RecipeUI>) {
-        recipes = listOfRecipes
-        // dobbiamo notificare che abbiamo aggiunto delle ricette
-        notifyDataSetChanged()
     }
 }
 
@@ -55,27 +56,37 @@ class RecipeViewHolder(private val binding: RecipeItemBinding) : RecyclerView.Vi
             error(R.drawable.ic_broken_image)
         }
         binding.recipeImage.contentDescription = item.recipeName
+        if (item.isFavourite) {
+            binding.favouriteListDetailLayout.icon.setImageResource(R.drawable.ic_favourite_list)
+        } else {
+            binding.favouriteListDetailLayout.icon.setImageResource(R.drawable.ic_favourite_border_list)
+        }
         binding.recipeRoot.setOnClickListener { onclick(item) }
-        favouriteSetOnClickListener(onFavouriteClicked, item)
+        binding.favouriteListDetailLayout.icon.setOnClickListener {
+            onFavouriteClicked(item)
+        }
+    }
+}
+
+class RecipeUIDiffCallBack(private val oldList: List<RecipeUI>, private val newList: List<RecipeUI>) : DiffUtil.Callback() {
+    override fun getOldListSize(): Int {
+        return oldList.size
     }
 
-    private fun favouriteSetOnClickListener(
-        onFavouriteClicked: (RecipeUI) -> Unit,
-        item: RecipeUI
-    ) {
-        binding.favouriteListCheckboxLayout.icon.setOnClickListener {
-            onFavouriteClicked(item)
-            if (item.isFavourite) {
-                binding.favouriteListCheckboxLayout.icon.setImageResource(R.drawable.ic_favourite_border_list)
-            } else {
-                binding.favouriteListCheckboxLayout.icon.setImageResource(R.drawable.ic_favourite_list)
-            }
-        }
-        if (item.isFavourite) {
-            binding.favouriteListCheckboxLayout.icon.setImageResource(R.drawable.ic_favourite_list)
-        } else {
-            binding.favouriteListCheckboxLayout.icon.setImageResource(R.drawable.ic_favourite_border_list)
-        }
+    override fun getNewListSize(): Int {
+        return newList.size
+    }
+
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldItem = oldList[oldItemPosition]
+        val newItem = newList[newItemPosition]
+        return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldItem = oldList[oldItemPosition]
+        val newItem = newList[newItemPosition]
+        return oldItem.id == newItem.id && oldItem.isFavourite == newItem.isFavourite
     }
 }
 
