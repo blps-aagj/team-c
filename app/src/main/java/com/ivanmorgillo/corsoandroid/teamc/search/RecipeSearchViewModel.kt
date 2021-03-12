@@ -22,7 +22,9 @@ class RecipeSearchViewModel(
     fun send(event: RecipeSearchScreenEvent) {
         when (event) {
             RecipeSearchScreenEvent.OnError -> TODO()
-            is RecipeSearchScreenEvent.OnReady -> loadContent(event.searchedRecipeName)
+            is RecipeSearchScreenEvent.OnReady -> {
+                loadContent(event.searchedRecipeName)
+            }
             is RecipeSearchScreenEvent.OnRecipeClickSearched -> {
                 tracking.logEvent("search_recipe_clicked")
                 actions.postValue(RecipeSearchScreenAction.NavigateToDetailFromSearch(event.recipe))

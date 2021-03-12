@@ -30,16 +30,10 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         val adapter = SearchRecipeAdapter { viewModel.send(RecipeSearchScreenEvent.OnRecipeClickSearched(it)) }
         states(adapter)
         binding.searchEditText.setOnEditorActionListener { v, actionId, event ->
+            Timber.d("EditorInfo $actionId")
             return@setOnEditorActionListener when (actionId) {
-                EditorInfo.IME_ACTION_SEND -> {
+                EditorInfo.IME_ACTION_SEARCH -> {//3
                     searchRecipes()
-
-                    true
-                }
-                EditorInfo.IME_ACTION_SEARCH -> {
-                    val searchText = binding.searchEditText.text
-                    Timber.d("searchText IME_ACTION_SEARCH $searchText")
-                    viewModel.send(RecipeSearchScreenEvent.OnReady(searchText.toString()))
                     true
                 }
                 else -> false
