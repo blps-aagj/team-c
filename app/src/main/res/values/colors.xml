@@ -37,7 +37,11 @@
     <color name="md_blue_grey_700">#455A64</color>
     <color name="md_blue_grey_800">#37474F</color>
     <color name="md_blue_grey_900">#263238</color>
+
+
     <color name="background_home">#E0E0E0</color>
+    <color name="background_tint_search_button">#6200EE</color>
+    <color name="tint_search_icon_in_button">#ffffff</color>
 
 
 </resources>

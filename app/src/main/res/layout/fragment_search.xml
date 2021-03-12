@@ -8,15 +8,16 @@
 
     <EditText
         android:id="@+id/search_edit_text"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="@string/app_name"
+        android:hint="@string/hint_search"
         android:inputType="text"
         android:imeOptions="actionSearch"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/search_button"
-        app:layout_constraintBottom_toTopOf="@id/search_view_recipe_recyclerview_id"
         android:autofillHints="" />
 
     <com.google.android.material.button.MaterialButton
@@ -24,8 +25,10 @@
         android:layout_width="wrap_content"
         android:text="@string/search"
         app:icon="@drawable/ic_search"
-        app:iconTint="@color/md_black_1000"
-        android:backgroundTint="@color/md_grey_200"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        app:iconTint="@color/tint_search_icon_in_button"
+        android:backgroundTint="@color/background_tint_search_button"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -38,14 +41,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/search_edit_text"
-        tools:listitem="@layout/search_cardview" />
+        tools:listitem="@layout/search_cardview"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/search_recipe_not_found_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="No recipe found with this name "
+        android:text="@string/search_fragment_message"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
