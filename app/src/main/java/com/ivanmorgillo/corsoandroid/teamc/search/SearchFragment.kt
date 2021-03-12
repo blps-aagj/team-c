@@ -13,6 +13,8 @@ import com.ivanmorgillo.corsoandroid.teamc.R
 import com.ivanmorgillo.corsoandroid.teamc.databinding.FragmentSearchBinding
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.gone
+import com.ivanmorgillo.corsoandroid.teamc.search.RecipeSearchScreenEvent.OnSearchButtonClick
+import com.ivanmorgillo.corsoandroid.teamc.search.RecipeSearchScreenEvent.OnSearchKeyboardClick
 import com.ivanmorgillo.corsoandroid.teamc.search.SearchFragmentDirections.Companion.actionSearchFragmentToDetailFragment
 import com.ivanmorgillo.corsoandroid.teamc.utils.bindings.viewBinding
 import com.ivanmorgillo.corsoandroid.teamc.visible
@@ -26,23 +28,24 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val searchText = binding.searchEditText.text
-
         val adapter = SearchRecipeAdapter { viewModel.send(RecipeSearchScreenEvent.OnRecipeClickSearched(it)) }
         states(adapter)
         binding.searchEditText.setOnEditorActionListener { v, actionId, event ->
             Timber.d("EditorInfo $actionId")
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_SEARCH -> {
-                    searchRecipes(RecipeSearchScreenEvent.OnSearchKeyboardClick(searchText.toString()))
+                    closeKeyboard()
+                    val searchText = binding.searchEditText.text.toString()
+                    viewModel.send(OnSearchKeyboardClick(searchText))
                     true
                 }
                 else -> false
             }
         }
         binding.searchButton.setOnClickListener {
-            searchRecipes(RecipeSearchScreenEvent.OnSearchButtonClick(searchText.toString()))
+            closeKeyboard()
+            val searchText = binding.searchEditText.text.toString()
+            viewModel.send(OnSearchButtonClick(searchText))
         }
 
         binding.searchViewRecipeRecyclerviewId.adapter = adapter
@@ -57,8 +60,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         })
     }
 
-    private fun searchRecipes(onSearchButtonClick: RecipeSearchScreenEvent) {
-        viewModel.send(onSearchButtonClick)
+    private fun closeKeyboard() {
         val imm: InputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.searchEditText.windowToken, 0)
     }
@@ -67,23 +69,26 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         viewModel.states.observe(viewLifecycleOwner, { state ->
             when (state) {
                 is RecipeSearchScreenStates.Content -> {
-                    binding.searchRecipeNotFoundText.gone()
+                    binding.searchScreenNoRecipe.root.gone()
+                    binding.searchMessageInfoTextView.gone()
                     binding.searchScreenNoNetwork.root.gone()
                     binding.recipesListProgressBar.root.gone()
-                    Timber.d("")
+                    binding.searchViewRecipeRecyclerviewId.visible()
                     adapter.items = state.recipe
                 }
                 RecipeSearchScreenStates.Error.NoNetwork -> {
-
+                    binding.searchScreenNoRecipe.root.gone()
                     binding.recipesListProgressBar.root.gone()
-                    binding.searchRecipeNotFoundText.gone()
+                    binding.searchMessageInfoTextView.gone()
                     binding.searchViewRecipeRecyclerviewId.gone()
                     binding.searchScreenNoNetwork.root.visible()
                 }
                 RecipeSearchScreenStates.Error.NoRecipeFound -> {
-                    binding.searchRecipeNotFoundText.visible()
+                    binding.searchScreenNoRecipe.root.visible()
                     binding.searchScreenNoNetwork.root.gone()
                     binding.searchViewRecipeRecyclerviewId.gone()
+                    binding.searchMessageInfoTextView.gone()
+                    binding.recipesListProgressBar.root.gone()
                 }
                 RecipeSearchScreenStates.Loading -> binding.recipesListProgressBar.root.visible()
             }.exhaustive

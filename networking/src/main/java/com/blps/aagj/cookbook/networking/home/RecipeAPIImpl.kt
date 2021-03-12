@@ -78,7 +78,7 @@ class RecipeAPIImpl(private val service: RecipeService) : RecipeAPI {
             if (recipes != null) {
                 LoadRecipeSearchByNameResult.Success(recipes)
             } else {
-                LoadRecipeSearchByNameResult.Failure(LoadRecipeSearchByNameError.NoInternet)
+                LoadRecipeSearchByNameResult.Failure(LoadRecipeSearchByNameError.GenericError)
             }
         } catch (e: IOException) {
             LoadRecipeSearchByNameResult.Failure(LoadRecipeSearchByNameError.NoInternet)

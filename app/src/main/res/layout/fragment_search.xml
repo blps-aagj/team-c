@@ -45,7 +45,7 @@
         tools:visibility="visible" />
 
     <TextView
-        android:id="@+id/search_recipe_not_found_text"
+        android:id="@+id/search_message_info_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
@@ -58,6 +58,12 @@
     <include
         android:id="@+id/search_screen_no_network"
         layout="@layout/no_network"
+        android:visibility="gone"
+        tools:visibility="gone" />
+
+    <include
+        android:id="@+id/search_screen_no_recipe"
+        layout="@layout/no_recipe_found"
         android:visibility="gone"
         tools:visibility="gone" />
 

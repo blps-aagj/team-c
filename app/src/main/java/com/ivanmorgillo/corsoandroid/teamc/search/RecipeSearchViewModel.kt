@@ -21,7 +21,6 @@ class RecipeSearchViewModel(
     val states = MutableLiveData<RecipeSearchScreenStates>()
     fun send(event: RecipeSearchScreenEvent) {
         when (event) {
-            RecipeSearchScreenEvent.OnError -> TODO()
             is RecipeSearchScreenEvent.OnSearchButtonClick -> {
                 tracking.logEvent("search_btn_click")
                 loadContent(event.searchedRecipeName)
@@ -31,7 +30,7 @@ class RecipeSearchViewModel(
                 actions.postValue(RecipeSearchScreenAction.NavigateToDetailFromSearch(event.recipe))
             }
             is RecipeSearchScreenEvent.OnSearchKeyboardClick -> {
-                tracking.logEvent("search_keyboard_click")
+                tracking.logEvent("search_keyboard_clicked")
                 loadContent(event.searchedRecipeName)
             }
         }.exhaustive
@@ -41,7 +40,7 @@ class RecipeSearchViewModel(
         viewModelScope.launch {
             val result = repository.loadRecipesSearchByName(name)
             when (result) {
-                is LoadRecipeSearchByNameResult.Failure -> states.postValue(RecipeSearchScreenStates.Error.NoNetwork)
+                is LoadRecipeSearchByNameResult.Failure -> states.postValue(RecipeSearchScreenStates.Error.NoRecipeFound)
                 is LoadRecipeSearchByNameResult.Success -> {
                     val recipes = result.content.map {
                         RecipeUI(
@@ -66,7 +65,6 @@ sealed class RecipeSearchScreenEvent {
     data class OnRecipeClickSearched(val recipe: RecipeUI) : RecipeSearchScreenEvent()
     data class OnSearchButtonClick(val searchedRecipeName: String) : RecipeSearchScreenEvent()
     data class OnSearchKeyboardClick(val searchedRecipeName: String) : RecipeSearchScreenEvent()
-    object OnError : RecipeSearchScreenEvent()
 }
 
 sealed class RecipeSearchScreenStates {
