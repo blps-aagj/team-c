@@ -36,6 +36,7 @@ class RecipeDetailFragment : Fragment(R.layout.fragment_detail) {
             recipeDetailViewModel.send(RecipeDetailScreenEvent.OnFavouriteClicked)
         }
         val recipeId = args.recipeId
+        adapter.setHasStableIds(true)
         binding.recipesListRoot.adapter = adapter
         binding.detailScreenNoRecipe.noRecipeFoundRandomBtn.setOnClickListener {
             Timber.d("setOnClickListener random")
@@ -70,8 +71,7 @@ class RecipeDetailFragment : Fragment(R.layout.fragment_detail) {
             }.exhaustive
         })
 
-        recipeDetailViewModel.setRecipeId(recipeId)
-        recipeDetailViewModel.send(RecipeDetailScreenEvent.OnScreenRecipeDetailReady)
+        recipeDetailViewModel.send(RecipeDetailScreenEvent.OnScreenRecipeDetailReady(recipeId))
         Timber.d("RecipeDetailFragment/onViewCreated")
     }
 }

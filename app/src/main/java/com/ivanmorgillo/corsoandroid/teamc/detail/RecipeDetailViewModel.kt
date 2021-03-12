@@ -22,7 +22,6 @@ class RecipeDetailViewModel(
 ) : ViewModel() {
 
     val states = MutableLiveData<RecipeDetailScreenStates>()
-    private var recipeId = 0L
     private var recipeDetail: RecipeDetail? = null
     private var isFavourite: Boolean = false
 
@@ -34,7 +33,7 @@ class RecipeDetailViewModel(
     fun send(event: RecipeDetailScreenEvent) {
         Timber.d("send ViewModelDetail")
         when (event) {
-            RecipeDetailScreenEvent.OnScreenRecipeDetailReady -> loadRecipeDetailContent(recipeId)
+            is RecipeDetailScreenEvent.OnScreenRecipeDetailReady -> loadRecipeDetailContent(event.recipeId)
             RecipeDetailScreenEvent.OnErrorRandomClick -> {
                 tracking.logEvent("error_random_clicked")
                 loadRecipeDetailRandomContent()
@@ -84,7 +83,7 @@ class RecipeDetailViewModel(
     private suspend fun recipesDetailsResultSuccess(recipeDetails: RecipeDetail) {
         recipeDetail = recipeDetails
         isFavourite = favouriteRepository.isFavourite(recipeDetails.recipeId.toLong())
-        val recipesDetails: List<DetailScreenItems> = listOf(
+        val screenItems: List<DetailScreenItems> = listOf(
             DetailScreenItems.Image(
                 recipeDetails.recipeImage,
                 isFavourite
@@ -103,22 +102,21 @@ class RecipeDetailViewModel(
             DetailScreenItems.Instructions(
                 recipeDetails.recipeInstructions
             ),
-            DetailScreenItems.VideoInstructions(
-                recipeDetails.recipeVideoInstructions
-            )
         )
+        val updatedScreenItems = if (recipeDetails.recipeVideoInstructions != null) {
+            screenItems.plus(DetailScreenItems.VideoInstructions(recipeDetails.recipeVideoInstructions!!))
+        } else {
+            screenItems
+        }
         states.postValue(
-            RecipeDetailScreenStates.Content(recipesDetails)
+            RecipeDetailScreenStates.Content(updatedScreenItems)
         )
     }
 
-    fun setRecipeId(recipeId: Long) {
-        this.recipeId = recipeId
-    }
 }
 
 sealed class RecipeDetailScreenEvent {
-    object OnScreenRecipeDetailReady : RecipeDetailScreenEvent()
+    data class OnScreenRecipeDetailReady(val recipeId: Long) : RecipeDetailScreenEvent()
     object OnErrorRandomClick : RecipeDetailScreenEvent()
     object OnFavouriteClicked : RecipeDetailScreenEvent()
 }
