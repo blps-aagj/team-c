@@ -13,7 +13,6 @@ import com.ivanmorgillo.corsoandroid.teamc.gone
 import com.ivanmorgillo.corsoandroid.teamc.utils.bindings.viewBinding
 import com.ivanmorgillo.corsoandroid.teamc.visible
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 private const val Z_AXIS: Float = 100f
 
@@ -39,32 +38,31 @@ class RecipeDetailFragment : Fragment(R.layout.fragment_detail) {
         adapter.setHasStableIds(true)
         binding.recipesListRoot.adapter = adapter
         binding.detailScreenNoRecipe.noRecipeFoundRandomBtn.setOnClickListener {
-            Timber.d("setOnClickListener random")
             recipeDetailViewModel.send(RecipeDetailScreenEvent.OnErrorRandomClick)
         }
         if (recipeId == 0L) {
             // Torna nella schermata precedente
             findNavController().popBackStack()
-        } else {
-            Timber.d("RecipeId = $recipeId")
         }
         recipeDetailViewModel.states.observe(viewLifecycleOwner, { state ->
             when (state) {
                 is RecipeDetailScreenStates.Content -> {
+                    binding.detailScreenProgressBar.root.gone()
                     binding.recipesListRoot.visible()
                     binding.detailScreenNoRecipe.root.gone()
-                    Timber.d("RecipeDetailScreenStates ${state.recipeDetail}")
                     adapter.items = state.recipeDetail
                 }
                 RecipeDetailScreenStates.Loading -> {
-                    // Aggiungiamo una Progress ? (SI)
-                    Timber.d("RecipeDetailScreenStates Loading")
+                    binding.recipesListRoot.gone()
+                    binding.detailScreenProgressBar.root.visible()
                 }
                 RecipeDetailScreenStates.Error.NoNetwork -> {
+                    binding.detailScreenProgressBar.root.gone()
                     binding.recipesListRoot.gone()
                     binding.detailScreenNoNetwork.root.visible()
                 }
                 RecipeDetailScreenStates.Error.NoRecipeFound -> {
+                    binding.detailScreenProgressBar.root.gone()
                     binding.recipesListRoot.gone()
                     binding.detailScreenNoRecipe.root.visible()
                 }
@@ -72,6 +70,5 @@ class RecipeDetailFragment : Fragment(R.layout.fragment_detail) {
         })
 
         recipeDetailViewModel.send(RecipeDetailScreenEvent.OnScreenRecipeDetailReady(recipeId))
-        Timber.d("RecipeDetailFragment/onViewCreated")
     }
 }

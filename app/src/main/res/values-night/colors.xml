@@ -5,5 +5,7 @@
     <color name="color_iconFab">#000000</color>
     <color name="color_background_item">#000000</color>
     <color name="background_home">#212121</color>
+    <color name="background_tint_search_button">#BDBDBD</color>
+    <color name="tint_search_icon_in_button">#000000</color>
 
 </resources>

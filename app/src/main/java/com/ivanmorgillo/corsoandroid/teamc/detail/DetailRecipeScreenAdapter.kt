@@ -271,22 +271,5 @@ class DetailScreeDiffCallBack(val oldList: List<DetailScreenItems>, val newList:
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
         return oldItem == newItem
-        /*when (oldItem) {
-            is Image -> {
-                newItem as Image
-                oldItem.image == newItem.image && oldItem.isFavourite == newItem.isFavourite
-            }
-            is Ingredients -> TODO()
-            is Instructions -> TODO()
-            is TitleCategoryArea -> {
-                newItem as TitleCategoryArea
-                oldItem == newItem
-            }
-            is VideoInstructions -> {
-                newItem as VideoInstructions
-                oldItem.videoInstructions == newItem.videoInstructions
-            }
-        }.exhaustive*/
     }
-
 }

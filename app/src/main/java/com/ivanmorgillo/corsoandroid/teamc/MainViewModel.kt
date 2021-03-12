@@ -56,6 +56,11 @@ class MainViewModel(
             MainScreenEvent.OnFavouriteListMenuClicked -> {
                 tracking.logEvent("drawer_favourite_list_clicked")
             }
+            MainScreenEvent.OnSearchClick -> {
+                tracking.logEvent("home_search_clicked")
+                Timber.d("OnSearchClick")
+                actions.postValue(MainScreenAction.NavigateToSearch)
+            }
         }.exhaustive
     }
 
@@ -166,6 +171,7 @@ data class RecipeByAreaUI(val nameArea: String, val recipeByArea: List<RecipeUI>
 sealed class MainScreenAction {
     data class NavigateToDetail(val recipe: RecipeUI) : MainScreenAction()
     data class NavigateToDetailRandom(val recipe: RecipeDetail) : MainScreenAction()
+    object NavigateToSearch : MainScreenAction()
 }
 
 sealed class MainScreenEvent {
@@ -177,11 +183,11 @@ sealed class MainScreenEvent {
     object OnFeedbackClicked : MainScreenEvent()
     object OnReady : MainScreenEvent()
     object OnRefreshClick : MainScreenEvent()
+    object OnSearchClick : MainScreenEvent()
 }
 
 sealed class MainScreenStates {
     object Loading : MainScreenStates()
-
     sealed class Error : MainScreenStates() {
         object NoNetwork : Error()
         object NoRecipeFound : Error()

@@ -21,6 +21,10 @@
     <string name="settings">Impostazioni</string>
     <string name="about">About</string>
     <string name="shopping_list">Lista della spesa</string>
-    <string name="there_are_no_favorite_recipes_yet">There are no favorite recipes yet</string>
+    <string name="there_are_no_favorite_recipes_yet">Non ci sono ancora ricette nei tuoi preferiti</string>
+    <string name="search">Cerca</string>
+    <string name="there_are_no_recipes_yet">Non ci sono ancora ricette</string>
+    <string name="search_fragment_message">Prova a cercare una ricetta</string>
+    <string name="hint_search">Cake</string>
 
 </resources>

@@ -1,6 +1,9 @@
 package com.blps.aagj.cookbook.networking.home
 
+import Recipe
 import RecipeByArea
+import com.blps.aagj.cookbook.domain.home.LoadRecipeSearchByNameError
+import com.blps.aagj.cookbook.domain.home.LoadRecipeSearchByNameResult
 import com.blps.aagj.cookbook.domain.home.LoadRecipesByAreaError
 import com.blps.aagj.cookbook.domain.home.LoadRecipesByAreaResult
 import com.blps.aagj.cookbook.domain.home.LoadRecipesError
@@ -58,6 +61,32 @@ class RecipeAPIImpl(private val service: RecipeService) : RecipeAPI {
         } catch (e: Exception) {
             Timber.e(e, "Generic Exception on LoadAreaResult")
             LoadRecipesByAreaResult.Failure(LoadRecipesByAreaError.GenericErrorByArea)
+        }
+    }
+
+    override suspend fun loadRecipeSearchByName(name: String): LoadRecipeSearchByNameResult {
+        return try {
+            val recipeDTO = service.loadRecipeSearchByName(name)
+            val recipes = recipeDTO.meals?.mapNotNull {
+                val id = it.idMeal.toLongOrNull()
+                if (id != null) {
+                    Recipe(name = it.strMeal, image = it.strMealThumb, idMeal = id)
+                } else {
+                    null
+                }
+            }
+            if (recipes != null) {
+                LoadRecipeSearchByNameResult.Success(recipes)
+            } else {
+                LoadRecipeSearchByNameResult.Failure(LoadRecipeSearchByNameError.GenericError)
+            }
+        } catch (e: IOException) {
+            LoadRecipeSearchByNameResult.Failure(LoadRecipeSearchByNameError.NoInternet)
+        } catch (e: SocketTimeoutException) {
+            LoadRecipeSearchByNameResult.Failure(LoadRecipeSearchByNameError.NoInternet)
+        } catch (e: Exception) {
+            Timber.e(e, "Generic Exception on LoadRecipeSearchByName")
+            LoadRecipeSearchByNameResult.Failure(LoadRecipeSearchByNameError.GenericError)
         }
     }
 }
