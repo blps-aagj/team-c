@@ -50,5 +50,5 @@ val appModule = module {
     } // Il get costruisce in base al tipo e a single
     viewModel { RecipeDetailViewModel(recipeDetailRepository = get(), tracking = get()) }
     viewModel { FavouriteViewModel(tracking = get(), repository = get()) }
-    viewModel { RecipeSearchViewModel(repository = get(), favouriteRepository = get()) }
+    viewModel { RecipeSearchViewModel(repository = get(), favouriteRepository = get(), tracking = get()) }
 }

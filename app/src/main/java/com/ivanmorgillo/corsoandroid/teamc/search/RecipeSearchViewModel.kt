@@ -7,17 +7,26 @@ import androidx.lifecycle.viewModelScope
 import com.blps.aagj.cookbook.domain.home.LoadRecipeSearchByNameResult
 import com.blps.aagj.cookbook.domain.home.RecipesRepository
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
+import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.home.RecipeUI
+import com.ivanmorgillo.corsoandroid.teamc.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
-class RecipeSearchViewModel(private val repository: RecipesRepository, private val favouriteRepository: FavouriteRepository) : ViewModel() {
+class RecipeSearchViewModel(
+    private val repository: RecipesRepository,
+    private val favouriteRepository: FavouriteRepository,
+    private val tracking: Tracking,
+) : ViewModel() {
+    val actions = SingleLiveEvent<RecipeSearchScreenAction>()
     val states = MutableLiveData<RecipeSearchScreenStates>()
     fun send(event: RecipeSearchScreenEvent) {
         when (event) {
             RecipeSearchScreenEvent.OnError -> TODO()
-            RecipeSearchScreenEvent.OnReady -> states.postValue(RecipeSearchScreenStates.BlankContent)
-            is RecipeSearchScreenEvent.OnRecipeSearch -> {
-                loadContent(event.name)
+            is RecipeSearchScreenEvent.OnReady -> loadContent(event.searchedRecipeName)
+            is RecipeSearchScreenEvent.OnRecipeClickSearched -> {
+                tracking.logEvent("search_recipe_clicked")
+                actions.postValue(RecipeSearchScreenAction.NavigateToDetailFromSearch(event.recipe))
             }
         }.exhaustive
     }
@@ -43,10 +52,14 @@ class RecipeSearchViewModel(private val repository: RecipesRepository, private v
     }
 }
 
+sealed class RecipeSearchScreenAction {
+    data class NavigateToDetailFromSearch(val recipe: RecipeUI) : RecipeSearchScreenAction()
+}
+
 sealed class RecipeSearchScreenEvent {
-    object OnReady : RecipeSearchScreenEvent()
+    data class OnRecipeClickSearched(val recipe: RecipeUI) : RecipeSearchScreenEvent()
+    data class OnReady(val searchedRecipeName: String) : RecipeSearchScreenEvent()
     object OnError : RecipeSearchScreenEvent()
-    data class OnRecipeSearch(val name: String) : RecipeSearchScreenEvent()
 }
 
 sealed class RecipeSearchScreenStates {
