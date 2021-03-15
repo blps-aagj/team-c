@@ -6,13 +6,11 @@ import RecipesDetailRepositoryImpl
 import RecipesDetailsRepository
 import com.blps.aagj.cookbook.domain.home.RecipeRepositoryImpl
 import com.blps.aagj.cookbook.domain.home.RecipesRepository
-import com.google.gson.Gson
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetailViewModel
 import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteViewModel
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.firebase.TrackingImpl
 import com.ivanmorgillo.corsoandroid.teamc.search.RecipeSearchViewModel
-import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -38,7 +36,7 @@ val appModule = module {
         RecipesDetailRepositoryImpl(recipeDetailAPI = get())
     }
     single<FavouriteRepository> {
-        FavouriteRepositoryImpl(context = androidContext(), gson = Gson())
+        FavouriteRepositoryImpl()
     }
     viewModel {
         MainViewModel(

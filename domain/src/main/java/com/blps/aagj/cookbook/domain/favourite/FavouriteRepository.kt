@@ -1,70 +1,96 @@
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.SharedPreferences
-import com.google.gson.Gson
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import timber.log.Timber
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 interface FavouriteRepository {
-    suspend fun loadAll(): List<Recipe>
+    suspend fun loadAll(): List<Recipe>?
     suspend fun save(recipe: Recipe, isFavourite: Boolean): Boolean
     suspend fun delete(id: Long): Boolean
     suspend fun isFavourite(id: Long): Boolean
 }
 
-class FavouriteRepositoryImpl(
-    private val context: Context,
-    private val gson: Gson
-) : FavouriteRepository {
-    private val storage: SharedPreferences by lazy {
-        context.getSharedPreferences("Favourites", Context.MODE_PRIVATE)
+class FavouriteRepositoryImpl : FavouriteRepository {
+    private val db by lazy {
+        Firebase.database.reference
     }
+    private val favourites = db.child("favourites")
 
-    override suspend fun loadAll(): List<Recipe> = withContext(Dispatchers.IO) {
-        storage.all
-            .values
-            .map {
-                it as String
-            }
-            .map {
-                gson.fromJson(it, RecipeEntity::class.java)
-            }
-            .map {
-                Recipe(
-                    name = it.name,
-                    image = it.image,
-                    idMeal = it.id
-                )
-            }
+    override suspend fun loadAll(): List<Recipe>? = suspendCoroutine { continuation ->
+        favourites.get().addOnSuccessListener {
+            val entity = it.children
+                .mapNotNull {
+                    it.getValue(RecipeEntity::class.java)
+                }.mapNotNull {
+                    if (it.name != null && it.image != null && it.id != null) {
+                        Recipe(name = it.name, image = it.image, idMeal = it.id)
+                    } else {
+                        null
+                    }
+                }
+            continuation.resume(entity)
+        }
     }
 
     @SuppressLint("ApplySharedPref")
-    override suspend fun save(recipe: Recipe, isFavourite: Boolean) = withContext(Dispatchers.IO) {
+    override suspend fun save(recipe: Recipe, isFavourite: Boolean): Boolean = suspendCoroutine { continuation ->
         if (isFavourite) {
             val recipeEntity = RecipeEntity(name = recipe.name, image = recipe.image, id = recipe.idMeal)
-            val serializedRecipe = gson.toJson(recipeEntity)
-            storage.edit().putString(recipe.idMeal.toString(), serializedRecipe).commit()
+            favourites.child(recipe.idMeal.toString())
+                .setValue(recipeEntity)
+                .addOnFailureListener {
+                    Timber.e("Success save $it")
+                    continuation.resume(false)
+                }
+                .addOnSuccessListener {
+                    Timber.d("Successfully save recipe ${recipe.idMeal}")
+                    continuation.resume(true)
+                }
         } else {
-            storage.edit().remove(recipe.idMeal.toString()).commit()
+            favourites.child(recipe.idMeal.toString())
+                .removeValue()
+                .addOnFailureListener {
+                    Timber.e("Failure remove $it")
+                    continuation.resume(false)
+                }
+                .addOnSuccessListener {
+                    Timber.d("Successfully remove recipe ${recipe.idMeal}")
+                    continuation.resume(false)
+                }
         }
     }
 
     override suspend fun delete(id: Long) = withContext(Dispatchers.IO) {
-        storage.edit().remove(id.toString()).commit()
+        favourites.child(id.toString()).removeValue()
+        true
     }
 
-    override suspend fun isFavourite(id: Long): Boolean = withContext(Dispatchers.IO) {
-        val maybeFavourite = storage.getString(id.toString(), null)
-        maybeFavourite != null
+    override suspend fun isFavourite(id: Long): Boolean = suspendCoroutine {
+        favourites.child(id.toString()).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val entity = snapshot.getValue(RecipeEntity::class.java)
+                val isFavourite = entity != null
+                it.resume(isFavourite)
+            }
+
+            override fun onCancelled(error: DatabaseError) = Unit
+        })
     }
 }
 
 data class RecipeEntity(
     @SerializedName("name")
-    val name: String,
+    val name: String? = null,
     @SerializedName("image")
-    val image: String,
+    val image: String? = null,
     @SerializedName("id")
-    val id: Long
+    val id: Long? = null
 )
