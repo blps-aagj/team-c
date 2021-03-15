@@ -32,6 +32,6 @@
         <item
             android:id="@+id/about"
             android:icon="@drawable/ic_info"
-            android:title="@string/about" />
+            android:title="Sign in" />
     </group>
 </menu>

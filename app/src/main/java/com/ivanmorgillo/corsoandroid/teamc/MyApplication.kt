@@ -2,6 +2,7 @@ package com.ivanmorgillo.corsoandroid.teamc
 
 import android.app.Application
 import android.os.StrictMode
+import androidx.viewbinding.BuildConfig
 import com.blps.aagj.cookbook.di.networkingKoinModule
 import com.ivanmorgillo.corsoandroid.teamc.firebase.CrashReportingTree
 import com.ivanmorgillo.corsoandroid.teamc.firebase.LineNumberDebugTree

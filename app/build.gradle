@@ -104,11 +104,12 @@ android
                 implementation "androidx.appcompat:appcompat:$appcompat_version"
                 //firebase
                 // Import the Firebase BoM
-                implementation platform('com.google.firebase:firebase-bom:26.4.0')
+                implementation platform('com.google.firebase:firebase-bom:26.7.0')
                 implementation 'com.google.firebase:firebase-analytics-ktx'
                 implementation 'com.google.firebase:firebase-crashlytics-ktx'
                 implementation 'com.google.firebase:firebase-perf-ktx'
                 implementation 'com.google.firebase:firebase-config-ktx'
+                implementation 'com.firebaseui:firebase-ui-auth:6.4.0'
                 // Navigation Components
                 implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
                 implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
