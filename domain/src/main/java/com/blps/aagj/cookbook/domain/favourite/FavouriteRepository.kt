@@ -1,4 +1,3 @@
-import android.annotation.SuppressLint
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
@@ -15,19 +14,32 @@ class FavouriteRepositoryImpl : FavouriteRepository {
     private val firestore by lazy {
         Firebase.firestore
     }
+    private val favouritesCollection = firestore.collection("favourites")
 
     override suspend fun loadAll(): List<Recipe>? {
-        return emptyList()
+        return favouritesCollection
+            .get()
+            .await()
+            .documents
+            .map {
+                val name = it["name"] as String
+                val image = it["image"] as String
+                val id = it["id"] as Long
+                Recipe(
+                    name = name,
+                    image = image,
+                    idMeal = id
+                )
+            }
     }
 
-    @SuppressLint("ApplySharedPref")
     override suspend fun save(recipe: Recipe, isFavourite: Boolean): Boolean {
         val favouriteMap = hashMapOf(
             "id" to recipe.idMeal,
             "name" to recipe.name,
             "image" to recipe.image
         )
-        firestore.collection("favourites").add(favouriteMap).await()
+        favouritesCollection.add(favouriteMap).await()
         return true
     }
 
