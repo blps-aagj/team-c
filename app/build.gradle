@@ -107,7 +107,6 @@ android
                 implementation 'com.google.firebase:firebase-crashlytics-ktx'
                 implementation 'com.google.firebase:firebase-perf-ktx'
                 implementation 'com.google.firebase:firebase-config-ktx'
-                implementation 'com.firebaseui:firebase-ui-auth:6.4.0'
                 // Navigation Components
                 implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
                 implementation "androidx.navigation:navigation-ui-ktx:$nav_version"

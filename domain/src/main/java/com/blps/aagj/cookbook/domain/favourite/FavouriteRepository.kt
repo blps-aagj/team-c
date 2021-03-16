@@ -1,3 +1,4 @@
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
@@ -14,10 +15,13 @@ class FavouriteRepositoryImpl : FavouriteRepository {
     private val firestore by lazy {
         Firebase.firestore
     }
-    private val favouritesCollection = firestore.collection("favourites")
+    private val favouritesCollection by lazy {
+        val uid = Firebase.auth.currentUser.uid
+        firestore.collection("favourites-$uid")
+    }
 
     override suspend fun loadAll(): List<Recipe>? {
-        return favouritesCollection
+        val favouriteList = favouritesCollection
             .get()
             .await()
             .documents
@@ -31,6 +35,11 @@ class FavouriteRepositoryImpl : FavouriteRepository {
                     idMeal = id
                 )
             }
+        return if (favouriteList.isEmpty()) {
+            null
+        } else {
+            favouriteList
+        }
     }
 
     override suspend fun save(recipe: Recipe, isFavourite: Boolean): Boolean {

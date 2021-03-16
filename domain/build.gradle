@@ -37,7 +37,10 @@ dependencies {
     api 'com.google.firebase:firebase-database-ktx'
     implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation platform('com.google.firebase:firebase-bom:26.7.0')
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.3.9"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.3.9"
+    api 'com.firebaseui:firebase-ui-auth:6.4.0'
+    api 'com.google.firebase:firebase-auth-ktx'
+
     // Timber
     api 'com.jakewharton.timber:timber:4.7.1'
     // test
