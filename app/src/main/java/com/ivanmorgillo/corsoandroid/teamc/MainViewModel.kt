@@ -152,7 +152,7 @@ class MainViewModel(
                                         id = recipe.idMeal,
                                         recipeName = recipe.name,
                                         recipeImageUrl = recipe.image,
-                                        isFavourite = false
+                                        isFavourite = favouriteRepository.isFavourite(id = recipe.idMeal)
                                     )
                                 },
                                 selectedRecipePosition = 0

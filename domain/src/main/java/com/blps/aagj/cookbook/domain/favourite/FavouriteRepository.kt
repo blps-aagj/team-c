@@ -39,21 +39,26 @@ class FavouriteRepositoryImpl : FavouriteRepository {
             "name" to recipe.name,
             "image" to recipe.image
         )
-        favouritesCollection.add(favouriteMap).await()
+        favouritesCollection
+            .document(recipe.idMeal.toString())
+            .set(favouriteMap)
+            .await()
         return true
     }
 
     override suspend fun delete(id: Long): Boolean {
+        favouritesCollection
+            .document(id.toString())
+            .delete()
+            .await()
         return true
     }
 
     override suspend fun isFavourite(id: Long): Boolean {
-        return false
+        val tmp = favouritesCollection
+            .document(id.toString())
+            .get()
+            .await()
+        return tmp.exists()
     }
 }
-
-data class RecipeEntity(
-    val name: String? = null,
-    val image: String? = null,
-    val id: Long? = null
-)
