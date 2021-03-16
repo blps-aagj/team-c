@@ -1,5 +1,5 @@
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 
@@ -10,11 +10,9 @@ interface FavouriteRepository {
     suspend fun isFavourite(id: Long): Boolean
 }
 
-class FavouriteRepositoryImpl : FavouriteRepository {
-
-    private val firestore by lazy {
-        Firebase.firestore
-    }
+class FavouriteRepositoryImpl(
+    private val firestore: FirebaseFirestore
+) : FavouriteRepository {
     private val favouritesCollection by lazy {
         val uid = Firebase.auth.currentUser.uid
         firestore.collection("favourites-$uid")

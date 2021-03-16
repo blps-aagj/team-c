@@ -2,6 +2,7 @@ package com.ivanmorgillo.corsoandroid.teamc
 
 import FavouriteRepository
 import LoadRecipesDetailResult
+import Recipe
 import RecipeByArea
 import RecipesDetailsRepository
 import androidx.lifecycle.MutableLiveData
@@ -143,18 +144,15 @@ class MainViewModel(
                 is LoadRecipesByAreaResult.Failure -> states.postValue(MainScreenStates.Error.NoNetwork)
                 is LoadRecipesByAreaResult.Success -> {
                     recipes = result.contentListRecipes
+                    val favourites = favouriteRepository.loadAll() ?: emptyList()
                     val recipes = result.contentListRecipes
                         .map {
                             RecipeByAreaUI(
                                 nameArea = it.nameArea,
-                                recipeByArea = it.recipeByArea.map { recipe ->
-                                    RecipeUI(
-                                        id = recipe.idMeal,
-                                        recipeName = recipe.name,
-                                        recipeImageUrl = recipe.image,
-                                        isFavourite = favouriteRepository.isFavourite(id = recipe.idMeal)
-                                    )
-                                },
+                                recipeByArea = it.recipeByArea
+                                    .map { recipe ->
+                                        recipe.toUI(favourites)
+                                    },
                                 selectedRecipePosition = 0
                             )
                         }
@@ -164,6 +162,13 @@ class MainViewModel(
             }
         }
     }
+
+    private fun Recipe.toUI(favourites: List<Recipe>) = RecipeUI(
+        id = idMeal,
+        recipeName = name,
+        recipeImageUrl = image,
+        isFavourite = favourites.find { favourite -> favourite.idMeal == idMeal } != null
+    )
 }
 
 data class RecipeByAreaUI(val nameArea: String, val recipeByArea: List<RecipeUI>, val selectedRecipePosition: Int)

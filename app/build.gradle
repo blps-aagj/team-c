@@ -64,9 +64,8 @@ android
             dependencies {
                 // Questa parte racchiude la collezione di librerie che useremo
                 implementation fileTree(dir: "libs", include: ["*.jar"])
-                //
+                // dependency injection
                 implementation project(":di")
-                //
                 implementation project(":domain")
                 // Ci consente di mettere il jar della libreria direttamente nella cartella libs
                 // Le librerie con implementations vengono scaricate da gradle

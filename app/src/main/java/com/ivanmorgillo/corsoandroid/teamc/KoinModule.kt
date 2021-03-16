@@ -36,7 +36,7 @@ val appModule = module {
         RecipesDetailRepositoryImpl(recipeDetailAPI = get())
     }
     single<FavouriteRepository> {
-        FavouriteRepositoryImpl()
+        FavouriteRepositoryImpl(firestore = get())
     }
     viewModel {
         MainViewModel(

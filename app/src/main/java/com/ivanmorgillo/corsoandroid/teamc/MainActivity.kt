@@ -121,6 +121,7 @@ class MainActivity : AppCompatActivity() {
             val user = FirebaseAuth.getInstance().currentUser
             Timber.d("user ${user?.displayName}")
             Toast.makeText(this, "Welcome, ${user?.displayName}", Toast.LENGTH_LONG).show()
+//            val credential = GoogleAuthProvider.getCredential(Firebase.auth, null)
         } else {
             // Sign in failed. If response is null the user canceled the
             // sign-in flow using the back button. Otherwise check
