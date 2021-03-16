@@ -14,12 +14,14 @@ class FavouriteRepositoryImpl(
     private val firestore: FirebaseFirestore
 ) : FavouriteRepository {
     private val favouritesCollection by lazy {
-        val uid = Firebase.auth.currentUser.uid
-        firestore.collection("favourites-$uid")
+        firestore.collection("favourites")
     }
+
+    private fun getUid() = Firebase.auth.currentUser.uid
 
     override suspend fun loadAll(): List<Recipe>? {
         val favouriteList = favouritesCollection
+            .whereEqualTo("userID", getUid())
             .get()
             .await()
             .documents
@@ -44,7 +46,8 @@ class FavouriteRepositoryImpl(
         val favouriteMap = hashMapOf(
             "id" to recipe.idMeal,
             "name" to recipe.name,
-            "image" to recipe.image
+            "image" to recipe.image,
+            "userID" to getUid()
         )
         favouritesCollection
             .document(recipe.idMeal.toString())

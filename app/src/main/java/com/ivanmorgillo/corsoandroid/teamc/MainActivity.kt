@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.ErrorCodes
 import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -82,6 +83,7 @@ class MainActivity : AppCompatActivity() {
                     val intent = AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setAvailableProviders(providers)
+                        .enableAnonymousUsersAutoUpgrade()
                         .build()
                     firebaseAuthenticationResultLauncher.launch(intent)
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
@@ -101,14 +103,14 @@ class MainActivity : AppCompatActivity() {
         if (currentUser == null) {
             signinAnonymously()
         } else {
-            Timber.d("User is logged in")
+            Log.d("pippo già loggato", "${currentUser.uid}")
         }
     }
 
     private fun signinAnonymously() {
         lifecycleScope.launch {
             val tmp = Firebase.auth.signInAnonymously().await()
-            Log.d("user -> ", "${tmp.user}")
+            Log.d("pippo anonimo -> ", "${tmp.user.uid}")
         }
     }
 
@@ -119,14 +121,24 @@ class MainActivity : AppCompatActivity() {
         if (result.resultCode == Activity.RESULT_OK) {
             // Successfully signed in
             val user = FirebaseAuth.getInstance().currentUser
-            Timber.d("user ${user?.displayName}")
+            Log.d("pippo google", "${user?.uid}")
             Toast.makeText(this, "Welcome, ${user?.displayName}", Toast.LENGTH_LONG).show()
-//            val credential = GoogleAuthProvider.getCredential(Firebase.auth, null)
         } else {
             // Sign in failed. If response is null the user canceled the
             // sign-in flow using the back button. Otherwise check
             // response.getError().getErrorCode() and handle the error.
             // ...
+            // Sign in failed
+            if (response?.error?.errorCode == ErrorCodes.ANONYMOUS_UPGRADE_MERGE_CONFLICT) {
+                // Store relevant anonymous user data
+                // Get the non-anoymous credential from the response
+                val nonAnonymousCredential = response.credentialForLinking
+                // Sign in with credential
+                FirebaseAuth.getInstance().signInWithCredential(nonAnonymousCredential)
+                    .addOnSuccessListener {
+                        Log.d("pippo mergiando", "${it.user.uid}")
+                    }
+            }
             Timber.e("authentication error  ${response?.error?.errorCode}")
         }
     }
