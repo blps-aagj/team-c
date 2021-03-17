@@ -79,7 +79,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
                 MainScreenStates.Loading -> {
                     binding.recipesListProgressBar.root.visible()
-                    Timber.d("MainscreenStates Loading")
+                    Timber.d("MainScreenStates Loading")
                 }
                 MainScreenStates.Error.NoNetwork -> {
                     binding.recipesListProgressBar.root.gone()
@@ -93,7 +93,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
             }.exhaustive
         })
+
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)

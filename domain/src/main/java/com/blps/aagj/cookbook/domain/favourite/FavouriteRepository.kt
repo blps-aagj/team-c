@@ -1,6 +1,5 @@
-import com.google.firebase.auth.ktx.auth
+import com.blps.aagj.cookbook.domain.AuthenticationManager
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 
 interface FavouriteRepository {
@@ -11,17 +10,17 @@ interface FavouriteRepository {
 }
 
 class FavouriteRepositoryImpl(
-    private val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
+    private val authenticationManager: AuthenticationManager
 ) : FavouriteRepository {
     private val favouritesCollection by lazy {
         firestore.collection("favourites")
     }
 
-    private fun getUid() = Firebase.auth.currentUser.uid
-
     override suspend fun loadAll(): List<Recipe>? {
+        val uid = authenticationManager.getUid() ?: return null
         val favouriteList = favouritesCollection
-            .whereEqualTo("userID", getUid())
+            .whereEqualTo("userID", uid)
             .get()
             .await()
             .documents
@@ -47,7 +46,7 @@ class FavouriteRepositoryImpl(
             "id" to recipe.idMeal,
             "name" to recipe.name,
             "image" to recipe.image,
-            "userID" to getUid()
+            "userID" to authenticationManager.getUid()
         )
         favouritesCollection
             .document(recipe.idMeal.toString())

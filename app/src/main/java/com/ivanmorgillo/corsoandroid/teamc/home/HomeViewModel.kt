@@ -5,9 +5,11 @@ import LoadRecipesDetailResult
 import Recipe
 import RecipeByArea
 import RecipesDetailsRepository
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.blps.aagj.cookbook.domain.AuthenticationManager
 import com.blps.aagj.cookbook.domain.detail.RecipeDetail
 import com.blps.aagj.cookbook.domain.home.LoadRecipesByAreaResult
 import com.blps.aagj.cookbook.domain.home.RecipesRepository
@@ -23,7 +25,8 @@ class MainViewModel(
     private val repository: RecipesRepository,
     private val favouriteRepository: FavouriteRepository,
     private val detailsRepository: RecipesDetailsRepository,
-    private val tracking: Tracking
+    private val tracking: Tracking,
+    private val authenticationManager: AuthenticationManager
 ) : ViewModel() {
 
     val states = MutableLiveData<MainScreenStates>()
@@ -45,7 +48,11 @@ class MainViewModel(
             }
             is MainScreenEvent.OnFavouriteClicked -> {
                 tracking.logEvent("home_favorite_clicked")
-                saveFavourite(event.recipe)
+                if (authenticationManager.isUserLoggedIn()) {
+                    saveFavourite(event.recipe)
+                } else {
+                    Log.d("msg", "do sign in ")
+                }
             }
             is MainScreenEvent.OnRandomClick -> {
                 tracking.logEvent("home_random_clicked")
