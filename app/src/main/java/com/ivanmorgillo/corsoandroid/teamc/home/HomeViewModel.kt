@@ -51,6 +51,7 @@ class MainViewModel(
                 if (authenticationManager.isUserLoggedIn()) {
                     saveFavourite(event.recipe)
                 } else {
+                    states.postValue(MainScreenStates.NoLogged)
                     Log.d("msg", "do sign in ")
                 }
             }
@@ -68,6 +69,9 @@ class MainViewModel(
                 tracking.logEvent("home_search_clicked")
                 Timber.d("OnSearchClick")
                 actions.postValue(MainScreenAction.NavigateToSearch)
+            }
+            MainScreenEvent.OnLoginDialogClick -> {
+                tracking.logEvent("login_dialog_clicked")
             }
         }.exhaustive
     }
@@ -196,10 +200,15 @@ sealed class MainScreenEvent {
     object OnReady : MainScreenEvent()
     object OnRefreshClick : MainScreenEvent()
     object OnSearchClick : MainScreenEvent()
+    object OnLoginDialogClick : MainScreenEvent()
 }
 
 sealed class MainScreenStates {
     object Loading : MainScreenStates()
+    object NoLogged : MainScreenStates() {
+
+    }
+
     sealed class Error : MainScreenStates() {
         object NoNetwork : Error()
         object NoRecipeFound : Error()

@@ -83,6 +83,10 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
                     true
                 }
+                R.id.sign_out -> {
+                    signOut()
+                    true
+                }
                 else -> {
                     false
                 }
@@ -97,11 +101,17 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
         if (result.resultCode == Activity.RESULT_OK) {
             // Successfully signed in
             val user = Firebase.auth.currentUser
-            Toast.makeText(this, "Welcome, ${user?.displayName}", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Welcome, ${user?.displayName}", Toast.LENGTH_SHORT).show()
             startGoogleSignInCallback?.invoke()
         } else {
             Timber.e("authentication error  ${response?.error?.errorCode}")
         }
+    }
+
+    private fun signOut() {
+        Log.d("user signed out ", "Firebase.auth.currentUser" + Firebase.auth.currentUser)
+        Toast.makeText(this, "Sayonara " + Firebase.auth.currentUser?.displayName, Toast.LENGTH_SHORT).show()
+        Firebase.auth.signOut()
     }
 
     fun setCheckedItem(id: Int) {

@@ -1,14 +1,18 @@
 package com.ivanmorgillo.corsoandroid.teamc.home
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.ivanmorgillo.corsoandroid.teamc.MainActivity
 import com.ivanmorgillo.corsoandroid.teamc.R
+import com.ivanmorgillo.corsoandroid.teamc.StartGoogleSignIn
 import com.ivanmorgillo.corsoandroid.teamc.databinding.FragmentHomeBinding
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.gone
@@ -91,11 +95,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     binding.recipesListRoot.gone()
                     binding.mainScreenNoRecipe.root.visible()
                 }
+                MainScreenStates.NoLogged -> showDialog(requireContext())
             }.exhaustive
         })
-
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
@@ -112,6 +115,19 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }.exhaustive
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showDialog(context: Context) {
+        MaterialAlertDialogBuilder(context)
+            .setMessage("Se vuoi aggiungere la ricetta nei preferiti, loggati! :)")
+            .setNegativeButton("cancel") { dialog, which ->
+                // Respond to neutral button press
+            }
+            .setPositiveButton("Login") { dialog, which ->
+                viewModel.send(MainScreenEvent.OnLoginDialogClick)
+                (activity as StartGoogleSignIn).startGoogleSignIn { Log.d("msg", "Login successful") }
+            }
+            .show()
     }
 
     override fun onResume() {
