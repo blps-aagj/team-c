@@ -3,10 +3,12 @@ package com.ivanmorgillo.corsoandroid.teamc.login
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.ivanmorgillo.corsoandroid.teamc.R
 import com.ivanmorgillo.corsoandroid.teamc.databinding.FragmentLoginBinding
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.gone
+import com.ivanmorgillo.corsoandroid.teamc.login.LoginFragmentDirections.Companion.actionLoginFragmentToHomeFragment
 import com.ivanmorgillo.corsoandroid.teamc.utils.bindings.viewBinding
 import com.ivanmorgillo.corsoandroid.teamc.visible
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -18,7 +20,25 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.guestSignInButton.setOnClickListener {
+            viewModel.send(LoginScreenEvent.OnGuestSignInClick)
+        }
+        binding.googleSignInButton.setOnClickListener {
+            viewModel.send(LoginScreenEvent.OnGoogleSignInClick)
+        }
         states()
+        actions()
+    }
+
+    private fun actions() {
+        viewModel.actions.observe(viewLifecycleOwner, { action ->
+            when (action) {
+                LoginScreenActions.NavigateToHome -> {
+                    val directions = actionLoginFragmentToHomeFragment()
+                    findNavController().navigate(directions)
+                }
+            }.exhaustive
+        })
     }
 
     private fun states() {
