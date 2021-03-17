@@ -26,5 +26,6 @@
     <string name="there_are_no_recipes_yet">Non ci sono ancora ricette</string>
     <string name="search_fragment_message">Prova a cercare una ricetta</string>
     <string name="hint_search">Cake</string>
+    <string name="login">Login</string>
 
 </resources>

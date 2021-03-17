@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "Impostazioni da implementare", Toast.LENGTH_SHORT).show()
                     true
                 }
-                R.id.about -> {
+                R.id.sign_in -> {
                     // Choose authentication providers
                     val providers = arrayListOf(
                         AuthUI.IdpConfig.GoogleBuilder().build(),
