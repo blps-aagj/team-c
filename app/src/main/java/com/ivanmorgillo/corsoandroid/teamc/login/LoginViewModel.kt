@@ -24,7 +24,7 @@ class LoginViewModel(
             LoginScreenEvent.OnGoogleSignInClick -> {
                 tracking.logEvent("login_google_sign_in")
                 Log.d("msg", "Login Google")
-                actions.postValue(LoginScreenActions.NavigateToHome)
+                actions.postValue(LoginScreenActions.RequestGoogleSignIn)
             }
             LoginScreenEvent.OnGuestSignInClick -> {
                 Log.d("msg ", "Login Guest")
@@ -40,7 +40,9 @@ class LoginViewModel(
 }
 
 sealed class LoginScreenActions {
+
     object NavigateToHome : LoginScreenActions()
+    object RequestGoogleSignIn : LoginScreenActions()
 }
 
 sealed class LoginScreenEvent {

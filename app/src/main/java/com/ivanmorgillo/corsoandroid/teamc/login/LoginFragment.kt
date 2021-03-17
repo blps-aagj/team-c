@@ -1,10 +1,12 @@
 package com.ivanmorgillo.corsoandroid.teamc.login
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.ivanmorgillo.corsoandroid.teamc.R
+import com.ivanmorgillo.corsoandroid.teamc.StartGoogleSignIn
 import com.ivanmorgillo.corsoandroid.teamc.databinding.FragmentLoginBinding
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.gone
@@ -36,6 +38,13 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 LoginScreenActions.NavigateToHome -> {
                     val directions = actionLoginFragmentToHomeFragment()
                     findNavController().navigate(directions)
+                }
+                LoginScreenActions.RequestGoogleSignIn -> {
+                    (activity as StartGoogleSignIn).startGoogleSignIn() {
+                        val directions = actionLoginFragmentToHomeFragment()
+                        findNavController().navigate(directions)
+                        Log.d("msg", "Login successful")
+                    }
                 }
             }.exhaustive
         })
