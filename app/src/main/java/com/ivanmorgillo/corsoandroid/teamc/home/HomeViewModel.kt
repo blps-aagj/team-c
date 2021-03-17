@@ -1,4 +1,4 @@
-package com.ivanmorgillo.corsoandroid.teamc
+package com.ivanmorgillo.corsoandroid.teamc.home
 
 import FavouriteRepository
 import LoadRecipesDetailResult
@@ -11,9 +11,9 @@ import androidx.lifecycle.viewModelScope
 import com.blps.aagj.cookbook.domain.detail.RecipeDetail
 import com.blps.aagj.cookbook.domain.home.LoadRecipesByAreaResult
 import com.blps.aagj.cookbook.domain.home.RecipesRepository
-import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.NavigateToDetail
+import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
-import com.ivanmorgillo.corsoandroid.teamc.home.RecipeUI
+import com.ivanmorgillo.corsoandroid.teamc.home.MainScreenAction.NavigateToDetail
 import com.ivanmorgillo.corsoandroid.teamc.utils.SingleLiveEvent
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch

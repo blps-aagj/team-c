@@ -21,6 +21,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.ivanmorgillo.corsoandroid.teamc.databinding.ActivityMainBinding
+import com.ivanmorgillo.corsoandroid.teamc.home.MainScreenEvent
+import com.ivanmorgillo.corsoandroid.teamc.home.MainViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import org.koin.androidx.viewmodel.ext.android.viewModel
