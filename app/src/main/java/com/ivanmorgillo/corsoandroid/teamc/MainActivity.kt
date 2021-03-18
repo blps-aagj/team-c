@@ -40,7 +40,6 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
     private var startGoogleSignInCallback: (() -> Unit)? = null
 
     private val user = Firebase.auth.currentUser
-    private val headerView = binding.navView.getHeaderView(0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -131,7 +130,7 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
     private var firebaseAuthenticationResultLauncher = registerForActivityResult(StartActivityForResult()) { result ->
 
         val response = IdpResponse.fromResultIntent(result.data)
-
+        val headerView = binding.navView.getHeaderView(0)
         if (result.resultCode == Activity.RESULT_OK) {
             binding.navView.menu.findItem(R.id.sign_in).title = "Logout"
             if (user?.displayName != null) {
