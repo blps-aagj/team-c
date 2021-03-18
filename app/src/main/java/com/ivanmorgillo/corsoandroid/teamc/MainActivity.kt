@@ -129,17 +129,21 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
         val response = IdpResponse.fromResultIntent(result.data)
 
         if (result.resultCode == Activity.RESULT_OK) {
-            // Successfully signed in
             val user = Firebase.auth.currentUser
+            val headerView = binding.navView.getHeaderView(0)
             Toast.makeText(this, "Welcome, ${user?.displayName}", Toast.LENGTH_SHORT).show()
             binding.navView.menu.findItem(R.id.sign_in).title = "Logout"
-            if (user?.displayName != null && user.photoUrl != null) {
-                binding.navView.getHeaderView(0).findViewById<TextView>(R.id.userName).text = Firebase.auth.currentUser?.displayName
-                binding.navView.getHeaderView(0).findViewById<ImageView>(R.id.userAvatar).load(Firebase.auth.currentUser?.photoUrl, imageLoader(this))
+            if (user?.displayName != null) {
+                headerView.findViewById<TextView>(R.id.userName).text = Firebase.auth.currentUser?.displayName
+                headerView.findViewById<ImageView>(R.id.userAvatar).load(Firebase.auth.currentUser?.photoUrl, imageLoader(this))
             } else {
                 val userEmail = user?.email?.split("@")?.get(0)
-                binding.navView.getHeaderView(0).findViewById<TextView>(R.id.userName).text = userEmail
-                binding.navView.getHeaderView(0).findViewById<ImageView>(R.id.userAvatar).load(R.drawable.ic_placeholder_account_img)
+                headerView.findViewById<TextView>(R.id.userName).text = userEmail
+                if (user?.photoUrl == null) {
+                    headerView.findViewById<ImageView>(R.id.userAvatar).load(R.drawable.ic_placeholder_account_img)
+                } else {
+                    headerView.findViewById<ImageView>(R.id.userAvatar).load(Firebase.auth.currentUser?.photoUrl, imageLoader(this))
+                }
                 Log.d("pippo 2 userEmail", "$userEmail")
             }
             Log.d("pippo 2 img", "${Firebase.auth.currentUser?.email}")
