@@ -39,7 +39,6 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
     private lateinit var binding: ActivityMainBinding
     private var startGoogleSignInCallback: (() -> Unit)? = null
 
-    private val user = Firebase.auth.currentUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,8 +56,8 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
         val headerView = binding.navView.getHeaderView(0)
         if (Firebase.auth.currentUser != null) {
             binding.navView.menu.findItem(R.id.sign_in).title = "Logout"
-            headerView.findViewById<TextView>(R.id.userName).text = user?.displayName
-            headerView.findViewById<ImageView>(R.id.userAvatar).load(user?.photoUrl, imageLoader(this))
+            headerView.findViewById<TextView>(R.id.userName).text = Firebase.auth.currentUser?.displayName
+            headerView.findViewById<ImageView>(R.id.userAvatar).load(Firebase.auth.currentUser?.photoUrl, imageLoader(this))
         } else {
             binding.navView.menu.findItem(R.id.sign_in).title = "Login"
             headerView.findViewById<TextView>(R.id.userName).text = "User Name"
@@ -103,12 +102,12 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
                     true
                 }
                 R.id.sign_in -> {
-                    if (user == null) {
+                    if (Firebase.auth.currentUser == null) {
                         startGoogleSignIn {
                             Log.d("msg", "Login successful")
                         }
 
-                        Log.d("pippo", "${user?.displayName}")
+                        Log.d("pippo", "${Firebase.auth.currentUser?.displayName}")
 
                         binding.drawerLayout.closeDrawer(GravityCompat.START)
                     } else {
@@ -131,7 +130,9 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
 
         val response = IdpResponse.fromResultIntent(result.data)
         val headerView = binding.navView.getHeaderView(0)
+
         if (result.resultCode == Activity.RESULT_OK) {
+            val user = Firebase.auth.currentUser
             binding.navView.menu.findItem(R.id.sign_in).title = "Logout"
             if (user?.displayName != null) {
                 Toast.makeText(this, "Welcome, ${user.displayName}", Toast.LENGTH_SHORT).show()
@@ -159,7 +160,8 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
     }
 
     private fun signOut() {
-        Log.d("User signed out ", "user" + user)
+        val user = Firebase.auth.currentUser
+        Log.d("User signed out ", "Firebase.auth.currentUser$user")
         if (user?.displayName != null) {
             Toast.makeText(this, "Goodbye " + user.displayName, Toast.LENGTH_SHORT).show()
         } else {
