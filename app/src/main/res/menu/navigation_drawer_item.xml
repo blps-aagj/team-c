@@ -37,15 +37,10 @@
 
     </group>
     <group
-        android:id="@+id/drawer_sign_in"
-        android:checkableBehavior="single">
+        android:id="@+id/drawer_sign_in">
         <item
             android:id="@+id/sign_in"
             android:icon="@drawable/ic_key"
             android:title="@string/login" />
-        <item
-            android:id="@+id/sign_out"
-            android:icon="@drawable/ic_key"
-            android:title="logout" />
     </group>
 </menu>

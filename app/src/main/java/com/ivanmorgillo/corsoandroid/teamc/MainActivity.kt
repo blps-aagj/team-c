@@ -47,6 +47,15 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
         // Display the hamburger icon to launch the drawer
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        if (Firebase.auth.currentUser == null) {
+            binding.navView.menu.findItem(R.id.sign_in).title = "Login"
+        } else {
+            binding.navView.menu.findItem(R.id.sign_in).title = "Logout"
+        }
+        drawerHandling()
+    }
+
+    private fun drawerHandling() {
         binding.navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.home_page -> {
@@ -81,14 +90,17 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
                     true
                 }
                 R.id.sign_in -> {
-                    startGoogleSignIn {
-                        Log.d("msg", "Login successful")
+                    if (Firebase.auth.currentUser == null) {
+                        startGoogleSignIn {
+                            Log.d("msg", "Login successful")
+                        }
+                        binding.navView.menu.findItem(R.id.sign_in).title = "Logout"
+                        binding.drawerLayout.closeDrawer(GravityCompat.START)
+                    } else {
+                        signOut()
+                        binding.navView.menu.findItem(R.id.sign_in).title = "Login"
+                        binding.drawerLayout.closeDrawer(GravityCompat.START)
                     }
-                    binding.drawerLayout.closeDrawer(GravityCompat.START)
-                    true
-                }
-                R.id.sign_out -> {
-                    signOut()
                     true
                 }
                 else -> {
