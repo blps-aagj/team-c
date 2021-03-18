@@ -131,14 +131,15 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
         if (result.resultCode == Activity.RESULT_OK) {
             val user = Firebase.auth.currentUser
             val headerView = binding.navView.getHeaderView(0)
-            Toast.makeText(this, "Welcome, ${user?.displayName}", Toast.LENGTH_SHORT).show()
             binding.navView.menu.findItem(R.id.sign_in).title = "Logout"
             if (user?.displayName != null) {
+                Toast.makeText(this, "Welcome, ${user?.displayName}", Toast.LENGTH_SHORT).show()
                 headerView.findViewById<TextView>(R.id.userName).text = Firebase.auth.currentUser?.displayName
                 headerView.findViewById<ImageView>(R.id.userAvatar).load(Firebase.auth.currentUser?.photoUrl, imageLoader(this))
             } else {
                 val userEmail = user?.email?.split("@")?.get(0)
                 headerView.findViewById<TextView>(R.id.userName).text = userEmail
+                Toast.makeText(this, "Welcome, $userEmail", Toast.LENGTH_SHORT).show()
                 if (user?.photoUrl == null) {
                     headerView.findViewById<ImageView>(R.id.userAvatar).load(R.drawable.ic_placeholder_account_img)
                 } else {
