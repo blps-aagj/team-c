@@ -205,9 +205,7 @@ sealed class MainScreenEvent {
 
 sealed class MainScreenStates {
     object Loading : MainScreenStates()
-    object NoLogged : MainScreenStates() {
-
-    }
+    object NoLogged : MainScreenStates()
 
     sealed class Error : MainScreenStates() {
         object NoNetwork : Error()
