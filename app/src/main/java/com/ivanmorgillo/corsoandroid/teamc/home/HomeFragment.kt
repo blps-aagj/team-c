@@ -44,6 +44,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun actions() {
+
         viewModel.actions.observe(viewLifecycleOwner, { action ->
             when (action) {
                 is NavigateToDetail -> {

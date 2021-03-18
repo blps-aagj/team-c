@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -15,7 +16,6 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.view.GravityCompat
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import coil.imageLoader
 import coil.load
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
@@ -24,6 +24,7 @@ import com.google.firebase.ktx.Firebase
 import com.ivanmorgillo.corsoandroid.teamc.databinding.ActivityMainBinding
 import com.ivanmorgillo.corsoandroid.teamc.home.MainScreenEvent
 import com.ivanmorgillo.corsoandroid.teamc.home.MainViewModel
+import com.ivanmorgillo.corsoandroid.teamc.utils.imageLoader
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -50,26 +51,21 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
 
         // Display the hamburger icon to launch the drawer
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        if (Firebase.auth.currentUser == null) {
-            binding.navView.menu.findItem(R.id.sign_in).title = "Login"
-        } else {
-            binding.navView.menu.findItem(R.id.sign_in).title = "Logout"
-        }
-        drawerHandling()
-
-        val pippo = binding.navView.getHeaderView(0)
+        val headerView = binding.navView.getHeaderView(0)
         if (Firebase.auth.currentUser != null) {
-            pippo.findViewById<TextView>(R.id.userName).text = Firebase.auth.currentUser?.displayName
+            binding.navView.menu.findItem(R.id.sign_in).title = "Logout"
+            headerView.findViewById<TextView>(R.id.userName).text = Firebase.auth.currentUser?.displayName
+            headerView.findViewById<ImageView>(R.id.userAvatar).load(Firebase.auth.currentUser?.photoUrl, imageLoader(this))
         } else {
-            binding.navView.getHeaderView(0).findViewById<TextView>(R.id.userName).text = "User Name"
+            binding.navView.menu.findItem(R.id.sign_in).title = "Login"
+            headerView.findViewById<TextView>(R.id.userName).text = "User Name"
+            headerView.findViewById<ImageView>(R.id.userAvatar).setImageDrawable(getDrawable(R.drawable.ic_placeholder_account_img))
         }
 
-        Log.d("pippo", "${Firebase.auth.currentUser?.displayName}")
-
+        drawerHandling(headerView)
     }
 
-    private fun drawerHandling() {
+    private fun drawerHandling(headerView: View) {
         binding.navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.home_page -> {
@@ -114,7 +110,9 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
                         binding.drawerLayout.closeDrawer(GravityCompat.START)
                     } else {
                         signOut()
-                        binding.navView.getHeaderView(0).findViewById<TextView>(R.id.userName).text = "User Name"
+                        headerView.findViewById<TextView>(R.id.userName).text = "User Name"
+                        headerView.findViewById<ImageView>(R.id.userAvatar)
+                            .setImageDrawable(getDrawable(R.drawable.ic_placeholder_account_img))
                         binding.navView.menu.findItem(R.id.sign_in).title = "Login"
                         binding.drawerLayout.closeDrawer(GravityCompat.START)
                     }
@@ -127,7 +125,6 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
         }
     }
 
-
     private var firebaseAuthenticationResultLauncher = registerForActivityResult(StartActivityForResult()) { result ->
 
         val response = IdpResponse.fromResultIntent(result.data)
@@ -137,7 +134,8 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
             val user = Firebase.auth.currentUser
             Toast.makeText(this, "Welcome, ${user?.displayName}", Toast.LENGTH_SHORT).show()
             binding.navView.getHeaderView(0).findViewById<TextView>(R.id.userName).text = Firebase.auth.currentUser?.displayName
-            binding.navView.getHeaderView(0).findViewById<ImageView>(R.id.userAvatar).load(Firebase.auth.currentUser?.photoUrl, imageLoader)
+            binding.navView.getHeaderView(0).findViewById<ImageView>(R.id.userAvatar).load(Firebase.auth.currentUser?.photoUrl, imageLoader(this))
+            Log.d("msg", "${Firebase.auth.currentUser?.photoUrl}")
             startGoogleSignInCallback?.invoke()
         } else {
             Timber.e("authentication error  ${response?.error?.errorCode}")
