@@ -134,8 +134,13 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
             Toast.makeText(this, "Welcome, ${user?.displayName}", Toast.LENGTH_SHORT).show()
             binding.navView.menu.findItem(R.id.sign_in).title = "Logout"
             binding.navView.getHeaderView(0).findViewById<TextView>(R.id.userName).text = Firebase.auth.currentUser?.displayName
+            val userEmail = Firebase.auth.currentUser?.email?.split("@")?.get(0)?.replace(".", " ")
             binding.navView.getHeaderView(0).findViewById<ImageView>(R.id.userAvatar).load(Firebase.auth.currentUser?.photoUrl, imageLoader(this))
-            Log.d("msg", "${Firebase.auth.currentUser?.photoUrl}")
+            Log.d("pippo 2 userEmail", "$userEmail")
+            Log.d("pippo 2 img", "${Firebase.auth.currentUser?.email}")
+            Log.d("pippo 2 pu", "${Firebase.auth.currentUser?.photoUrl}")
+            Log.d("pippo 2 dname", "${Firebase.auth.currentUser?.displayName}")
+
             startGoogleSignInCallback?.invoke()
         } else {
             Timber.e("authentication error  ${response?.error?.errorCode}")
