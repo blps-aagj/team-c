@@ -133,10 +133,15 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
             val user = Firebase.auth.currentUser
             Toast.makeText(this, "Welcome, ${user?.displayName}", Toast.LENGTH_SHORT).show()
             binding.navView.menu.findItem(R.id.sign_in).title = "Logout"
-            binding.navView.getHeaderView(0).findViewById<TextView>(R.id.userName).text = Firebase.auth.currentUser?.displayName
-            val userEmail = Firebase.auth.currentUser?.email?.split("@")?.get(0)?.replace(".", " ")
-            binding.navView.getHeaderView(0).findViewById<ImageView>(R.id.userAvatar).load(Firebase.auth.currentUser?.photoUrl, imageLoader(this))
-            Log.d("pippo 2 userEmail", "$userEmail")
+            if (user?.displayName != null && user.photoUrl != null) {
+                binding.navView.getHeaderView(0).findViewById<TextView>(R.id.userName).text = Firebase.auth.currentUser?.displayName
+                binding.navView.getHeaderView(0).findViewById<ImageView>(R.id.userAvatar).load(Firebase.auth.currentUser?.photoUrl, imageLoader(this))
+            } else {
+                val userEmail = user?.email?.split("@")?.get(0)
+                binding.navView.getHeaderView(0).findViewById<TextView>(R.id.userName).text = userEmail
+                binding.navView.getHeaderView(0).findViewById<ImageView>(R.id.userAvatar).load(R.drawable.ic_placeholder_account_img)
+                Log.d("pippo 2 userEmail", "$userEmail")
+            }
             Log.d("pippo 2 img", "${Firebase.auth.currentUser?.email}")
             Log.d("pippo 2 pu", "${Firebase.auth.currentUser?.photoUrl}")
             Log.d("pippo 2 dname", "${Firebase.auth.currentUser?.displayName}")
