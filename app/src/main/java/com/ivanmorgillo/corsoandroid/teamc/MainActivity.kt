@@ -3,7 +3,6 @@ package com.ivanmorgillo.corsoandroid.teamc
 import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
@@ -61,7 +60,7 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
         } else {
             binding.navView.menu.findItem(R.id.sign_in).title = "Login"
             headerView.findViewById<TextView>(R.id.userName).text = "User Name"
-            headerView.findViewById<ImageView>(R.id.userAvatar).load(R.drawable.ic_placeholder_account_img)
+            headerView.findViewById<ImageView>(R.id.userAvatar).load(R.drawable.ic_cookbook)
         }
 
         drawerHandling(headerView)
@@ -103,16 +102,11 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
                 }
                 R.id.sign_in -> {
                     if (Firebase.auth.currentUser == null) {
-                        startGoogleSignIn {
-                            Log.d("msg", "Login successful")
-                        }
-
-                        Log.d("pippo", "${Firebase.auth.currentUser?.displayName}")
-
+                        startGoogleSignIn {}
                         binding.drawerLayout.closeDrawer(GravityCompat.START)
                     } else {
                         signOut()
-                        headerView.findViewById<ImageView>(R.id.userAvatar).load(R.drawable.ic_placeholder_account_img)
+                        headerView.findViewById<ImageView>(R.id.userAvatar).load(R.drawable.ic_cookbook)
                         headerView.findViewById<TextView>(R.id.userName).text = "User Name"
                         binding.navView.menu.findItem(R.id.sign_in).title = "Login"
                         binding.drawerLayout.closeDrawer(GravityCompat.START)
@@ -143,16 +137,11 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
                 headerView.findViewById<TextView>(R.id.userName).text = userEmail
                 Toast.makeText(this, "Welcome, $userEmail", Toast.LENGTH_SHORT).show()
                 if (user?.photoUrl == null) {
-                    headerView.findViewById<ImageView>(R.id.userAvatar).load(R.drawable.ic_placeholder_account_img)
+                    headerView.findViewById<ImageView>(R.id.userAvatar).load(R.drawable.ic_cookbook)
                 } else {
                     headerView.findViewById<ImageView>(R.id.userAvatar).load(user.photoUrl, imageLoader(this))
                 }
-                Log.d("pippo 2 userEmail", "$userEmail")
             }
-            Log.d("pippo 2 img", "${user?.email}")
-            Log.d("pippo 2 pu", "${user?.photoUrl}")
-            Log.d("pippo 2 dname", "${user?.displayName}")
-
             startGoogleSignInCallback?.invoke()
         } else {
             Timber.e("authentication error  ${response?.error?.errorCode}")
@@ -161,7 +150,6 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
 
     private fun signOut() {
         val user = Firebase.auth.currentUser
-        Log.d("User signed out ", "Firebase.auth.currentUser$user")
         if (user?.displayName != null) {
             Toast.makeText(this, "Goodbye " + user.displayName, Toast.LENGTH_SHORT).show()
         } else {
