@@ -38,6 +38,10 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
     private val navController: NavController by lazy { Navigation.findNavController(this, R.id.nav_host_fragment) }
     private lateinit var binding: ActivityMainBinding
     private var startGoogleSignInCallback: (() -> Unit)? = null
+
+    private val user = Firebase.auth.currentUser
+    private val headerView = binding.navView.getHeaderView(0)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -54,8 +58,8 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
         val headerView = binding.navView.getHeaderView(0)
         if (Firebase.auth.currentUser != null) {
             binding.navView.menu.findItem(R.id.sign_in).title = "Logout"
-            headerView.findViewById<TextView>(R.id.userName).text = Firebase.auth.currentUser?.displayName
-            headerView.findViewById<ImageView>(R.id.userAvatar).load(Firebase.auth.currentUser?.photoUrl, imageLoader(this))
+            headerView.findViewById<TextView>(R.id.userName).text = user?.displayName
+            headerView.findViewById<ImageView>(R.id.userAvatar).load(user?.photoUrl, imageLoader(this))
         } else {
             binding.navView.menu.findItem(R.id.sign_in).title = "Login"
             headerView.findViewById<TextView>(R.id.userName).text = "User Name"
@@ -100,12 +104,12 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
                     true
                 }
                 R.id.sign_in -> {
-                    if (Firebase.auth.currentUser == null) {
+                    if (user == null) {
                         startGoogleSignIn {
                             Log.d("msg", "Login successful")
                         }
 
-                        Log.d("pippo", "${Firebase.auth.currentUser?.displayName}")
+                        Log.d("pippo", "${user?.displayName}")
 
                         binding.drawerLayout.closeDrawer(GravityCompat.START)
                     } else {
@@ -129,13 +133,11 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
         val response = IdpResponse.fromResultIntent(result.data)
 
         if (result.resultCode == Activity.RESULT_OK) {
-            val user = Firebase.auth.currentUser
-            val headerView = binding.navView.getHeaderView(0)
             binding.navView.menu.findItem(R.id.sign_in).title = "Logout"
             if (user?.displayName != null) {
-                Toast.makeText(this, "Welcome, ${user?.displayName}", Toast.LENGTH_SHORT).show()
-                headerView.findViewById<TextView>(R.id.userName).text = Firebase.auth.currentUser?.displayName
-                headerView.findViewById<ImageView>(R.id.userAvatar).load(Firebase.auth.currentUser?.photoUrl, imageLoader(this))
+                Toast.makeText(this, "Welcome, ${user.displayName}", Toast.LENGTH_SHORT).show()
+                headerView.findViewById<TextView>(R.id.userName).text = user.displayName
+                headerView.findViewById<ImageView>(R.id.userAvatar).load(user.photoUrl, imageLoader(this))
             } else {
                 val userEmail = user?.email?.split("@")?.get(0)
                 headerView.findViewById<TextView>(R.id.userName).text = userEmail
@@ -143,13 +145,13 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
                 if (user?.photoUrl == null) {
                     headerView.findViewById<ImageView>(R.id.userAvatar).load(R.drawable.ic_placeholder_account_img)
                 } else {
-                    headerView.findViewById<ImageView>(R.id.userAvatar).load(Firebase.auth.currentUser?.photoUrl, imageLoader(this))
+                    headerView.findViewById<ImageView>(R.id.userAvatar).load(user.photoUrl, imageLoader(this))
                 }
                 Log.d("pippo 2 userEmail", "$userEmail")
             }
-            Log.d("pippo 2 img", "${Firebase.auth.currentUser?.email}")
-            Log.d("pippo 2 pu", "${Firebase.auth.currentUser?.photoUrl}")
-            Log.d("pippo 2 dname", "${Firebase.auth.currentUser?.displayName}")
+            Log.d("pippo 2 img", "${user?.email}")
+            Log.d("pippo 2 pu", "${user?.photoUrl}")
+            Log.d("pippo 2 dname", "${user?.displayName}")
 
             startGoogleSignInCallback?.invoke()
         } else {
@@ -158,8 +160,13 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
     }
 
     private fun signOut() {
-        Log.d("User signed out ", "Firebase.auth.currentUser" + Firebase.auth.currentUser)
-        Toast.makeText(this, "Goodbye " + Firebase.auth.currentUser?.displayName, Toast.LENGTH_SHORT).show()
+        Log.d("User signed out ", "user" + user)
+        if (user?.displayName != null) {
+            Toast.makeText(this, "Goodbye " + user.displayName, Toast.LENGTH_SHORT).show()
+        } else {
+            val userEmail = user?.email?.split("@")?.get(0)
+            Toast.makeText(this, "Goodbye $userEmail", Toast.LENGTH_SHORT).show()
+        }
         Firebase.auth.signOut()
     }
 
