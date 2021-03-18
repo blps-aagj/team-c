@@ -3,17 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/navConstraint"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="wrap_content"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <ImageView
-        android:id="@+id/headerImage"
+        android:id="@+id/userAvatar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_cookbook" />
+        android:contentDescription="@string/app_name"
+        app:srcCompat="@drawable/ic_placeholder_account_img"
+        app:tint="@color/color_backgroundFab" />
+
+    <TextView
+        android:id="@+id/userName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/userAvatar"
+        android:gravity="center"
+        android:textColor="@color/color_backgroundFab"
+        android:text="@string/user_name"
+
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

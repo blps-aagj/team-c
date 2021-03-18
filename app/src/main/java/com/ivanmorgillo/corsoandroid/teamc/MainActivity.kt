@@ -76,6 +76,10 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
                     Toast.makeText(this, "Impostazioni da implementare", Toast.LENGTH_SHORT).show()
                     true
                 }
+                R.id.about -> {
+                    Toast.makeText(this, "About da implementare", Toast.LENGTH_SHORT).show()
+                    true
+                }
                 R.id.sign_in -> {
                     startGoogleSignIn {
                         Log.d("msg", "Login successful")

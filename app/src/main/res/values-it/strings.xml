@@ -27,5 +27,6 @@
     <string name="search_fragment_message">Prova a cercare una ricetta</string>
     <string name="hint_search">Cake</string>
     <string name="login">Login</string>
+    <string name="user_name">Nome Utente</string>
 
 </resources>
