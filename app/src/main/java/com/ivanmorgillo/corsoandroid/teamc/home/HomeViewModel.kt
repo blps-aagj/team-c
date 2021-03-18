@@ -5,7 +5,6 @@ import LoadRecipesDetailResult
 import Recipe
 import RecipeByArea
 import RecipesDetailsRepository
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -52,7 +51,6 @@ class MainViewModel(
                     saveFavourite(event.recipe)
                 } else {
                     states.postValue(MainScreenStates.NoLogged)
-                    Log.d("msg", "do sign in ")
                 }
             }
             is MainScreenEvent.OnRandomClick -> {

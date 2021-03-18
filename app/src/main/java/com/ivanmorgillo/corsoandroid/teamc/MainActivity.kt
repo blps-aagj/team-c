@@ -37,8 +37,6 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
     private val navController: NavController by lazy { Navigation.findNavController(this, R.id.nav_host_fragment) }
     private lateinit var binding: ActivityMainBinding
     private var startGoogleSignInCallback: (() -> Unit)? = null
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -59,8 +57,8 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
             headerView.findViewById<ImageView>(R.id.userAvatar).load(Firebase.auth.currentUser?.photoUrl, imageLoader(this))
         } else {
             binding.navView.menu.findItem(R.id.sign_in).title = "Login"
-            headerView.findViewById<TextView>(R.id.userName).text = "User Name"
-            headerView.findViewById<ImageView>(R.id.userAvatar).load(R.drawable.ic_cookbook)
+            headerView.findViewById<TextView>(R.id.userName).text = "My CookBook"
+            headerView.findViewById<ImageView>(R.id.userAvatar).load(R.drawable.ic_robotic)
         }
 
         drawerHandling(headerView)
@@ -106,8 +104,8 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
                         binding.drawerLayout.closeDrawer(GravityCompat.START)
                     } else {
                         signOut()
-                        headerView.findViewById<ImageView>(R.id.userAvatar).load(R.drawable.ic_cookbook)
-                        headerView.findViewById<TextView>(R.id.userName).text = "User Name"
+                        headerView.findViewById<ImageView>(R.id.userAvatar).load(R.drawable.ic_robotic)
+                        headerView.findViewById<TextView>(R.id.userName).text = "My CookBook"
                         binding.navView.menu.findItem(R.id.sign_in).title = "Login"
                         binding.drawerLayout.closeDrawer(GravityCompat.START)
                     }
@@ -137,7 +135,7 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
                 headerView.findViewById<TextView>(R.id.userName).text = userEmail
                 Toast.makeText(this, "Welcome, $userEmail", Toast.LENGTH_SHORT).show()
                 if (user?.photoUrl == null) {
-                    headerView.findViewById<ImageView>(R.id.userAvatar).load(R.drawable.ic_cookbook)
+                    headerView.findViewById<ImageView>(R.id.userAvatar).load(R.drawable.ic_robotic)
                 } else {
                     headerView.findViewById<ImageView>(R.id.userAvatar).load(user.photoUrl, imageLoader(this))
                 }
