@@ -18,6 +18,13 @@
             android:title="@string/shopping_list" />
     </group>
 
+    <group android:id="@+id/drawer_sign_in">
+        <item
+            android:id="@+id/sign_in"
+            android:icon="@drawable/ic_key"
+            android:title="@string/login" />
+    </group>
+
     <group
         android:id="@+id/drawer_bottom"
         android:checkableBehavior="single">
@@ -35,12 +42,5 @@
             android:icon="@drawable/ic_info"
             android:title="@string/about" />
 
-    </group>
-    <group
-        android:id="@+id/drawer_sign_in">
-        <item
-            android:id="@+id/sign_in"
-            android:icon="@drawable/ic_key"
-            android:title="@string/login" />
     </group>
 </menu>

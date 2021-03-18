@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
         } else {
             binding.navView.menu.findItem(R.id.sign_in).title = "Login"
             headerView.findViewById<TextView>(R.id.userName).text = "User Name"
-            headerView.findViewById<ImageView>(R.id.userAvatar).setImageDrawable(getDrawable(R.drawable.ic_placeholder_account_img))
+            headerView.findViewById<ImageView>(R.id.userAvatar).load(R.drawable.ic_placeholder_account_img)
         }
 
         drawerHandling(headerView)
@@ -110,9 +110,8 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
                         binding.drawerLayout.closeDrawer(GravityCompat.START)
                     } else {
                         signOut()
+                        headerView.findViewById<ImageView>(R.id.userAvatar).load(R.drawable.ic_placeholder_account_img)
                         headerView.findViewById<TextView>(R.id.userName).text = "User Name"
-                        headerView.findViewById<ImageView>(R.id.userAvatar)
-                            .setImageDrawable(getDrawable(R.drawable.ic_placeholder_account_img))
                         binding.navView.menu.findItem(R.id.sign_in).title = "Login"
                         binding.drawerLayout.closeDrawer(GravityCompat.START)
                     }
