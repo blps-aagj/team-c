@@ -5,6 +5,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -13,6 +15,8 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.view.GravityCompat
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import coil.imageLoader
+import coil.load
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.ktx.auth
@@ -53,6 +57,16 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
             binding.navView.menu.findItem(R.id.sign_in).title = "Logout"
         }
         drawerHandling()
+
+        val pippo = binding.navView.getHeaderView(0)
+        if (Firebase.auth.currentUser != null) {
+            pippo.findViewById<TextView>(R.id.userName).text = Firebase.auth.currentUser?.displayName
+        } else {
+            binding.navView.getHeaderView(0).findViewById<TextView>(R.id.userName).text = "User Name"
+        }
+
+        Log.d("pippo", "${Firebase.auth.currentUser?.displayName}")
+
     }
 
     private fun drawerHandling() {
@@ -94,10 +108,13 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
                         startGoogleSignIn {
                             Log.d("msg", "Login successful")
                         }
+
+                        Log.d("pippo", "${Firebase.auth.currentUser?.displayName}")
                         binding.navView.menu.findItem(R.id.sign_in).title = "Logout"
                         binding.drawerLayout.closeDrawer(GravityCompat.START)
                     } else {
                         signOut()
+                        binding.navView.getHeaderView(0).findViewById<TextView>(R.id.userName).text = "User Name"
                         binding.navView.menu.findItem(R.id.sign_in).title = "Login"
                         binding.drawerLayout.closeDrawer(GravityCompat.START)
                     }
@@ -110,6 +127,7 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
         }
     }
 
+
     private var firebaseAuthenticationResultLauncher = registerForActivityResult(StartActivityForResult()) { result ->
 
         val response = IdpResponse.fromResultIntent(result.data)
@@ -118,6 +136,8 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
             // Successfully signed in
             val user = Firebase.auth.currentUser
             Toast.makeText(this, "Welcome, ${user?.displayName}", Toast.LENGTH_SHORT).show()
+            binding.navView.getHeaderView(0).findViewById<TextView>(R.id.userName).text = Firebase.auth.currentUser?.displayName
+            binding.navView.getHeaderView(0).findViewById<ImageView>(R.id.userAvatar).load(Firebase.auth.currentUser?.photoUrl, imageLoader)
             startGoogleSignInCallback?.invoke()
         } else {
             Timber.e("authentication error  ${response?.error?.errorCode}")
@@ -125,8 +145,8 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
     }
 
     private fun signOut() {
-        Log.d("user signed out ", "Firebase.auth.currentUser" + Firebase.auth.currentUser)
-        Toast.makeText(this, "Sayonara " + Firebase.auth.currentUser?.displayName, Toast.LENGTH_SHORT).show()
+        Log.d("User signed out ", "Firebase.auth.currentUser" + Firebase.auth.currentUser)
+        Toast.makeText(this, "Goodbye " + Firebase.auth.currentUser?.displayName, Toast.LENGTH_SHORT).show()
         Firebase.auth.signOut()
     }
 
