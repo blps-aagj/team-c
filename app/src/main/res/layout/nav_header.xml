@@ -14,7 +14,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="@string/app_name"
-        app:srcCompat="@drawable/ic_android_azzurro_rosso"
+        app:srcCompat="@drawable/ic_chef"
         android:layout_margin="16dp" />
 
     <TextView

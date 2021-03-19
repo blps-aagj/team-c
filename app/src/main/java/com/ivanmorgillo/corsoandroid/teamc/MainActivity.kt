@@ -58,7 +58,9 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
         } else {
             binding.navView.menu.findItem(R.id.sign_in).title = "Login"
             headerView.findViewById<TextView>(R.id.userName).text = "My CookBook"
-            headerView.findViewById<ImageView>(R.id.userAvatar).load(R.drawable.ic_android_azzurro_rosso)
+            headerView.findViewById<ImageView>(R.id.userAvatar).load(
+                R.drawable.ic_chef
+            )
         }
 
         drawerHandling(headerView)
@@ -104,7 +106,9 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
                         binding.drawerLayout.closeDrawer(GravityCompat.START)
                     } else {
                         signOut()
-                        headerView.findViewById<ImageView>(R.id.userAvatar).load(R.drawable.ic_android_azzurro_rosso)
+                        headerView.findViewById<ImageView>(R.id.userAvatar).load(
+                            R.drawable.ic_chef
+                        )
                         headerView.findViewById<TextView>(R.id.userName).text = "My CookBook"
                         binding.navView.menu.findItem(R.id.sign_in).title = "Login"
                         binding.drawerLayout.closeDrawer(GravityCompat.START)
@@ -135,7 +139,9 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
                 headerView.findViewById<TextView>(R.id.userName).text = userEmail
                 Toast.makeText(this, "Welcome, $userEmail", Toast.LENGTH_SHORT).show()
                 if (user?.photoUrl == null) {
-                    headerView.findViewById<ImageView>(R.id.userAvatar).load(R.drawable.ic_android_azzurro_rosso)
+                    headerView.findViewById<ImageView>(R.id.userAvatar).load(
+                        R.drawable.ic_chef
+                    )
                 } else {
                     headerView.findViewById<ImageView>(R.id.userAvatar).load(user.photoUrl, imageLoader(this))
                 }
