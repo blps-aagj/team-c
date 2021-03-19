@@ -1,27 +1,27 @@
 package com.ivanmorgillo.corsoandroid.teamc.home
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.ivanmorgillo.corsoandroid.teamc.MainActivity
-import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction
-import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.NavigateToDetail
-import com.ivanmorgillo.corsoandroid.teamc.MainScreenEvent
-import com.ivanmorgillo.corsoandroid.teamc.MainScreenEvent.OnFavouriteClicked
-import com.ivanmorgillo.corsoandroid.teamc.MainScreenEvent.OnRecipeClick
-import com.ivanmorgillo.corsoandroid.teamc.MainScreenEvent.OnRefreshClick
-import com.ivanmorgillo.corsoandroid.teamc.MainScreenStates
-import com.ivanmorgillo.corsoandroid.teamc.MainViewModel
 import com.ivanmorgillo.corsoandroid.teamc.R
+import com.ivanmorgillo.corsoandroid.teamc.StartGoogleSignIn
 import com.ivanmorgillo.corsoandroid.teamc.databinding.FragmentHomeBinding
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.gone
 import com.ivanmorgillo.corsoandroid.teamc.home.HomeFragmentDirections.Companion.actionHomeFragmentToDetailFragment
 import com.ivanmorgillo.corsoandroid.teamc.home.HomeFragmentDirections.Companion.actionHomeFragmentToSearchFragment
+import com.ivanmorgillo.corsoandroid.teamc.home.MainScreenAction.NavigateToDetail
+import com.ivanmorgillo.corsoandroid.teamc.home.MainScreenEvent.OnFavouriteClicked
+import com.ivanmorgillo.corsoandroid.teamc.home.MainScreenEvent.OnRecipeClick
+import com.ivanmorgillo.corsoandroid.teamc.home.MainScreenEvent.OnRefreshClick
 import com.ivanmorgillo.corsoandroid.teamc.utils.bindings.viewBinding
 import com.ivanmorgillo.corsoandroid.teamc.visible
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -44,6 +44,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun actions() {
+
         viewModel.actions.observe(viewLifecycleOwner, { action ->
             when (action) {
                 is NavigateToDetail -> {
@@ -83,7 +84,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
                 MainScreenStates.Loading -> {
                     binding.recipesListProgressBar.root.visible()
-                    Timber.d("MainscreenStates Loading")
+                    Timber.d("MainScreenStates Loading")
                 }
                 MainScreenStates.Error.NoNetwork -> {
                     binding.recipesListProgressBar.root.gone()
@@ -95,6 +96,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     binding.recipesListRoot.gone()
                     binding.mainScreenNoRecipe.root.visible()
                 }
+                MainScreenStates.NoLogged -> showDialog(requireContext())
             }.exhaustive
         })
     }
@@ -114,6 +116,19 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }.exhaustive
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showDialog(context: Context) {
+        MaterialAlertDialogBuilder(context)
+            .setMessage("Se vuoi aggiungere la ricetta nei preferiti, loggati! :)")
+            .setNegativeButton("cancel") { dialog, which ->
+                // Respond to neutral button press
+            }
+            .setPositiveButton("Login") { dialog, which ->
+                viewModel.send(MainScreenEvent.OnLoginDialogClick)
+                (activity as StartGoogleSignIn).startGoogleSignIn { Log.d("msg", "Login successful") }
+            }
+            .show()
     }
 
     override fun onResume() {

@@ -62,7 +62,7 @@ class FavouriteViewModel(
     private suspend fun loadContent() {
         favouriteStates.postValue(FavouriteScreenLoading)
         val recipes = repository.loadAll()
-        if (recipes.isEmpty()) {
+        if (recipes == null) {
             favouriteStates.postValue((FavouriteScreenStates.FavouriteScreenEmpty))
         } else {
             this.recipes = recipes

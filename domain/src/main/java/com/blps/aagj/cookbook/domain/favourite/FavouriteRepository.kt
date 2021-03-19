@@ -1,70 +1,73 @@
-import android.annotation.SuppressLint
-import android.content.Context
-import android.content.SharedPreferences
-import com.google.gson.Gson
-import com.google.gson.annotations.SerializedName
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.blps.aagj.cookbook.domain.AuthenticationManager
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 
 interface FavouriteRepository {
-    suspend fun loadAll(): List<Recipe>
+    suspend fun loadAll(): List<Recipe>?
     suspend fun save(recipe: Recipe, isFavourite: Boolean): Boolean
     suspend fun delete(id: Long): Boolean
     suspend fun isFavourite(id: Long): Boolean
 }
 
 class FavouriteRepositoryImpl(
-    private val context: Context,
-    private val gson: Gson
+    private val firestore: FirebaseFirestore,
+    private val authenticationManager: AuthenticationManager
 ) : FavouriteRepository {
-    private val storage: SharedPreferences by lazy {
-        context.getSharedPreferences("Favourites", Context.MODE_PRIVATE)
+    private val favouritesCollection by lazy {
+        firestore.collection("favourites")
     }
 
-    override suspend fun loadAll(): List<Recipe> = withContext(Dispatchers.IO) {
-        storage.all
-            .values
+    override suspend fun loadAll(): List<Recipe>? {
+        val uid = authenticationManager.getUid() ?: return null
+        val favouriteList = favouritesCollection
+            .whereEqualTo("userID", uid)
+            .get()
+            .await()
+            .documents
             .map {
-                it as String
-            }
-            .map {
-                gson.fromJson(it, RecipeEntity::class.java)
-            }
-            .map {
+                val name = it["name"] as String
+                val image = it["image"] as String
+                val id = it["id"] as Long
                 Recipe(
-                    name = it.name,
-                    image = it.image,
-                    idMeal = it.id
+                    name = name,
+                    image = image,
+                    idMeal = id
                 )
             }
-    }
-
-    @SuppressLint("ApplySharedPref")
-    override suspend fun save(recipe: Recipe, isFavourite: Boolean) = withContext(Dispatchers.IO) {
-        if (isFavourite) {
-            val recipeEntity = RecipeEntity(name = recipe.name, image = recipe.image, id = recipe.idMeal)
-            val serializedRecipe = gson.toJson(recipeEntity)
-            storage.edit().putString(recipe.idMeal.toString(), serializedRecipe).commit()
+        return if (favouriteList.isEmpty()) {
+            null
         } else {
-            storage.edit().remove(recipe.idMeal.toString()).commit()
+            favouriteList
         }
     }
 
-    override suspend fun delete(id: Long) = withContext(Dispatchers.IO) {
-        storage.edit().remove(id.toString()).commit()
+    override suspend fun save(recipe: Recipe, isFavourite: Boolean): Boolean {
+        val favouriteMap = hashMapOf(
+            "id" to recipe.idMeal,
+            "name" to recipe.name,
+            "image" to recipe.image,
+            "userID" to authenticationManager.getUid()
+        )
+        favouritesCollection
+            .document(recipe.idMeal.toString())
+            .set(favouriteMap)
+            .await()
+        return true
     }
 
-    override suspend fun isFavourite(id: Long): Boolean = withContext(Dispatchers.IO) {
-        val maybeFavourite = storage.getString(id.toString(), null)
-        maybeFavourite != null
+    override suspend fun delete(id: Long): Boolean {
+        favouritesCollection
+            .document(id.toString())
+            .delete()
+            .await()
+        return true
+    }
+
+    override suspend fun isFavourite(id: Long): Boolean {
+        val tmp = favouritesCollection
+            .document(id.toString())
+            .get()
+            .await()
+        return tmp.exists()
     }
 }
-
-data class RecipeEntity(
-    @SerializedName("name")
-    val name: String,
-    @SerializedName("image")
-    val image: String,
-    @SerializedName("id")
-    val id: Long
-)

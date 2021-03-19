@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.ivanmorgillo.corsoandroid.teamc.RecipeByAreaUI
 import com.ivanmorgillo.corsoandroid.teamc.databinding.AreaItemBinding
 import com.ivanmorgillo.corsoandroid.teamc.utils.getFlag
 import com.ivanmorgillo.corsoandroid.teamc.utils.imageLoader

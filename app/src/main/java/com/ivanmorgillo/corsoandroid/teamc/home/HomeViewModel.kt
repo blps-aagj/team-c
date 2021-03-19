@@ -1,18 +1,20 @@
-package com.ivanmorgillo.corsoandroid.teamc
+package com.ivanmorgillo.corsoandroid.teamc.home
 
 import FavouriteRepository
 import LoadRecipesDetailResult
+import Recipe
 import RecipeByArea
 import RecipesDetailsRepository
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.blps.aagj.cookbook.domain.AuthenticationManager
 import com.blps.aagj.cookbook.domain.detail.RecipeDetail
 import com.blps.aagj.cookbook.domain.home.LoadRecipesByAreaResult
 import com.blps.aagj.cookbook.domain.home.RecipesRepository
-import com.ivanmorgillo.corsoandroid.teamc.MainScreenAction.NavigateToDetail
+import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
-import com.ivanmorgillo.corsoandroid.teamc.home.RecipeUI
+import com.ivanmorgillo.corsoandroid.teamc.home.MainScreenAction.NavigateToDetail
 import com.ivanmorgillo.corsoandroid.teamc.utils.SingleLiveEvent
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -22,7 +24,8 @@ class MainViewModel(
     private val repository: RecipesRepository,
     private val favouriteRepository: FavouriteRepository,
     private val detailsRepository: RecipesDetailsRepository,
-    private val tracking: Tracking
+    private val tracking: Tracking,
+    private val authenticationManager: AuthenticationManager
 ) : ViewModel() {
 
     val states = MutableLiveData<MainScreenStates>()
@@ -44,7 +47,11 @@ class MainViewModel(
             }
             is MainScreenEvent.OnFavouriteClicked -> {
                 tracking.logEvent("home_favorite_clicked")
-                saveFavourite(event.recipe)
+                if (authenticationManager.isUserLoggedIn()) {
+                    saveFavourite(event.recipe)
+                } else {
+                    states.postValue(MainScreenStates.NoLogged)
+                }
             }
             is MainScreenEvent.OnRandomClick -> {
                 tracking.logEvent("home_random_clicked")
@@ -60,6 +67,9 @@ class MainViewModel(
                 tracking.logEvent("home_search_clicked")
                 Timber.d("OnSearchClick")
                 actions.postValue(MainScreenAction.NavigateToSearch)
+            }
+            MainScreenEvent.OnLoginDialogClick -> {
+                tracking.logEvent("login_dialog_clicked")
             }
         }.exhaustive
     }
@@ -143,18 +153,15 @@ class MainViewModel(
                 is LoadRecipesByAreaResult.Failure -> states.postValue(MainScreenStates.Error.NoNetwork)
                 is LoadRecipesByAreaResult.Success -> {
                     recipes = result.contentListRecipes
+                    val favourites = favouriteRepository.loadAll() ?: emptyList()
                     val recipes = result.contentListRecipes
                         .map {
                             RecipeByAreaUI(
                                 nameArea = it.nameArea,
-                                recipeByArea = it.recipeByArea.map { recipe ->
-                                    RecipeUI(
-                                        id = recipe.idMeal,
-                                        recipeName = recipe.name,
-                                        recipeImageUrl = recipe.image,
-                                        isFavourite = favouriteRepository.isFavourite(recipe.idMeal)
-                                    )
-                                },
+                                recipeByArea = it.recipeByArea
+                                    .map { recipe ->
+                                        recipe.toUI(favourites)
+                                    },
                                 selectedRecipePosition = 0
                             )
                         }
@@ -164,6 +171,13 @@ class MainViewModel(
             }
         }
     }
+
+    private fun Recipe.toUI(favourites: List<Recipe>) = RecipeUI(
+        id = idMeal,
+        recipeName = name,
+        recipeImageUrl = image,
+        isFavourite = favourites.find { favourite -> favourite.idMeal == idMeal } != null
+    )
 }
 
 data class RecipeByAreaUI(val nameArea: String, val recipeByArea: List<RecipeUI>, val selectedRecipePosition: Int)
@@ -184,10 +198,13 @@ sealed class MainScreenEvent {
     object OnReady : MainScreenEvent()
     object OnRefreshClick : MainScreenEvent()
     object OnSearchClick : MainScreenEvent()
+    object OnLoginDialogClick : MainScreenEvent()
 }
 
 sealed class MainScreenStates {
     object Loading : MainScreenStates()
+    object NoLogged : MainScreenStates()
+
     sealed class Error : MainScreenStates() {
         object NoNetwork : Error()
         object NoRecipeFound : Error()

@@ -4,15 +4,16 @@ import FavouriteRepository
 import FavouriteRepositoryImpl
 import RecipesDetailRepositoryImpl
 import RecipesDetailsRepository
+import com.blps.aagj.cookbook.domain.AuthenticationManager
+import com.blps.aagj.cookbook.domain.AuthenticationManagerImpl
 import com.blps.aagj.cookbook.domain.home.RecipeRepositoryImpl
 import com.blps.aagj.cookbook.domain.home.RecipesRepository
-import com.google.gson.Gson
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetailViewModel
 import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteViewModel
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.firebase.TrackingImpl
+import com.ivanmorgillo.corsoandroid.teamc.home.MainViewModel
 import com.ivanmorgillo.corsoandroid.teamc.search.RecipeSearchViewModel
-import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -22,7 +23,7 @@ import org.koin.dsl.module
 val appModule = module {
     /**
      * Singleton Pattern
-     * Il single è un builder, rapp un'istanza che non viene creata e vive sempre uguale per tutta
+     * Il single è un builder, rapp un' istanza che non viene creata e vive sempre uguale per tutta
      * l'esistenza dell'app (vogliamo che sia uno senza ambiguità); nelle parentesi angolari viene specificato
      * il tipo di ogg che voglio creare, poi viene specificato nelle graffe il "come" con la lambda
      */
@@ -38,14 +39,18 @@ val appModule = module {
         RecipesDetailRepositoryImpl(recipeDetailAPI = get())
     }
     single<FavouriteRepository> {
-        FavouriteRepositoryImpl(context = androidContext(), gson = Gson())
+        FavouriteRepositoryImpl(firestore = get(), authenticationManager = get())
+    }
+    single<AuthenticationManager> {
+        AuthenticationManagerImpl()
     }
     viewModel {
         MainViewModel(
             repository = get(),
             tracking = get(),
             favouriteRepository = get(),
-            detailsRepository = get()
+            detailsRepository = get(),
+            authenticationManager = get()
         )
     } // Il get costruisce in base al tipo e a single
     viewModel { RecipeDetailViewModel(recipeDetailRepository = get(), tracking = get(), favouriteRepository = get()) }
