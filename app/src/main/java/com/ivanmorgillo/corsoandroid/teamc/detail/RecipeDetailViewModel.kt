@@ -50,12 +50,18 @@ class RecipeDetailViewModel(
     private suspend fun saveFavourite() {
         val recipe = recipeDetail ?: return
         val updatedFavourite = !isFavourite
-        favouriteRepository.save(
-            recipe = recipe.toRecipe(),
+        if (updatedFavourite) {
+            favouriteRepository.save(
+                recipe = recipe.toRecipe(),
+                isFavourite = updatedFavourite
+            )
             isFavourite = updatedFavourite
-        )
-        isFavourite = updatedFavourite
-        recipesDetailsResultSuccess(recipe)
+            recipesDetailsResultSuccess(recipe)
+        } else {
+            favouriteRepository.delete(recipe.recipeId.toLong())
+            isFavourite = updatedFavourite
+            recipesDetailsResultSuccess(recipe)
+        }
     }
 
     private fun loadRecipeDetailRandomContent() {
@@ -112,7 +118,6 @@ class RecipeDetailViewModel(
             RecipeDetailScreenStates.Content(updatedScreenItems)
         )
     }
-
 }
 
 sealed class RecipeDetailScreenEvent {
