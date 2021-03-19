@@ -76,20 +76,28 @@ class MainViewModel(
 
     private fun saveFavourite(clickedRecipe: RecipeUI): Job {
         val isFavourite = !clickedRecipe.isFavourite
-        return viewModelScope.launch {
-            recipes
-                ?.map {
-                    it.recipeByArea
-                }
-                ?.flatten()
-                ?.find {
-                    clickedRecipe.id == it.idMeal
-                }
-                ?.run {
-                    favouriteRepository.save(this, isFavourite)
-                }
-            val updatedRecipe = clickedRecipe.copy(isFavourite = isFavourite)
-            updateContent(updatedRecipe)
+        if (isFavourite) {
+            return viewModelScope.launch {
+                recipes
+                    ?.map {
+                        it.recipeByArea
+                    }
+                    ?.flatten()
+                    ?.find {
+                        clickedRecipe.id == it.idMeal
+                    }
+                    ?.run {
+                        favouriteRepository.save(this, isFavourite)
+                    }
+                val updatedRecipe = clickedRecipe.copy(isFavourite = isFavourite)
+                updateContent(updatedRecipe)
+            }
+        } else {
+            return viewModelScope.launch {
+                favouriteRepository.delete(clickedRecipe.id)
+                val updatedRecipe = clickedRecipe.copy(isFavourite = isFavourite)
+                updateContent(updatedRecipe)
+            }
         }
     }
 
