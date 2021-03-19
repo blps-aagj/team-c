@@ -22,7 +22,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class SearchFragment : Fragment(R.layout.fragment_search) {
-    
+
     private val viewModel: RecipeSearchViewModel by viewModel()
     private val binding by viewBinding(FragmentSearchBinding::bind)
 
@@ -56,8 +56,22 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                     val directions = actionSearchFragmentToDetailFragment(action.recipe.id)
                     findNavController().navigate(directions)
                 }
+                is RecipeSearchScreenAction.NavigateToDetailRandom -> {
+                    val recipeId = action.recipeDetail.recipeId.toLongOrNull()
+                    if (recipeId == null) {
+                        binding.recipesListProgressBar.root.gone()
+                        binding.searchScreenNoRecipe.root.visible()
+                    } else {
+                        val directions = actionSearchFragmentToDetailFragment(recipeId)
+                        Timber.d("Invio al detail RecipeId = ${action.recipeDetail.recipeId}")
+                        findNavController().navigate(directions)
+                    }
+                }
             }.exhaustive
         })
+        binding.searchScreenNoRecipe.noRecipeFoundRandomBtn.setOnClickListener {
+            viewModel.send(RecipeSearchScreenEvent.OnErrorRandomClick)
+        }
     }
 
     private fun closeKeyboard() {

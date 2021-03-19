@@ -150,13 +150,14 @@ sealed class DetailRecipeScreenViewHolder(itemView: View) : ViewHolder(itemView)
     class ImageViewHolder(private val binding: DetailRecipeScreenImageBinding) : DetailRecipeScreenViewHolder(binding.root) {
         fun bind(item: Image, onDetailFavouriteClicked: () -> Unit) {
             binding.detailRecipeScreenImage.load(item.image, imageLoader(itemView.context))
-            binding.icon.setOnClickListener {
-                onDetailFavouriteClicked()
-            }
+
             if (item.isFavourite) {
                 binding.icon.setImageResource(R.drawable.ic_favourite_list)
             } else {
                 binding.icon.setImageResource(R.drawable.ic_favourite_border_list)
+            }
+            binding.icon.setOnClickListener {
+                onDetailFavouriteClicked()
             }
         }
     }

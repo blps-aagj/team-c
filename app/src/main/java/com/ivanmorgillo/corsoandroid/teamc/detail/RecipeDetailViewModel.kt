@@ -112,7 +112,6 @@ class RecipeDetailViewModel(
             RecipeDetailScreenStates.Content(updatedScreenItems)
         )
     }
-
 }
 
 sealed class RecipeDetailScreenEvent {
