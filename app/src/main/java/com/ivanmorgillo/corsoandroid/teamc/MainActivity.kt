@@ -18,6 +18,7 @@ import androidx.navigation.Navigation
 import coil.load
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.ivanmorgillo.corsoandroid.teamc.databinding.ActivityMainBinding
@@ -39,6 +40,7 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
     private var startGoogleSignInCallback: (() -> Unit)? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        firebaseAuth = Firebase.auth
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -122,28 +124,28 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
         }
     }
 
+    private lateinit var firebaseAuth: FirebaseAuth
     private var firebaseAuthenticationResultLauncher = registerForActivityResult(StartActivityForResult()) { result ->
 
         val response = IdpResponse.fromResultIntent(result.data)
         val headerView = binding.navView.getHeaderView(0)
-
+        val currentUser = firebaseAuth.currentUser
         if (result.resultCode == Activity.RESULT_OK) {
-            val user = Firebase.auth.currentUser
             binding.navView.menu.findItem(R.id.sign_in).title = "Logout"
-            if (user?.displayName != null) {
-                Toast.makeText(this, "Welcome, ${user.displayName}", Toast.LENGTH_SHORT).show()
-                headerView.findViewById<TextView>(R.id.userName).text = user.displayName
-                headerView.findViewById<ImageView>(R.id.userAvatar).load(user.photoUrl, imageLoader(this))
+            if (currentUser?.displayName != null) {
+                Toast.makeText(this, "Welcome, ${currentUser.displayName}", Toast.LENGTH_SHORT).show()
+                headerView.findViewById<TextView>(R.id.userName).text = currentUser.displayName
+                headerView.findViewById<ImageView>(R.id.userAvatar).load(currentUser.photoUrl, imageLoader(this))
             } else {
-                val userEmail = user?.email?.split("@")?.get(0)
+                val userEmail = currentUser?.email?.split("@")?.get(0)
                 headerView.findViewById<TextView>(R.id.userName).text = userEmail
                 Toast.makeText(this, "Welcome, $userEmail", Toast.LENGTH_SHORT).show()
-                if (user?.photoUrl == null) {
+                if (currentUser?.photoUrl == null) {
                     headerView.findViewById<ImageView>(R.id.userAvatar).load(
                         R.drawable.ic_chef
                     )
                 } else {
-                    headerView.findViewById<ImageView>(R.id.userAvatar).load(user.photoUrl, imageLoader(this))
+                    headerView.findViewById<ImageView>(R.id.userAvatar).load(currentUser.photoUrl, imageLoader(this))
                 }
             }
             startGoogleSignInCallback?.invoke()
@@ -153,14 +155,18 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
     }
 
     private fun signOut() {
-        val user = Firebase.auth.currentUser
+        val user = firebaseAuth.currentUser
         if (user?.displayName != null) {
             Toast.makeText(this, "Goodbye " + user.displayName, Toast.LENGTH_SHORT).show()
         } else {
             val userEmail = user?.email?.split("@")?.get(0)
             Toast.makeText(this, "Goodbye $userEmail", Toast.LENGTH_SHORT).show()
         }
-        Firebase.auth.signOut()
+        // Step 1) logout
+        AuthUI.getInstance().signOut(this)
+        // Step 2) rimuovere l'account
+        AuthUI.getInstance().delete(this)
+        firebaseAuth.signOut()
     }
 
     fun setCheckedItem(id: Int) {
@@ -182,8 +188,8 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
         )
         val intent = AuthUI.getInstance()
             .createSignInIntentBuilder()
+            .setIsSmartLockEnabled(false).setIsSmartLockEnabled(false, false)
             .setAvailableProviders(providers)
-            .enableAnonymousUsersAutoUpgrade()
             .build()
         firebaseAuthenticationResultLauncher.launch(intent)
     }
