@@ -44,6 +44,9 @@ class RecipeDetailViewModel(
                     saveFavourite()
                 }
             }
+            RecipeDetailScreenEvent.OnLoginDialogClick -> {
+                tracking.logEvent("on_login_dialog_click_detail")
+            }
         }.exhaustive
     }
 
@@ -124,6 +127,7 @@ sealed class RecipeDetailScreenEvent {
     data class OnScreenRecipeDetailReady(val recipeId: Long) : RecipeDetailScreenEvent()
     object OnErrorRandomClick : RecipeDetailScreenEvent()
     object OnFavouriteClicked : RecipeDetailScreenEvent()
+    object OnLoginDialogClick : RecipeDetailScreenEvent()
 }
 
 sealed class RecipeDetailScreenStates {
@@ -132,6 +136,8 @@ sealed class RecipeDetailScreenStates {
         object NoNetwork : Error()
         object NoRecipeFound : Error()
     }
+
+    object NoLogged : RecipeDetailScreenStates()
 
     data class Content(val recipeDetail: List<DetailScreenItems>) : RecipeDetailScreenStates()
 }
