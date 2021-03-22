@@ -69,7 +69,7 @@ class MainViewModel(
                 actions.postValue(MainScreenAction.NavigateToSearch)
             }
             MainScreenEvent.OnLoginDialogClick -> {
-                tracking.logEvent("login_dialog_clicked")
+                tracking.logEvent("login_dialog_clicked_home")
             }
         }.exhaustive
     }
