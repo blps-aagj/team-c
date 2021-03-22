@@ -6,6 +6,7 @@ import RecipesDetailsRepository
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.blps.aagj.cookbook.domain.AuthenticationManager
 import com.blps.aagj.cookbook.domain.detail.RecipeDetail
 import com.blps.aagj.cookbook.domain.detail.toRecipe
 import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetailScreenStates.Error.NoRecipeFound
@@ -18,7 +19,8 @@ import timber.log.Timber
 class RecipeDetailViewModel(
     private val recipeDetailRepository: RecipesDetailsRepository,
     private val favouriteRepository: FavouriteRepository,
-    private val tracking: Tracking
+    private val tracking: Tracking,
+    private val authenticationManager: AuthenticationManager
 ) : ViewModel() {
 
     val states = MutableLiveData<RecipeDetailScreenStates>()
@@ -40,8 +42,12 @@ class RecipeDetailViewModel(
             }
             RecipeDetailScreenEvent.OnFavouriteClicked -> {
                 tracking.logEvent("on_favourite_clicked")
-                viewModelScope.launch {
-                    saveFavourite()
+                if (authenticationManager.isUserLoggedIn()) {
+                    viewModelScope.launch {
+                        saveFavourite()
+                    }
+                } else {
+                    states.postValue(RecipeDetailScreenStates.NoLogged)
                 }
             }
             RecipeDetailScreenEvent.OnLoginDialogClick -> {
