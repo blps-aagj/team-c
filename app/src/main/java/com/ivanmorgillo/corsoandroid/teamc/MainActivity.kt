@@ -162,10 +162,7 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
             val userEmail = user?.email?.split("@")?.get(0)
             Toast.makeText(this, "Goodbye $userEmail", Toast.LENGTH_SHORT).show()
         }
-        // Step 1) logout
         AuthUI.getInstance().signOut(this)
-        // Step 2) rimuovere l'account
-        AuthUI.getInstance().delete(this)
         firebaseAuth.signOut()
     }
 
