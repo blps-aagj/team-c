@@ -42,17 +42,14 @@ interface StartGoogleSignIn {
 
 class MainActivity : AppCompatActivity(), StartGoogleSignIn {
     private val viewModel: MainViewModel by viewModel()
-    private lateinit var actionBarToggle: ActionBarDrawerToggle
+    private val actionBarToggle: ActionBarDrawerToggle by lazy { ActionBarDrawerToggle(this, binding.drawerLayout, R.string.open, R.string.close) }
     private val navController: NavController by lazy { Navigation.findNavController(this, R.id.nav_host_fragment) }
-    private lateinit var binding: ActivityMainBinding
+    private val firebaseAuth: FirebaseAuth by lazy { Firebase.auth }
+    private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private var startGoogleSignInCallback: (() -> Unit)? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        firebaseAuth = Firebase.auth
-        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        actionBarToggle = ActionBarDrawerToggle(this, binding.drawerLayout, R.string.open, R.string.close)
         binding.drawerLayout.addDrawerListener(actionBarToggle)
 
         // Call syncState() on the action bar so it'll automatically change to the back button when the drawer layout is open
@@ -83,7 +80,6 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
             val display = windowManager.defaultDisplay
             val outMetrics = DisplayMetrics()
             display.getMetrics(outMetrics)
-
             val density = outMetrics.density
 
             var adWidthPixels = binding.adViewContainer.width.toFloat()
@@ -185,7 +181,6 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
         }
     }
 
-    private lateinit var firebaseAuth: FirebaseAuth
     private var firebaseAuthenticationResultLauncher = registerForActivityResult(StartActivityForResult()) { result ->
 
         val response = IdpResponse.fromResultIntent(result.data)
