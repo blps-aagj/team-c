@@ -3,6 +3,7 @@ package com.ivanmorgillo.corsoandroid.teamc
 import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
@@ -18,6 +19,13 @@ import androidx.navigation.Navigation
 import coil.load
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.ivanmorgillo.corsoandroid.teamc.databinding.ActivityMainBinding
@@ -62,8 +70,61 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
                 R.drawable.ic_chef
             )
         }
-
         drawerHandling(headerView)
+
+        // Initialization Google Ads SDK
+        setupAds()
+    }
+
+    private val adSize: AdSize
+        get() {
+            val display = windowManager.defaultDisplay
+            val outMetrics = DisplayMetrics()
+            display.getMetrics(outMetrics)
+
+            val density = outMetrics.density
+
+            var adWidthPixels = binding.adViewContainer.width.toFloat()
+            if (adWidthPixels == 0f) {
+                adWidthPixels = outMetrics.widthPixels.toFloat()
+            }
+
+            val adWidth = (adWidthPixels / density).toInt()
+            return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
+        }
+
+    private fun setupAds() {
+        MobileAds.initialize(this@MainActivity) {}
+        val adView = AdView(this)
+        binding.adViewContainer.addView(adView)
+        adView.adListener = object : AdListener() {
+            override fun onAdLoaded() = Unit
+
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+                Timber.e(Throwable("Cannot Load Ad: ${adError.code}"))
+            }
+
+            override fun onAdOpened() = Unit
+
+            override fun onAdClicked() = Unit
+
+            override fun onAdLeftApplication() = Unit
+
+            override fun onAdClosed() = Unit
+        }
+        adView.adUnitId = "ca-app-pub-9504174324799217/1934053066"
+
+        adView.adSize = adSize
+
+        // Create an ad request. Check your logcat output for the hashed device ID to
+        // get test ads on a physical device, e.g.,
+        // "Use AdRequest.Builder.addTestDevice("ABCDE0123") to get test ads on this device."
+        val requestConfig = RequestConfiguration.Builder().setTestDeviceIds(listOf("362E16B73FDC0FD988C3E2B13E5F0F29")).build()
+        MobileAds.setRequestConfiguration(requestConfig)
+        val adRequest = AdRequest.Builder().build()
+
+        // Start loading the ad in the background.
+        adView.loadAd(adRequest)
     }
 
     private fun drawerHandling(headerView: View) {
