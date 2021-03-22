@@ -3,6 +3,7 @@ package com.ivanmorgillo.corsoandroid.teamc
 import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
@@ -18,6 +19,14 @@ import androidx.navigation.Navigation
 import coil.load
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.ivanmorgillo.corsoandroid.teamc.databinding.ActivityMainBinding
@@ -33,16 +42,14 @@ interface StartGoogleSignIn {
 
 class MainActivity : AppCompatActivity(), StartGoogleSignIn {
     private val viewModel: MainViewModel by viewModel()
-    private lateinit var actionBarToggle: ActionBarDrawerToggle
+    private val actionBarToggle: ActionBarDrawerToggle by lazy { ActionBarDrawerToggle(this, binding.drawerLayout, R.string.open, R.string.close) }
     private val navController: NavController by lazy { Navigation.findNavController(this, R.id.nav_host_fragment) }
-    private lateinit var binding: ActivityMainBinding
+    private val firebaseAuth: FirebaseAuth by lazy { Firebase.auth }
+    private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private var startGoogleSignInCallback: (() -> Unit)? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        actionBarToggle = ActionBarDrawerToggle(this, binding.drawerLayout, R.string.open, R.string.close)
         binding.drawerLayout.addDrawerListener(actionBarToggle)
 
         // Call syncState() on the action bar so it'll automatically change to the back button when the drawer layout is open
@@ -62,8 +69,60 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
                 R.drawable.ic_chef
             )
         }
-
         drawerHandling(headerView)
+
+        // Initialization Google Ads SDK
+        setupAds()
+    }
+
+    private val adSize: AdSize
+        get() {
+            val display = windowManager.defaultDisplay
+            val outMetrics = DisplayMetrics()
+            display.getMetrics(outMetrics)
+            val density = outMetrics.density
+
+            var adWidthPixels = binding.adViewContainer.width.toFloat()
+            if (adWidthPixels == 0f) {
+                adWidthPixels = outMetrics.widthPixels.toFloat()
+            }
+
+            val adWidth = (adWidthPixels / density).toInt()
+            return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
+        }
+
+    private fun setupAds() {
+        MobileAds.initialize(this@MainActivity) {}
+        val adView = AdView(this)
+        binding.adViewContainer.addView(adView)
+        adView.adListener = object : AdListener() {
+            override fun onAdLoaded() = Unit
+
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+                Timber.e(Throwable("Cannot Load Ad: ${adError.code}"))
+            }
+
+            override fun onAdOpened() = Unit
+
+            override fun onAdClicked() = Unit
+
+            override fun onAdLeftApplication() = Unit
+
+            override fun onAdClosed() = Unit
+        }
+        adView.adUnitId = "ca-app-pub-9504174324799217/1934053066"
+
+        adView.adSize = adSize
+
+        // Create an ad request. Check your logcat output for the hashed device ID to
+        // get test ads on a physical device, e.g.,
+        // "Use AdRequest.Builder.addTestDevice("ABCDE0123") to get test ads on this device."
+        val requestConfig = RequestConfiguration.Builder().setTestDeviceIds(listOf("362E16B73FDC0FD988C3E2B13E5F0F29")).build()
+        MobileAds.setRequestConfiguration(requestConfig)
+        val adRequest = AdRequest.Builder().build()
+
+        // Start loading the ad in the background.
+        adView.loadAd(adRequest)
     }
 
     private fun drawerHandling(headerView: View) {
@@ -126,24 +185,23 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
 
         val response = IdpResponse.fromResultIntent(result.data)
         val headerView = binding.navView.getHeaderView(0)
-
+        val currentUser = firebaseAuth.currentUser
         if (result.resultCode == Activity.RESULT_OK) {
-            val user = Firebase.auth.currentUser
             binding.navView.menu.findItem(R.id.sign_in).title = "Logout"
-            if (user?.displayName != null) {
-                Toast.makeText(this, "Welcome, ${user.displayName}", Toast.LENGTH_SHORT).show()
-                headerView.findViewById<TextView>(R.id.userName).text = user.displayName
-                headerView.findViewById<ImageView>(R.id.userAvatar).load(user.photoUrl, imageLoader(this))
+            if (currentUser?.displayName != null) {
+                Toast.makeText(this, "Welcome, ${currentUser.displayName}", Toast.LENGTH_SHORT).show()
+                headerView.findViewById<TextView>(R.id.userName).text = currentUser.displayName
+                headerView.findViewById<ImageView>(R.id.userAvatar).load(currentUser.photoUrl, imageLoader(this))
             } else {
-                val userEmail = user?.email?.split("@")?.get(0)
+                val userEmail = currentUser?.email?.split("@")?.get(0)
                 headerView.findViewById<TextView>(R.id.userName).text = userEmail
                 Toast.makeText(this, "Welcome, $userEmail", Toast.LENGTH_SHORT).show()
-                if (user?.photoUrl == null) {
+                if (currentUser?.photoUrl == null) {
                     headerView.findViewById<ImageView>(R.id.userAvatar).load(
                         R.drawable.ic_chef
                     )
                 } else {
-                    headerView.findViewById<ImageView>(R.id.userAvatar).load(user.photoUrl, imageLoader(this))
+                    headerView.findViewById<ImageView>(R.id.userAvatar).load(currentUser.photoUrl, imageLoader(this))
                 }
             }
             startGoogleSignInCallback?.invoke()
@@ -153,14 +211,15 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
     }
 
     private fun signOut() {
-        val user = Firebase.auth.currentUser
+        val user = firebaseAuth.currentUser
         if (user?.displayName != null) {
             Toast.makeText(this, "Goodbye " + user.displayName, Toast.LENGTH_SHORT).show()
         } else {
             val userEmail = user?.email?.split("@")?.get(0)
             Toast.makeText(this, "Goodbye $userEmail", Toast.LENGTH_SHORT).show()
         }
-        Firebase.auth.signOut()
+        AuthUI.getInstance().signOut(this)
+        firebaseAuth.signOut()
     }
 
     fun setCheckedItem(id: Int) {
@@ -182,8 +241,8 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
         )
         val intent = AuthUI.getInstance()
             .createSignInIntentBuilder()
+            .setIsSmartLockEnabled(false).setIsSmartLockEnabled(false, false)
             .setAvailableProviders(providers)
-            .enableAnonymousUsersAutoUpgrade()
             .build()
         firebaseAuthenticationResultLauncher.launch(intent)
     }
