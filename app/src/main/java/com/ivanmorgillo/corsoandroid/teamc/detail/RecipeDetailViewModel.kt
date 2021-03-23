@@ -89,7 +89,7 @@ class RecipeDetailViewModel(
         viewModelScope.launch {
             val result = recipeDetailRepository.loadDetailsRecipes(id)
             when (result) {
-                is LoadRecipesDetailResult.Failure -> states.postValue(NoRecipeFound)
+                is LoadRecipesDetailResult.Failure -> states.postValue(RecipeDetailScreenStates.Error.NoNetwork)
                 is LoadRecipesDetailResult.Success -> recipesDetailsResultSuccess(result.recipesDetail)
             }.exhaustive
         }
