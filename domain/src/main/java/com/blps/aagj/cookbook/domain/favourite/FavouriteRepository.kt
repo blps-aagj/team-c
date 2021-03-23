@@ -84,10 +84,12 @@ class FavouriteRepositoryImpl(
     }
 
     override suspend fun isFavourite(id: Long): Boolean {
+        val uid = authenticationManager.getUid() ?: return false
         val tmp = favouritesCollection
-            .document(id.toString())
+            .whereEqualTo(RECIPE_USER_ID_KEY, uid)
+            .whereEqualTo(RECIPE_ID_KEY, id)
             .get()
             .await()
-        return tmp.exists()
+        return !tmp.isEmpty
     }
 }

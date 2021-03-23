@@ -5,6 +5,7 @@ import LoadRecipesDetailResult
 import Recipe
 import RecipeByArea
 import RecipesDetailsRepository
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -48,7 +49,13 @@ class MainViewModel(
             is MainScreenEvent.OnFavouriteClicked -> {
                 tracking.logEvent("home_favorite_clicked")
                 if (authenticationManager.isUserLoggedIn()) {
-                    saveFavourite(event.recipe)
+                    viewModelScope.launch {
+                        if (!savingInProgress) {
+                            saveFavourite(event.recipe)
+                        } else {
+                            Log.d("msg", "saving is in progress")
+                        }
+                    }
                 } else {
                     states.postValue(MainScreenStates.NoLogged)
                 }
@@ -74,30 +81,30 @@ class MainViewModel(
         }.exhaustive
     }
 
-    private fun saveFavourite(clickedRecipe: RecipeUI): Job {
+    private var savingInProgress: Boolean = false
+    private suspend fun saveFavourite(clickedRecipe: RecipeUI) {
+        savingInProgress = true
         val isFavourite = !clickedRecipe.isFavourite
         if (isFavourite) {
-            return viewModelScope.launch {
-                recipes
-                    ?.map {
-                        it.recipeByArea
-                    }
-                    ?.flatten()
-                    ?.find {
-                        clickedRecipe.id == it.idMeal
-                    }
-                    ?.run {
-                        favouriteRepository.save(this, isFavourite)
-                    }
-                val updatedRecipe = clickedRecipe.copy(isFavourite = isFavourite)
-                updateContent(updatedRecipe)
-            }
+            recipes
+                ?.map {
+                    it.recipeByArea
+                }
+                ?.flatten()
+                ?.find {
+                    clickedRecipe.id == it.idMeal
+                }
+                ?.run {
+                    favouriteRepository.save(this, isFavourite)
+                    savingInProgress = false
+                }
+            val updatedRecipe = clickedRecipe.copy(isFavourite = isFavourite)
+            updateContent(updatedRecipe)
         } else {
-            return viewModelScope.launch {
-                favouriteRepository.delete(clickedRecipe.id)
-                val updatedRecipe = clickedRecipe.copy(isFavourite = isFavourite)
-                updateContent(updatedRecipe)
-            }
+            favouriteRepository.delete(clickedRecipe.id)
+            savingInProgress = false
+            val updatedRecipe = clickedRecipe.copy(isFavourite = isFavourite)
+            updateContent(updatedRecipe)
         }
     }
 
