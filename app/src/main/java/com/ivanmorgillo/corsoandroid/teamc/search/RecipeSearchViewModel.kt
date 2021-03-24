@@ -53,7 +53,6 @@ class RecipeSearchViewModel(
     }
 
     private fun loadDetailRandomRecipe(): Job {
-        states.postValue(RecipeSearchScreenStates.Loading)
         return viewModelScope.launch {
             when (val result = detailsRepository.loadDetailsRecipesRandom()) {
                 is LoadRecipesDetailResult.Failure -> {
@@ -70,6 +69,7 @@ class RecipeSearchViewModel(
     }
 
     private fun loadContent(name: String) {
+        states.postValue(RecipeSearchScreenStates.Loading)
         viewModelScope.launch {
             val result = repository.loadRecipesSearchByName(name)
             when (result) {

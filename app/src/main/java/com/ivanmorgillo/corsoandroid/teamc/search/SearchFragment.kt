@@ -34,7 +34,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_SEARCH -> {
                     closeKeyboard()
-                    val searchText = binding.searchEditText.text.toString()
+                    val searchText = binding.searchEditText.text.toString().trim()
                     viewModel.send(OnSearchKeyboardClick(searchText))
                     true
                 }
@@ -43,7 +43,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         }
         binding.searchButton.setOnClickListener {
             closeKeyboard()
-            val searchText = binding.searchEditText.text.toString()
+            val searchText = binding.searchEditText.text.toString().trim()
             viewModel.send(OnSearchButtonClick(searchText))
         }
 
@@ -97,11 +97,11 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                     binding.searchScreenNoNetwork.root.visible()
                 }
                 RecipeSearchScreenStates.Error.NoRecipeFound -> {
-                    binding.searchScreenNoRecipe.root.visible()
                     binding.searchScreenNoNetwork.root.gone()
                     binding.searchViewRecipeRecyclerviewId.gone()
                     binding.searchMessageInfoTextView.gone()
                     binding.recipesListProgressBar.root.gone()
+                    binding.searchScreenNoRecipe.root.visible()
                 }
                 RecipeSearchScreenStates.Loading -> binding.recipesListProgressBar.root.visible()
             }.exhaustive

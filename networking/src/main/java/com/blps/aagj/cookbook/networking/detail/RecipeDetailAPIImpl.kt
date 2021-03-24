@@ -7,6 +7,7 @@ import com.blps.aagj.cookbook.networking.RecipeService
 import org.json.JSONException
 import timber.log.Timber
 import java.io.IOException
+import java.net.SocketTimeoutException
 
 class RecipeDetailAPIImpl(private val service: RecipeService) : RecipeDetailAPI {
 
@@ -16,7 +17,7 @@ class RecipeDetailAPIImpl(private val service: RecipeService) : RecipeDetailAPI 
             //            Timber.d("recipeDetailList $recipeDetailList") // id non funziona ancora
             Timber.d("recipeDetailList${recipeDetailList.meals}")
             if (recipeDetailList.meals != null) {
-                val recipeDetail = recipeDetailList.meals?.firstOrNull()
+                val recipeDetail = recipeDetailList.meals.firstOrNull()
                 if (recipeDetail == null) {
                     LoadRecipesDetailResult.Failure(LoadRecipesDetailError.NoRecipeDetailFound)
                 } else {
@@ -29,6 +30,8 @@ class RecipeDetailAPIImpl(private val service: RecipeService) : RecipeDetailAPI 
             LoadRecipesDetailResult.Failure(LoadRecipesDetailError.NoInternet)
         } catch (e: JSONException) {
             LoadRecipesDetailResult.Failure(LoadRecipesDetailError.NoRecipeDetailFound)
+        } catch (e: SocketTimeoutException) {
+            LoadRecipesDetailResult.Failure(LoadRecipesDetailError.NoInternet)
         }
     }
 
