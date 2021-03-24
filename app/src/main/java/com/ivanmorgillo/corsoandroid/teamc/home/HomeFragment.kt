@@ -7,7 +7,6 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -37,7 +36,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
 
-        val adapter = RecipeByAreaAdapter(
+        val adapter = RecipeByTabAdapter(
             { viewModel.send(OnRecipeClick(it)) },
             { viewModel.send((OnFavouriteClicked(it))) }
         )
@@ -48,16 +47,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 val contentDescription = tab?.contentDescription
                 val nationTab = resources.getString(R.string.nazione)
                 val categoryTab = resources.getString(R.string.categoria)
-                val ingredientTab = resources.getString(R.string.ingrediente)
                 when (contentDescription) {
                     nationTab -> {
                         selectedTab = contentDescription.toString()
-                        Toast.makeText(context, "tab selected $contentDescription", Toast.LENGTH_SHORT).show()
-                        viewModel.send(event = MainScreenEvent.OnClickedNation)
+                        viewModel.send(MainScreenEvent.OnClickedNation)
                     }
                     categoryTab -> {
                         selectedTab = contentDescription.toString()
-                        Toast.makeText(context, "tab selected $contentDescription", Toast.LENGTH_SHORT).show()
                         viewModel.send(MainScreenEvent.OnClickedCategory)
                     }
                 }
@@ -107,14 +103,14 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         })
     }
 
-    private fun states(adapter: RecipeByAreaAdapter) {
+    private fun states(adapter: RecipeByTabAdapter) {
         viewModel.states.observe(viewLifecycleOwner, { state ->
             when (state) {
                 is MainScreenStates.Content -> {
                     binding.recipesListProgressBar.root.gone()
                     binding.mainScreenNoNetwork.root.gone()
                     binding.recipesListRoot.visible()
-                    adapter.recipeByArea = state.recipes
+                    adapter.recipeByTab = state.recipes
                 }
                 MainScreenStates.Loading -> {
                     binding.recipesListProgressBar.root.visible()

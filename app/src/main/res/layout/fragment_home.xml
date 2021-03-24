@@ -36,6 +36,7 @@
         </com.google.android.material.tabs.TabLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginTop="4dp"
             android:id="@+id/recipes_list"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

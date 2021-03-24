@@ -35,7 +35,7 @@ class MainViewModel(
     val actions = SingleLiveEvent<MainScreenAction>()
     private var recipesByArea: List<RecipeByArea>? = null
     private var recipesByCategory: List<RecipeByCategory>? = null
-    private var recipesByAreaUI: List<RecipeByAreaUI>? = null
+    private var recipesByTabUI: List<RecipeByTabUI>? = null
 
     @Suppress("IMPLICIT_CAST_TO_ANY")
     fun send(event: MainScreenEvent) {
@@ -116,16 +116,16 @@ class MainViewModel(
                     val favourites = favouriteRepository.loadAll() ?: emptyList()
                     val recipes = result.contentListRecipesByCategory
                         .map {
-                            RecipeByAreaUI(
-                                nameArea = it.nameCategory,
-                                recipeByArea = it.recipeByCategory
+                            RecipeByTabUI(
+                                nameTab = it.nameCategory,
+                                recipeByTab = it.recipeByCategory
                                     .map { recipe ->
                                         recipe.toUI(favourites)
                                     },
                                 selectedRecipePosition = 0
                             )
                         }
-                    recipesByAreaUI = recipes
+                    recipesByTabUI = recipes
                     states.postValue(MainScreenStates.Content(recipes))
                 }
             }.exhaustive
@@ -160,25 +160,25 @@ class MainViewModel(
     }
 
     private fun updateContent(clickedRecipe: RecipeUI) {
-        recipesByAreaUI
+        recipesByTabUI
             ?.asSequence()
             ?.map { recipeByAreaUI ->
                 updateRecipeByAreaUI(recipeByAreaUI, clickedRecipe)
             }
             ?.toList()
             ?.run {
-                recipesByAreaUI = this
+                recipesByTabUI = this
                 val content = MainScreenStates.Content(this)
                 states.postValue(content)
             }
     }
 
     private fun updateRecipeByAreaUI(
-        recipeByAreaUI: RecipeByAreaUI,
+        recipeByTabUI: RecipeByTabUI,
         clickedRecipe: RecipeUI
-    ): RecipeByAreaUI {
+    ): RecipeByTabUI {
         var clickedRecipePosition = 0
-        val recipes = recipeByAreaUI.recipeByArea
+        val recipes = recipeByTabUI.recipeByTab
             .asSequence()
             .mapIndexed { index, recipeUI ->
                 if (recipeUI.id == clickedRecipe.id) {
@@ -188,8 +188,8 @@ class MainViewModel(
                     recipeUI
                 }
             }
-        return recipeByAreaUI.copy(
-            recipeByArea = recipes.toList(),
+        return recipeByTabUI.copy(
+            recipeByTab = recipes.toList(),
             selectedRecipePosition = clickedRecipePosition,
         )
     }
@@ -222,16 +222,16 @@ class MainViewModel(
                     val favourites = favouriteRepository.loadAll() ?: emptyList()
                     val recipes = result.contentListRecipes
                         .map {
-                            RecipeByAreaUI(
-                                nameArea = it.nameArea,
-                                recipeByArea = it.recipeByArea
+                            RecipeByTabUI(
+                                nameTab = it.nameArea,
+                                recipeByTab = it.recipeByArea
                                     .map { recipe ->
                                         recipe.toUI(favourites)
                                     },
                                 selectedRecipePosition = 0
                             )
                         }
-                    recipesByAreaUI = recipes
+                    recipesByTabUI = recipes
                     states.postValue(MainScreenStates.Content(recipes))
                 }
             }
@@ -246,7 +246,7 @@ class MainViewModel(
     )
 }
 
-data class RecipeByAreaUI(val nameArea: String, val recipeByArea: List<RecipeUI>, val selectedRecipePosition: Int)
+data class RecipeByTabUI(val nameTab: String, val recipeByTab: List<RecipeUI>, val selectedRecipePosition: Int)
 
 sealed class MainScreenAction {
     data class NavigateToDetail(val recipe: RecipeUI) : MainScreenAction()
@@ -280,5 +280,5 @@ sealed class MainScreenStates {
         object NoRecipeFound : Error()
     }
 
-    data class Content(val recipes: List<RecipeByAreaUI>) : MainScreenStates()
+    data class Content(val recipes: List<RecipeByTabUI>) : MainScreenStates()
 }
