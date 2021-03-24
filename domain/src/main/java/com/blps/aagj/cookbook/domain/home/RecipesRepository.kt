@@ -23,7 +23,7 @@ class RecipeRepositoryImpl(private val recipeAPI: RecipeAPI) : RecipesRepository
     }
 
     override suspend fun loadRecipes(area: String): LoadRecipesResult {
-        return recipeAPI.loadRecipes(area)
+        return recipeAPI.loadRecipesByArea(area)
     }
 
     override suspend fun loadRecipesSearchByName(name: String): LoadRecipeSearchByNameResult {

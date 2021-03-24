@@ -36,9 +36,30 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
 
+        val adapter = RecipeByAreaAdapter(
+            { viewModel.send(OnRecipeClick(it)) },
+            { viewModel.send((OnFavouriteClicked(it))) }
+        )
+        binding.recipesList.adapter = adapter
+
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                Toast.makeText(context, "tab selected ${tab?.id}", Toast.LENGTH_SHORT).show()
+                val contentDescription = tab?.contentDescription
+                val nationTab = resources.getString(R.string.nazione)
+                val categoryTab = resources.getString(R.string.categoria)
+                val ingredientTab = resources.getString(R.string.ingrediente)
+                when (contentDescription) {
+                    nationTab -> {
+                        Toast.makeText(context, "tab selected $contentDescription", Toast.LENGTH_SHORT).show()
+                        viewModel.send(event = MainScreenEvent.OnClickedNation)
+                    }
+                    categoryTab -> {
+                        Toast.makeText(context, "tab selected $contentDescription", Toast.LENGTH_SHORT).show()
+                    }
+                    ingredientTab -> {
+                        Toast.makeText(context, "tab selected $contentDescription", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
@@ -49,11 +70,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 // Handle tab unselect
             }
         })
-        val adapter = RecipeByAreaAdapter(
-            { viewModel.send(OnRecipeClick(it)) },
-            { viewModel.send((OnFavouriteClicked(it))) }
-        )
-        binding.recipesList.adapter = adapter
+
         states(adapter)
         actions()
         viewModel.send(MainScreenEvent.OnReady)

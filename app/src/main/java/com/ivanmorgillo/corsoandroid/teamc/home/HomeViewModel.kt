@@ -78,7 +78,20 @@ class MainViewModel(
             MainScreenEvent.OnLoginDialogClick -> {
                 tracking.logEvent("login_dialog_clicked_home")
             }
+            MainScreenEvent.OnClickedCategory -> {
+                tracking.logEvent("clicked_tab_category")
+                loadCategoryContent()
+            }
+            MainScreenEvent.OnClickedIngredients -> TODO()
+            MainScreenEvent.OnClickedNation -> {
+                tracking.logEvent("clicked_tab_nation")
+                loadContent(false)
+            }
         }.exhaustive
+    }
+
+    private fun loadCategoryContent(): Any {
+        TODO("Not yet implemented")
     }
 
     private var savingInProgress: Boolean = false
@@ -211,9 +224,14 @@ sealed class MainScreenEvent {
     object OnFavouriteListMenuClicked : MainScreenEvent()
     object OnFeedbackClicked : MainScreenEvent()
     object OnReady : MainScreenEvent()
+    object OnClickedNation : MainScreenEvent()
+    object OnClickedCategory : MainScreenEvent()
+    object OnClickedIngredients : MainScreenEvent()
     object OnRefreshClick : MainScreenEvent()
     object OnSearchClick : MainScreenEvent()
     object OnLoginDialogClick : MainScreenEvent()
+
+
 }
 
 sealed class MainScreenStates {
