@@ -97,11 +97,11 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                     binding.searchScreenNoNetwork.root.visible()
                 }
                 RecipeSearchScreenStates.Error.NoRecipeFound -> {
-                    binding.searchScreenNoRecipe.root.visible()
                     binding.searchScreenNoNetwork.root.gone()
                     binding.searchViewRecipeRecyclerviewId.gone()
                     binding.searchMessageInfoTextView.gone()
                     binding.recipesListProgressBar.root.gone()
+                    binding.searchScreenNoRecipe.root.visible()
                 }
                 RecipeSearchScreenStates.Loading -> binding.recipesListProgressBar.root.visible()
             }.exhaustive
