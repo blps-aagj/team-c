@@ -7,6 +7,7 @@ import com.blps.aagj.cookbook.domain.home.LoadRecipeSearchByNameError
 import com.blps.aagj.cookbook.domain.home.LoadRecipeSearchByNameResult
 import com.blps.aagj.cookbook.domain.home.LoadRecipesByAreaError
 import com.blps.aagj.cookbook.domain.home.LoadRecipesByAreaResult
+import com.blps.aagj.cookbook.domain.home.LoadRecipesByCategoryError
 import com.blps.aagj.cookbook.domain.home.LoadRecipesByCategoryResult
 import com.blps.aagj.cookbook.domain.home.LoadRecipesError
 import com.blps.aagj.cookbook.domain.home.LoadRecipesResult

@@ -32,6 +32,7 @@ import timber.log.Timber
 class HomeFragment : Fragment(R.layout.fragment_home) {
     private val viewModel: MainViewModel by viewModel()
     private val binding by viewBinding(FragmentHomeBinding::bind)
+    private var selectedTab: String = "Nation"
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
@@ -50,14 +51,14 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 val ingredientTab = resources.getString(R.string.ingrediente)
                 when (contentDescription) {
                     nationTab -> {
+                        selectedTab = contentDescription.toString()
                         Toast.makeText(context, "tab selected $contentDescription", Toast.LENGTH_SHORT).show()
                         viewModel.send(event = MainScreenEvent.OnClickedNation)
                     }
                     categoryTab -> {
+                        selectedTab = contentDescription.toString()
                         Toast.makeText(context, "tab selected $contentDescription", Toast.LENGTH_SHORT).show()
-                    }
-                    ingredientTab -> {
-                        Toast.makeText(context, "tab selected $contentDescription", Toast.LENGTH_SHORT).show()
+                        viewModel.send(MainScreenEvent.OnClickedCategory)
                     }
                 }
             }
@@ -142,7 +143,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.refresh_btn -> viewModel.send(OnRefreshClick)
+            R.id.refresh_btn -> viewModel.send(OnRefreshClick(selectedTab))
             R.id.random_btn -> viewModel.send(MainScreenEvent.OnRandomClick)
             R.id.search_btn -> viewModel.send(MainScreenEvent.OnSearchClick)
             else -> error("Home onOptionsItemSelected")

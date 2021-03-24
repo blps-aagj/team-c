@@ -4,6 +4,7 @@ import FavouriteRepository
 import LoadRecipesDetailResult
 import Recipe
 import RecipeByArea
+import RecipeByCategory
 import RecipesDetailsRepository
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
@@ -12,6 +13,7 @@ import androidx.lifecycle.viewModelScope
 import com.blps.aagj.cookbook.domain.AuthenticationManager
 import com.blps.aagj.cookbook.domain.detail.RecipeDetail
 import com.blps.aagj.cookbook.domain.home.LoadRecipesByAreaResult
+import com.blps.aagj.cookbook.domain.home.LoadRecipesByCategoryResult
 import com.blps.aagj.cookbook.domain.home.RecipesRepository
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
@@ -31,7 +33,8 @@ class MainViewModel(
 
     val states = MutableLiveData<MainScreenStates>()
     val actions = SingleLiveEvent<MainScreenAction>()
-    private var recipes: List<RecipeByArea>? = null
+    private var recipesByArea: List<RecipeByArea>? = null
+    private var recipesByCategory: List<RecipeByCategory>? = null
     private var recipesByAreaUI: List<RecipeByAreaUI>? = null
 
     @Suppress("IMPLICIT_CAST_TO_ANY")
@@ -42,9 +45,20 @@ class MainViewModel(
                 tracking.logEvent("home_recipe_clicked")
                 actions.postValue(NavigateToDetail(event.recipe))
             }
-            MainScreenEvent.OnRefreshClick -> {
+            is MainScreenEvent.OnRefreshClick -> {
                 tracking.logEvent("home_refresh_clicked")
-                loadContent(true)
+                when (event.selectedTab) {
+                    "Nation" -> {
+                        loadContent(true)
+                    }
+                    "Category" -> {
+                        loadCategoryContent(true)
+                    }
+                    else -> {
+                        Log.d("msg", "terapia tapioca")
+                        Timber.d("msg terapia tapioca")
+                    }
+                }
             }
             is MainScreenEvent.OnFavouriteClicked -> {
                 tracking.logEvent("home_favorite_clicked")
@@ -80,9 +94,8 @@ class MainViewModel(
             }
             MainScreenEvent.OnClickedCategory -> {
                 tracking.logEvent("clicked_tab_category")
-                loadCategoryContent()
+                loadCategoryContent(false)
             }
-            MainScreenEvent.OnClickedIngredients -> TODO()
             MainScreenEvent.OnClickedNation -> {
                 tracking.logEvent("clicked_tab_nation")
                 loadContent(false)
@@ -90,8 +103,33 @@ class MainViewModel(
         }.exhaustive
     }
 
-    private fun loadCategoryContent(): Any {
-        TODO("Not yet implemented")
+    private fun loadCategoryContent(forced: Boolean) {
+        states.postValue(MainScreenStates.Loading)
+        viewModelScope.launch {
+            val result = repository.loadAllRecipesByCategory(forced)
+            when (result) {
+                is LoadRecipesByCategoryResult.Failure -> {
+                    states.postValue(MainScreenStates.Error.NoNetwork)
+                }
+                is LoadRecipesByCategoryResult.Success -> {
+                    recipesByCategory = result.contentListRecipesByCategory
+                    val favourites = favouriteRepository.loadAll() ?: emptyList()
+                    val recipes = result.contentListRecipesByCategory
+                        .map {
+                            RecipeByAreaUI(
+                                nameArea = it.nameCategory,
+                                recipeByArea = it.recipeByCategory
+                                    .map { recipe ->
+                                        recipe.toUI(favourites)
+                                    },
+                                selectedRecipePosition = 0
+                            )
+                        }
+                    recipesByAreaUI = recipes
+                    states.postValue(MainScreenStates.Content(recipes))
+                }
+            }.exhaustive
+        }
     }
 
     private var savingInProgress: Boolean = false
@@ -99,7 +137,7 @@ class MainViewModel(
         savingInProgress = true
         val isFavourite = !clickedRecipe.isFavourite
         if (isFavourite) {
-            recipes
+            recipesByArea
                 ?.map {
                     it.recipeByArea
                 }
@@ -180,7 +218,7 @@ class MainViewModel(
             when (result) {
                 is LoadRecipesByAreaResult.Failure -> states.postValue(MainScreenStates.Error.NoNetwork)
                 is LoadRecipesByAreaResult.Success -> {
-                    recipes = result.contentListRecipes
+                    recipesByArea = result.contentListRecipes
                     val favourites = favouriteRepository.loadAll() ?: emptyList()
                     val recipes = result.contentListRecipes
                         .map {
@@ -226,8 +264,7 @@ sealed class MainScreenEvent {
     object OnReady : MainScreenEvent()
     object OnClickedNation : MainScreenEvent()
     object OnClickedCategory : MainScreenEvent()
-    object OnClickedIngredients : MainScreenEvent()
-    object OnRefreshClick : MainScreenEvent()
+    data class OnRefreshClick(val selectedTab: String) : MainScreenEvent()
     object OnSearchClick : MainScreenEvent()
     object OnLoginDialogClick : MainScreenEvent()
 
