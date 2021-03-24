@@ -34,7 +34,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_SEARCH -> {
                     closeKeyboard()
-                    val searchText = binding.searchEditText.text.toString()
+                    val searchText = binding.searchEditText.text.toString().trim()
                     viewModel.send(OnSearchKeyboardClick(searchText))
                     true
                 }
@@ -43,7 +43,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         }
         binding.searchButton.setOnClickListener {
             closeKeyboard()
-            val searchText = binding.searchEditText.text.toString()
+            val searchText = binding.searchEditText.text.toString().trim()
             viewModel.send(OnSearchButtonClick(searchText))
         }
 
