@@ -30,4 +30,7 @@
     <string name="hint_search">Cake</string>
     <string name="login">Login</string>
     <string name="user_name">User Name</string>
+    <string name="nazione">Nation</string>
+    <string name="categoria">Category</string>
+    <string name="ingrediente">Ingredient</string>
 </resources>
