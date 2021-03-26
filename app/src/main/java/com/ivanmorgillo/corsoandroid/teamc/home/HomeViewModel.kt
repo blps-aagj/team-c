@@ -6,7 +6,6 @@ import Recipe
 import RecipeByArea
 import RecipeByCategory
 import RecipesDetailsRepository
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -47,32 +46,11 @@ class MainViewModel(
             }
             is MainScreenEvent.OnRefreshClick -> {
                 tracking.logEvent("home_refresh_clicked")
-                when (event.selectedTab) {
-                    "Nation" -> {
-                        loadContent(true)
-                    }
-                    "Category" -> {
-                        loadCategoryContent(true)
-                    }
-                    else -> {
-                        Log.d("msg", "terapia tapioca")
-                        Timber.d("msg terapia tapioca")
-                    }
-                }
+                onRefreshClick(event)
             }
             is MainScreenEvent.OnFavouriteClicked -> {
                 tracking.logEvent("home_favorite_clicked")
-                if (authenticationManager.isUserLoggedIn()) {
-                    viewModelScope.launch {
-                        if (!savingInProgress) {
-                            saveFavourite(event.recipe)
-                        } else {
-                            Log.d("msg", "saving is in progress")
-                        }
-                    }
-                } else {
-                    states.postValue(MainScreenStates.NoLogged)
-                }
+                onFavouriteClicked(event)
             }
             is MainScreenEvent.OnRandomClick -> {
                 tracking.logEvent("home_random_clicked")
@@ -101,6 +79,34 @@ class MainViewModel(
                 loadContent(false)
             }
         }.exhaustive
+    }
+
+    @Suppress("IMPLICIT_CAST_TO_ANY")
+    private fun onFavouriteClicked(event: MainScreenEvent.OnFavouriteClicked) =
+        if (authenticationManager.isUserLoggedIn()) {
+            viewModelScope.launch {
+                if (!savingInProgress) {
+                    saveFavourite(event.recipe)
+                } else {
+                    Timber.d("saving is in progress")
+                }
+            }
+        } else {
+            states.postValue(MainScreenStates.NoLogged)
+        }
+
+    private fun onRefreshClick(event: MainScreenEvent.OnRefreshClick) {
+        when (event.selectedTab) {
+            "Nation" -> {
+                loadContent(true)
+            }
+            "Category" -> {
+                loadCategoryContent(true)
+            }
+            else -> {
+                Timber.d("msg terapia tapioca")
+            }
+        }
     }
 
     private fun loadCategoryContent(forced: Boolean) {
