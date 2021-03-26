@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
     private var startGoogleSignInCallback: (() -> Unit)? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Timber.plant(Timber.DebugTree())
         setContentView(binding.root)
         binding.drawerLayout.addDrawerListener(actionBarToggle)
 

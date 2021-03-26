@@ -2,19 +2,22 @@ package com.blps.aagj.cookbook.domain.home
 
 interface RecipesRepository {
     suspend fun loadAllRecipesByArea(forced: Boolean = false): LoadRecipesByAreaResult
-    suspend fun loadRecipes(area: String): LoadRecipesResult
+    suspend fun loadRecipesArea(area: String): LoadRecipesResult
     suspend fun loadRecipesSearchByName(name: String): LoadRecipeSearchByNameResult
+    suspend fun loadRecipesCategory(category: String): LoadRecipesResult
+    suspend fun loadAllRecipesByCategory(forced: Boolean = false): LoadRecipesByCategoryResult
 }
 
 // chiedere se deve essere spostata nel modulo di networking
 class RecipeRepositoryImpl(private val recipeAPI: RecipeAPI) : RecipesRepository {
-    private var cached: LoadRecipesByAreaResult? = null
+    private var areaCached: LoadRecipesByAreaResult? = null
+    private var categoryCached: LoadRecipesByCategoryResult? = null
     override suspend fun loadAllRecipesByArea(forced: Boolean): LoadRecipesByAreaResult {
-        return if (cached == null || forced) {
-            cached = loadFromNetwork()
-            cached!!
+        return if (areaCached == null || forced) {
+            areaCached = loadFromNetwork()
+            areaCached!!
         } else {
-            cached!!
+            areaCached!!
         }
     }
 
@@ -22,11 +25,24 @@ class RecipeRepositoryImpl(private val recipeAPI: RecipeAPI) : RecipesRepository
         return recipeAPI.loadAllRecipesByArea()
     }
 
-    override suspend fun loadRecipes(area: String): LoadRecipesResult {
-        return recipeAPI.loadRecipes(area)
+    override suspend fun loadRecipesArea(area: String): LoadRecipesResult {
+        return recipeAPI.loadRecipesByArea(area)
     }
 
     override suspend fun loadRecipesSearchByName(name: String): LoadRecipeSearchByNameResult {
         return recipeAPI.loadRecipeSearchByName(name)
+    }
+
+    override suspend fun loadRecipesCategory(category: String): LoadRecipesResult {
+        return recipeAPI.loadRecipeByCategories(category)
+    }
+
+    override suspend fun loadAllRecipesByCategory(forced: Boolean): LoadRecipesByCategoryResult {
+        return if (categoryCached == null || forced) {
+            categoryCached = recipeAPI.loadAllRecipesByCategory()
+            categoryCached!!
+        } else {
+            categoryCached!!
+        }
     }
 }

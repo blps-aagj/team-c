@@ -2,10 +2,13 @@ package com.blps.aagj.cookbook.networking.home
 
 import Recipe
 import RecipeByArea
+import RecipeByCategory
 import com.blps.aagj.cookbook.domain.home.LoadRecipeSearchByNameError
 import com.blps.aagj.cookbook.domain.home.LoadRecipeSearchByNameResult
 import com.blps.aagj.cookbook.domain.home.LoadRecipesByAreaError
 import com.blps.aagj.cookbook.domain.home.LoadRecipesByAreaResult
+import com.blps.aagj.cookbook.domain.home.LoadRecipesByCategoryError
+import com.blps.aagj.cookbook.domain.home.LoadRecipesByCategoryResult
 import com.blps.aagj.cookbook.domain.home.LoadRecipesError
 import com.blps.aagj.cookbook.domain.home.LoadRecipesResult
 import com.blps.aagj.cookbook.domain.home.RecipeAPI
@@ -17,9 +20,9 @@ import java.net.SocketTimeoutException
 class RecipeAPIImpl(private val service: RecipeService) : RecipeAPI {
 
     @Suppress("TooGenericExceptionCaught")
-    override suspend fun loadRecipes(area: String): LoadRecipesResult {
+    override suspend fun loadRecipesByArea(area: String): LoadRecipesResult {
         try {
-            val recipeList = service.loadRecipes(area)
+            val recipeList = service.loadRecipesByArea(area)
             val recipes = recipeList.meals.mapNotNull {
                 it.toDomain()
             }
@@ -44,7 +47,7 @@ class RecipeAPIImpl(private val service: RecipeService) : RecipeAPI {
         return try {
             val areasList = service.loadAreas().areas
             val recipesByArea = areasList.map { areaDTO ->
-                val recipes = service.loadRecipes(areaDTO.strArea)
+                val recipes = service.loadRecipesByArea(areaDTO.strArea)
                     .meals.mapNotNull {
                         it.toDomain()
                     }
@@ -87,6 +90,51 @@ class RecipeAPIImpl(private val service: RecipeService) : RecipeAPI {
         } catch (e: Exception) {
             Timber.e(e, "Generic Exception on LoadRecipeSearchByName")
             LoadRecipeSearchByNameResult.Failure(LoadRecipeSearchByNameError.GenericError)
+        }
+    }
+
+    override suspend fun loadRecipeByCategories(category: String): LoadRecipesResult {
+        try {
+            val recipeByCategoryDTO = service.loadRecipesByCategory(category)
+            val recipesByCategory = recipeByCategoryDTO.meals.mapNotNull {
+                it.toDomain()
+            }
+            return if (recipesByCategory.isEmpty()) {
+                LoadRecipesResult.Failure(LoadRecipesError.NoRecipeFound)
+            } else {
+                LoadRecipesResult.Success(recipesByCategory)
+            }
+        } catch (e: IOException) {
+            return LoadRecipesResult.Failure(LoadRecipesError.NoInternet)
+        } catch (e: SocketTimeoutException) {
+            return LoadRecipesResult.Failure(LoadRecipesError.NoInternet)
+        } catch (e: Exception) {
+            Timber.e(e, "Generic Exception on LoadRecipes")
+            return LoadRecipesResult.Failure(LoadRecipesError.GenericError)
+        }
+    }
+
+    override suspend fun loadAllRecipesByCategory(): LoadRecipesByCategoryResult {
+        return try {
+            val categoryList = service.loadCategories().categories
+            val recipeByCategory = categoryList.map { categoryDTO ->
+                val recipes = service.loadRecipesByCategory(categoryDTO.strCategory)
+                    .meals.mapNotNull {
+                        it.toDomain()
+                    }
+                RecipeByCategory(
+                    nameCategory = categoryDTO.strCategory,
+                    recipeByCategory = recipes
+                )
+            }
+            LoadRecipesByCategoryResult.Success(recipeByCategory)
+        } catch (e: IOException) {
+            LoadRecipesByCategoryResult.Failure(LoadRecipesByCategoryError.NoInternetByCategory)
+        } catch (e: SocketTimeoutException) {
+            LoadRecipesByCategoryResult.Failure(LoadRecipesByCategoryError.NoInternetByCategory)
+        } catch (e: Exception) {
+            Timber.e(e, "Generic Exception on LoadAreaResult")
+            LoadRecipesByCategoryResult.Failure(LoadRecipesByCategoryError.GenericErrorByArea)
         }
     }
 }
