@@ -4,14 +4,15 @@ import FavouriteRepository
 import LoadRecipesDetailResult
 import Recipe
 import RecipeByArea
+import RecipeByCategory
 import RecipesDetailsRepository
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.blps.aagj.cookbook.domain.AuthenticationManager
 import com.blps.aagj.cookbook.domain.detail.RecipeDetail
 import com.blps.aagj.cookbook.domain.home.LoadRecipesByAreaResult
+import com.blps.aagj.cookbook.domain.home.LoadRecipesByCategoryResult
 import com.blps.aagj.cookbook.domain.home.RecipesRepository
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
@@ -31,8 +32,9 @@ class MainViewModel(
 
     val states = MutableLiveData<MainScreenStates>()
     val actions = SingleLiveEvent<MainScreenAction>()
-    private var recipes: List<RecipeByArea>? = null
-    private var recipesByAreaUI: List<RecipeByAreaUI>? = null
+    private var recipesByArea: List<RecipeByArea>? = null
+    private var recipesByCategory: List<RecipeByCategory>? = null
+    private var recipesByTabUI: List<RecipeByTabUI>? = null
 
     @Suppress("IMPLICIT_CAST_TO_ANY")
     fun send(event: MainScreenEvent) {
@@ -42,23 +44,13 @@ class MainViewModel(
                 tracking.logEvent("home_recipe_clicked")
                 actions.postValue(NavigateToDetail(event.recipe))
             }
-            MainScreenEvent.OnRefreshClick -> {
+            is MainScreenEvent.OnRefreshClick -> {
                 tracking.logEvent("home_refresh_clicked")
-                loadContent(true)
+                onRefreshClick(event)
             }
             is MainScreenEvent.OnFavouriteClicked -> {
                 tracking.logEvent("home_favorite_clicked")
-                if (authenticationManager.isUserLoggedIn()) {
-                    viewModelScope.launch {
-                        if (!savingInProgress) {
-                            saveFavourite(event.recipe)
-                        } else {
-                            Log.d("msg", "saving is in progress")
-                        }
-                    }
-                } else {
-                    states.postValue(MainScreenStates.NoLogged)
-                }
+                onFavouriteClicked(event)
             }
             is MainScreenEvent.OnRandomClick -> {
                 tracking.logEvent("home_random_clicked")
@@ -78,7 +70,72 @@ class MainViewModel(
             MainScreenEvent.OnLoginDialogClick -> {
                 tracking.logEvent("login_dialog_clicked_home")
             }
+            MainScreenEvent.OnClickedCategory -> {
+                tracking.logEvent("clicked_tab_category")
+                loadCategoryContent(false)
+            }
+            MainScreenEvent.OnClickedNation -> {
+                tracking.logEvent("clicked_tab_nation")
+                loadContent(false)
+            }
         }.exhaustive
+    }
+
+    @Suppress("IMPLICIT_CAST_TO_ANY")
+    private fun onFavouriteClicked(event: MainScreenEvent.OnFavouriteClicked) =
+        if (authenticationManager.isUserLoggedIn()) {
+            viewModelScope.launch {
+                if (!savingInProgress) {
+                    saveFavourite(event.recipe)
+                } else {
+                    Timber.d("saving is in progress")
+                }
+            }
+        } else {
+            states.postValue(MainScreenStates.NoLogged)
+        }
+
+    private fun onRefreshClick(event: MainScreenEvent.OnRefreshClick) {
+        when (event.selectedTab) {
+            "Nation" -> {
+                loadContent(true)
+            }
+            "Category" -> {
+                loadCategoryContent(true)
+            }
+            else -> {
+                Timber.d("msg terapia tapioca")
+            }
+        }
+    }
+
+    private fun loadCategoryContent(forced: Boolean) {
+        states.postValue(MainScreenStates.Loading)
+        viewModelScope.launch {
+            val result = repository.loadAllRecipesByCategory(forced)
+            when (result) {
+                is LoadRecipesByCategoryResult.Failure -> {
+                    states.postValue(MainScreenStates.Error.NoNetwork)
+                }
+                is LoadRecipesByCategoryResult.Success -> {
+                    recipesByCategory = result.contentListRecipesByCategory
+                    val favourites = favouriteRepository.loadAll() ?: emptyList()
+                    val recipes = result.contentListRecipesByCategory
+                        .map {
+                            RecipeByTabUI(
+                                nameTab = it.nameCategory,
+                                recipeByTab = it.recipeByCategory
+                                    .map { recipe ->
+                                        recipe.toUI(favourites)
+                                    },
+                                selectedRecipePosition = 0
+                            )
+                        }
+                    recipesByTabUI = recipes
+                    states.postValue(MainScreenStates.Content(recipes))
+                }
+            }.exhaustive
+        }
     }
 
     private var savingInProgress: Boolean = false
@@ -86,7 +143,7 @@ class MainViewModel(
         savingInProgress = true
         val isFavourite = !clickedRecipe.isFavourite
         if (isFavourite) {
-            recipes
+            recipesByArea
                 ?.map {
                     it.recipeByArea
                 }
@@ -109,25 +166,25 @@ class MainViewModel(
     }
 
     private fun updateContent(clickedRecipe: RecipeUI) {
-        recipesByAreaUI
+        recipesByTabUI
             ?.asSequence()
             ?.map { recipeByAreaUI ->
                 updateRecipeByAreaUI(recipeByAreaUI, clickedRecipe)
             }
             ?.toList()
             ?.run {
-                recipesByAreaUI = this
+                recipesByTabUI = this
                 val content = MainScreenStates.Content(this)
                 states.postValue(content)
             }
     }
 
     private fun updateRecipeByAreaUI(
-        recipeByAreaUI: RecipeByAreaUI,
+        recipeByTabUI: RecipeByTabUI,
         clickedRecipe: RecipeUI
-    ): RecipeByAreaUI {
+    ): RecipeByTabUI {
         var clickedRecipePosition = 0
-        val recipes = recipeByAreaUI.recipeByArea
+        val recipes = recipeByTabUI.recipeByTab
             .asSequence()
             .mapIndexed { index, recipeUI ->
                 if (recipeUI.id == clickedRecipe.id) {
@@ -137,8 +194,8 @@ class MainViewModel(
                     recipeUI
                 }
             }
-        return recipeByAreaUI.copy(
-            recipeByArea = recipes.toList(),
+        return recipeByTabUI.copy(
+            recipeByTab = recipes.toList(),
             selectedRecipePosition = clickedRecipePosition,
         )
     }
@@ -167,20 +224,20 @@ class MainViewModel(
             when (result) {
                 is LoadRecipesByAreaResult.Failure -> states.postValue(MainScreenStates.Error.NoNetwork)
                 is LoadRecipesByAreaResult.Success -> {
-                    recipes = result.contentListRecipes
+                    recipesByArea = result.contentListRecipes
                     val favourites = favouriteRepository.loadAll() ?: emptyList()
                     val recipes = result.contentListRecipes
                         .map {
-                            RecipeByAreaUI(
-                                nameArea = it.nameArea,
-                                recipeByArea = it.recipeByArea
+                            RecipeByTabUI(
+                                nameTab = it.nameArea,
+                                recipeByTab = it.recipeByArea
                                     .map { recipe ->
                                         recipe.toUI(favourites)
                                     },
                                 selectedRecipePosition = 0
                             )
                         }
-                    recipesByAreaUI = recipes
+                    recipesByTabUI = recipes
                     states.postValue(MainScreenStates.Content(recipes))
                 }
             }
@@ -195,7 +252,7 @@ class MainViewModel(
     )
 }
 
-data class RecipeByAreaUI(val nameArea: String, val recipeByArea: List<RecipeUI>, val selectedRecipePosition: Int)
+data class RecipeByTabUI(val nameTab: String, val recipeByTab: List<RecipeUI>, val selectedRecipePosition: Int)
 
 sealed class MainScreenAction {
     data class NavigateToDetail(val recipe: RecipeUI) : MainScreenAction()
@@ -211,9 +268,13 @@ sealed class MainScreenEvent {
     object OnFavouriteListMenuClicked : MainScreenEvent()
     object OnFeedbackClicked : MainScreenEvent()
     object OnReady : MainScreenEvent()
-    object OnRefreshClick : MainScreenEvent()
+    object OnClickedNation : MainScreenEvent()
+    object OnClickedCategory : MainScreenEvent()
+    data class OnRefreshClick(val selectedTab: String) : MainScreenEvent()
     object OnSearchClick : MainScreenEvent()
     object OnLoginDialogClick : MainScreenEvent()
+
+
 }
 
 sealed class MainScreenStates {
@@ -225,5 +286,5 @@ sealed class MainScreenStates {
         object NoRecipeFound : Error()
     }
 
-    data class Content(val recipes: List<RecipeByAreaUI>) : MainScreenStates()
+    data class Content(val recipes: List<RecipeByTabUI>) : MainScreenStates()
 }
