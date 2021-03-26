@@ -9,10 +9,10 @@ import com.ivanmorgillo.corsoandroid.teamc.databinding.AreaItemBinding
 import com.ivanmorgillo.corsoandroid.teamc.utils.getFlag
 import com.ivanmorgillo.corsoandroid.teamc.utils.imageLoader
 
-class RecipeByAreaAdapter(private val onclick: (RecipeUI) -> Unit, private val onFavouriteClicked: (RecipeUI) -> Unit) :
+class RecipeByTabAdapter(private val onclick: (RecipeUI) -> Unit, private val onFavouriteClicked: (RecipeUI) -> Unit) :
     RecyclerView.Adapter<RecipeByAreaViewHolder>() {
 
-    var recipeByArea: List<RecipeByAreaUI> = emptyList()
+    var recipeByTab: List<RecipeByTabUI> = emptyList()
         set(value) {
             val diffCallBack = RecipeByAreaUIDiffCallBack(field, value)
             val diffResult = DiffUtil.calculateDiff(diffCallBack)
@@ -30,29 +30,29 @@ class RecipeByAreaAdapter(private val onclick: (RecipeUI) -> Unit, private val o
     }
 
     override fun onBindViewHolder(holder: RecipeByAreaViewHolder, position: Int) {
-        holder.bind(recipeByArea[position], onclick, onFavouriteClicked)
+        holder.bind(recipeByTab[position], onclick, onFavouriteClicked)
     }
 
     override fun getItemCount(): Int {
-        return recipeByArea.size
+        return recipeByTab.size
     }
 }
 
 class RecipeByAreaViewHolder(private val binding: AreaItemBinding) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(item: RecipeByAreaUI, onclick: (RecipeUI) -> Unit, onFavouriteClicked: (RecipeUI) -> Unit) {
-        binding.recipeAreaTitle.text = item.nameArea
+    fun bind(item: RecipeByTabUI, onclick: (RecipeUI) -> Unit, onFavouriteClicked: (RecipeUI) -> Unit) {
+        binding.recipeAreaTitle.text = item.nameTab
 
         val adapter = RecipesAdapter(onclick, onFavouriteClicked)
         binding.recipeAreaRecyclerview.adapter = adapter
-        adapter.recipes = item.recipeByArea
+        adapter.recipes = item.recipeByTab
         binding.recipeAreaRecyclerview.scrollToPosition(item.selectedRecipePosition)
-        val areaFlag = getFlag(item.nameArea)
+        val areaFlag = getFlag(item.nameTab)
         val flagUri = "https://www.countryflags.io/$areaFlag/shiny/64.png"
         binding.recipeAreaFlagIcon.load(flagUri, imageLoader(itemView.context))
     }
 }
 
-class RecipeByAreaUIDiffCallBack(private val oldList: List<RecipeByAreaUI>, private val newList: List<RecipeByAreaUI>) : DiffUtil.Callback() {
+class RecipeByAreaUIDiffCallBack(private val oldList: List<RecipeByTabUI>, private val newList: List<RecipeByTabUI>) : DiffUtil.Callback() {
     override fun getOldListSize(): Int {
         return oldList.size
     }
@@ -64,12 +64,12 @@ class RecipeByAreaUIDiffCallBack(private val oldList: List<RecipeByAreaUI>, priv
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
-        return oldItem.nameArea == newItem.nameArea
+        return oldItem.nameTab == newItem.nameTab
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
-        return oldItem.nameArea == newItem.nameArea && oldItem.recipeByArea == newItem.recipeByArea
+        return oldItem.nameTab == newItem.nameTab && oldItem.recipeByTab == newItem.recipeByTab
     }
 }

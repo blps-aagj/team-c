@@ -10,6 +10,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.tabs.TabLayout
 import com.ivanmorgillo.corsoandroid.teamc.MainActivity
 import com.ivanmorgillo.corsoandroid.teamc.R
 import com.ivanmorgillo.corsoandroid.teamc.StartGoogleSignIn
@@ -30,14 +31,43 @@ import timber.log.Timber
 class HomeFragment : Fragment(R.layout.fragment_home) {
     private val viewModel: MainViewModel by viewModel()
     private val binding by viewBinding(FragmentHomeBinding::bind)
+    private var selectedTab: String = "Nation"
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-        val adapter = RecipeByAreaAdapter(
+
+        val adapter = RecipeByTabAdapter(
             { viewModel.send(OnRecipeClick(it)) },
             { viewModel.send((OnFavouriteClicked(it))) }
         )
         binding.recipesList.adapter = adapter
+
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                val contentDescription = tab?.contentDescription
+                val nationTab = resources.getString(R.string.nazione)
+                val categoryTab = resources.getString(R.string.categoria)
+                when (contentDescription) {
+                    nationTab -> {
+                        selectedTab = contentDescription.toString()
+                        viewModel.send(MainScreenEvent.OnClickedNation)
+                    }
+                    categoryTab -> {
+                        selectedTab = contentDescription.toString()
+                        viewModel.send(MainScreenEvent.OnClickedCategory)
+                    }
+                }
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+                // Handle tab reselect
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+                // Handle tab unselect
+            }
+        })
+
         states(adapter)
         actions()
         viewModel.send(MainScreenEvent.OnReady)
@@ -73,14 +103,14 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         })
     }
 
-    private fun states(adapter: RecipeByAreaAdapter) {
+    private fun states(adapter: RecipeByTabAdapter) {
         viewModel.states.observe(viewLifecycleOwner, { state ->
             when (state) {
                 is MainScreenStates.Content -> {
                     binding.recipesListProgressBar.root.gone()
                     binding.mainScreenNoNetwork.root.gone()
                     binding.recipesListRoot.visible()
-                    adapter.recipeByArea = state.recipes
+                    adapter.recipeByTab = state.recipes
                 }
                 MainScreenStates.Loading -> {
                     binding.recipesListProgressBar.root.visible()
@@ -109,7 +139,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.refresh_btn -> viewModel.send(OnRefreshClick)
+            R.id.refresh_btn -> viewModel.send(OnRefreshClick(selectedTab))
             R.id.random_btn -> viewModel.send(MainScreenEvent.OnRandomClick)
             R.id.search_btn -> viewModel.send(MainScreenEvent.OnSearchClick)
             else -> error("Home onOptionsItemSelected")
