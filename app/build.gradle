@@ -23,7 +23,7 @@ android
                 minSdkVersion 23 // versione minima supportata. L' utente può installarla solo se ha API >= 23
                 targetSdkVersion 30
                 versionCode _versionCode
-                versionName "1.0.1." + _versionCode
+                versionName "1.2." + _versionCode
                 testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
             }
             signingConfigs {
