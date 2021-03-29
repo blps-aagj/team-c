@@ -28,10 +28,46 @@
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
         app:iconTint="@color/tint_search_icon_in_button"
-        android:backgroundTint="@color/background_tint_search_button"
+        android:backgroundTint="@color/colorPrimary"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <HorizontalScrollView
+        android:layout_width="wrap_content"
+        android:id="@+id/chip_group"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/search_edit_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.chip.ChipGroup
+            android:layout_width="wrap_content"
+            android:id="@+id/chip_group_2"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/search_edit_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:singleLine="true"
+            tools:showIn="@layout/fragment_search">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_recipe_name"
+                style="@style/Widget.MaterialComponents.Chip.Entry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/recipe_name" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_ingredient"
+                style="@style/Widget.MaterialComponents.Chip.Entry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ingredient" />
+
+        </com.google.android.material.chip.ChipGroup>
+
+    </HorizontalScrollView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_view_recipe_recyclerview_id"
@@ -40,7 +76,7 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_edit_text"
+        app:layout_constraintTop_toBottomOf="@id/chip_group"
         tools:listitem="@layout/search_cardview"
         tools:visibility="visible" />
 
