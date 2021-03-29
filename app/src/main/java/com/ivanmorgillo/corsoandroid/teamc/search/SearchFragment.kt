@@ -29,9 +29,20 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val chipName = binding.chipRecipeName
+        val chipIngredient = binding.chipIngredient
+        var chipNameIsCheck = false
+        var chipIngredientIsCheck = false
+
+        chipName.setOnClickListener {
+            chipNameIsCheck = chipName.isChecked
+        }
+        chipIngredient.setOnClickListener {
+            chipIngredientIsCheck = chipIngredient.isChecked
+        }
         val recipeIngredient = args.recipeIngredient
         if (recipeIngredient.isNotEmpty()) {
-            viewModel.send(RecipeSearchScreenEvent.OnReadySearchByIngredient(recipeIngredient))
+            viewModel.send(RecipeSearchScreenEvent.OnSearchIngredientButtonClick(recipeIngredient))
         }
         val adapter = SearchRecipeAdapter { viewModel.send(RecipeSearchScreenEvent.OnRecipeClickSearched(it)) }
         states(adapter)
@@ -50,7 +61,13 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         binding.searchButton.setOnClickListener {
             closeKeyboard()
             val searchText = binding.searchEditText.text.toString().trim()
-            viewModel.send(OnSearchButtonClick(searchText, searchText))
+            if (chipNameIsCheck && chipIngredientIsCheck) {
+                viewModel.send(OnSearchButtonClick(searchText, searchText))
+            } else if (chipIngredientIsCheck) {
+                viewModel.send(RecipeSearchScreenEvent.OnSearchIngredientButtonClick(searchText))
+            } else {
+                viewModel.send(RecipeSearchScreenEvent.OnSearchByRecipeNameButtonClick(searchText))
+            }
         }
 
         binding.searchViewRecipeRecyclerviewId.adapter = adapter

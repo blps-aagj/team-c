@@ -33,41 +33,32 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <HorizontalScrollView
+    <com.google.android.material.chip.ChipGroup
         android:layout_width="wrap_content"
         android:id="@+id/chip_group"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/search_edit_text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:singleLine="true"
+        tools:showIn="@layout/fragment_search">
 
-        <com.google.android.material.chip.ChipGroup
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_recipe_name"
+            android:checked="true"
             android:layout_width="wrap_content"
-            android:id="@+id/chip_group_2"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/search_edit_text"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:singleLine="true"
-            tools:showIn="@layout/fragment_search">
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:text="@string/recipe_name" />
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_recipe_name"
-                style="@style/Widget.MaterialComponents.Chip.Entry"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/recipe_name" />
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_ingredient"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ingredient" />
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chip_ingredient"
-                style="@style/Widget.MaterialComponents.Chip.Entry"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/ingredient" />
-
-        </com.google.android.material.chip.ChipGroup>
-
-    </HorizontalScrollView>
+    </com.google.android.material.chip.ChipGroup>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_view_recipe_recyclerview_id"
