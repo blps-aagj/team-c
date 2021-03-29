@@ -36,6 +36,7 @@ class RecipeSearchViewModel(
             is RecipeSearchScreenEvent.OnSearchButtonClick -> {
                 tracking.logEvent("search_btn_click")
                 loadContent(event.searchedRecipeName)
+                loadContentByIngredient(event.searchIngredientRecipe)
             }
             is RecipeSearchScreenEvent.OnRecipeClickSearched -> {
                 tracking.logEvent("search_recipe_clicked")
@@ -49,7 +50,39 @@ class RecipeSearchViewModel(
                 tracking.logEvent("search_random_btn_no_recipe_clicked")
                 loadDetailRandomRecipe()
             }
+            is RecipeSearchScreenEvent.OnSearchIngredientButtonClick -> {
+                tracking.logEvent("on_search_ingredient_btn")
+                loadContentByIngredient(event.ingredient)
+            }
+            is RecipeSearchScreenEvent.OnSearchByRecipeNameButtonClick -> {
+                tracking.logEvent("on_search_by_name_btn")
+                loadContent(event.recipeName)
+            }
         }.exhaustive
+    }
+
+    private fun loadContentByIngredient(ingredient: String) {
+        states.postValue(RecipeSearchScreenStates.Loading)
+        viewModelScope.launch {
+            val result = repository.loadRecipeByIngredient(ingredient)
+            when (result) {
+                is LoadRecipeSearchByNameResult.Failure -> {
+                    Timber.d("RecipeIngredient failure")
+                    states.postValue(RecipeSearchScreenStates.Error.NoNetwork)
+                }
+                is LoadRecipeSearchByNameResult.Success -> {
+                    val recipes = result.content.map {
+                        RecipeUI(
+                            id = it.idMeal,
+                            recipeName = it.name,
+                            recipeImageUrl = it.image,
+                            isFavourite = favouriteRepository.isFavourite(it.idMeal)
+                        )
+                    }
+                    states.postValue(RecipeSearchScreenStates.Content(recipes))
+                }
+            }.exhaustive
+        }
     }
 
     private fun loadDetailRandomRecipe(): Job {
@@ -97,9 +130,11 @@ sealed class RecipeSearchScreenAction {
 
 sealed class RecipeSearchScreenEvent {
     data class OnRecipeClickSearched(val recipe: RecipeUI) : RecipeSearchScreenEvent()
-    data class OnSearchButtonClick(val searchedRecipeName: String) : RecipeSearchScreenEvent()
+    data class OnSearchButtonClick(val searchedRecipeName: String, val searchIngredientRecipe: String) : RecipeSearchScreenEvent()
     data class OnSearchKeyboardClick(val searchedRecipeName: String) : RecipeSearchScreenEvent()
     object OnErrorRandomClick : RecipeSearchScreenEvent()
+    data class OnSearchIngredientButtonClick(val ingredient: String) : RecipeSearchScreenEvent()
+    data class OnSearchByRecipeNameButtonClick(val recipeName: String) : RecipeSearchScreenEvent()
 }
 
 sealed class RecipeSearchScreenStates {

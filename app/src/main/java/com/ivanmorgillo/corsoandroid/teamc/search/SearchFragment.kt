@@ -9,6 +9,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.ivanmorgillo.corsoandroid.teamc.R
 import com.ivanmorgillo.corsoandroid.teamc.databinding.FragmentSearchBinding
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
@@ -24,12 +25,28 @@ import timber.log.Timber
 class SearchFragment : Fragment(R.layout.fragment_search) {
     private val viewModel: RecipeSearchViewModel by viewModel()
     private val binding by viewBinding(FragmentSearchBinding::bind)
+    private val args: SearchFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val chipName = binding.chipRecipeName
+        val chipIngredient = binding.chipIngredient
+        var chipNameIsCheck = false
+        var chipIngredientIsCheck = false
+
+        chipName.setOnClickListener {
+            chipNameIsCheck = chipName.isChecked
+        }
+        chipIngredient.setOnClickListener {
+            chipIngredientIsCheck = chipIngredient.isChecked
+        }
+        val recipeIngredient = args.recipeIngredient
+        if (recipeIngredient.isNotEmpty()) {
+            viewModel.send(RecipeSearchScreenEvent.OnSearchIngredientButtonClick(recipeIngredient))
+        }
         val adapter = SearchRecipeAdapter { viewModel.send(RecipeSearchScreenEvent.OnRecipeClickSearched(it)) }
         states(adapter)
-        binding.searchEditText.setOnEditorActionListener { v, actionId, event ->
+        binding.searchEditText.setOnEditorActionListener { _, actionId, _ ->
             Timber.d("EditorInfo $actionId")
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_SEARCH -> {
@@ -44,10 +61,23 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         binding.searchButton.setOnClickListener {
             closeKeyboard()
             val searchText = binding.searchEditText.text.toString().trim()
-            viewModel.send(OnSearchButtonClick(searchText))
+            if (chipNameIsCheck && chipIngredientIsCheck) {
+                viewModel.send(OnSearchButtonClick(searchText, searchText))
+            } else if (chipIngredientIsCheck) {
+                viewModel.send(RecipeSearchScreenEvent.OnSearchIngredientButtonClick(searchText))
+            } else {
+                viewModel.send(RecipeSearchScreenEvent.OnSearchByRecipeNameButtonClick(searchText))
+            }
         }
 
         binding.searchViewRecipeRecyclerviewId.adapter = adapter
+        actions()
+        binding.searchScreenNoRecipe.noRecipeFoundRandomBtn.setOnClickListener {
+            viewModel.send(RecipeSearchScreenEvent.OnErrorRandomClick)
+        }
+    }
+
+    private fun actions() {
         viewModel.actions.observe(viewLifecycleOwner, { action ->
             when (action) {
                 is RecipeSearchScreenAction.NavigateToDetailFromSearch -> {
@@ -68,9 +98,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 }
             }.exhaustive
         })
-        binding.searchScreenNoRecipe.noRecipeFoundRandomBtn.setOnClickListener {
-            viewModel.send(RecipeSearchScreenEvent.OnErrorRandomClick)
-        }
     }
 
     private fun closeKeyboard() {

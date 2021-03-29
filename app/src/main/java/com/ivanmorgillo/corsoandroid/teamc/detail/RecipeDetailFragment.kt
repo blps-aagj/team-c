@@ -2,7 +2,6 @@ package com.ivanmorgillo.corsoandroid.teamc.detail
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
@@ -17,6 +16,7 @@ import com.ivanmorgillo.corsoandroid.teamc.gone
 import com.ivanmorgillo.corsoandroid.teamc.utils.bindings.viewBinding
 import com.ivanmorgillo.corsoandroid.teamc.visible
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 private const val Z_AXIS: Float = 100f
 
@@ -25,8 +25,7 @@ class RecipeDetailFragment : Fragment(R.layout.fragment_detail) {
     private val viewModel: RecipeDetailViewModel by viewModel()
     private val binding by viewBinding(FragmentDetailBinding::bind)
 
-    private
-    val args: RecipeDetailFragmentArgs by navArgs()
+    private val args: RecipeDetailFragmentArgs by navArgs()
 
     //  Equivalente alla onCreate di un activity
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -36,9 +35,10 @@ class RecipeDetailFragment : Fragment(R.layout.fragment_detail) {
             binding.root,
             Z_AXIS
         )
-        val adapter = DetailRecipeScreenAdapter {
-            viewModel.send(RecipeDetailScreenEvent.OnFavouriteClicked)
-        }
+        val adapter = DetailRecipeScreenAdapter(
+            { viewModel.send(RecipeDetailScreenEvent.OnFavouriteClicked) },
+            { viewModel.send(RecipeDetailScreenEvent.OnIngredientClick(it)) }
+        )
         val recipeId = args.recipeId
         adapter.setHasStableIds(true)
         binding.recipesListRoot.adapter = adapter
@@ -74,7 +74,16 @@ class RecipeDetailFragment : Fragment(R.layout.fragment_detail) {
                 RecipeDetailScreenStates.NoLogged -> showDialog(requireContext())
             }.exhaustive
         })
-
+        viewModel.actions.observe(
+            viewLifecycleOwner, { action ->
+                when (action) {
+                    is RecipeDetailScreenAction.NavigateToSearch -> {
+                        val directions = RecipeDetailFragmentDirections.actionDetailFragmentToSearchFragment(action.ingredient)
+                        findNavController().navigate(directions)
+                    }
+                }.exhaustive
+            }
+        )
         viewModel.send(RecipeDetailScreenEvent.OnScreenRecipeDetailReady(recipeId))
     }
 
@@ -86,7 +95,7 @@ class RecipeDetailFragment : Fragment(R.layout.fragment_detail) {
             }
             .setPositiveButton("Login") { _, _ ->
                 viewModel.send(RecipeDetailScreenEvent.OnLoginDialogClick)
-                (activity as StartGoogleSignIn).startGoogleSignIn { Log.d("msg", "Login successful") }
+                (activity as StartGoogleSignIn).startGoogleSignIn { Timber.d("Login successful") }
             }
             .show()
     }

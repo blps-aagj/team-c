@@ -35,6 +35,9 @@
             android:name="recipe_id"
             android:defaultValue="0L"
             app:argType="long" />
+        <action
+            android:id="@+id/action_detailFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
     </fragment>
 
     <fragment
@@ -51,6 +54,10 @@
         android:name="com.ivanmorgillo.corsoandroid.teamc.search.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search">
+        <argument
+            android:name="recipe_ingredient"
+            android:defaultValue=""
+            app:argType="string" />
         <action
             android:id="@+id/action_searchFragment_to_detailFragment"
             app:destination="@id/detailFragment" />

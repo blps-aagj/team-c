@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.chip.ChipGroup xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/chip_group"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:singleLine="true"
+    tools:showIn="@layout/fragment_search">
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_recipe_name"
+        style="@style/Widget.MaterialComponents.Chip.Entry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/recipe_name" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_ingredient"
+        style="@style/Widget.MaterialComponents.Chip.Entry"
+        android:text="@string/ingredient" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip_name_ingredient"
+        style="@style/Widget.MaterialComponents.Chip.Entry"
+        android:text="@string/name_and_ingredient" />
+</com.google.android.material.chip.ChipGroup>

@@ -6,6 +6,7 @@ interface RecipesRepository {
     suspend fun loadRecipesSearchByName(name: String): LoadRecipeSearchByNameResult
     suspend fun loadRecipesCategory(category: String): LoadRecipesResult
     suspend fun loadAllRecipesByCategory(forced: Boolean = false): LoadRecipesByCategoryResult
+    suspend fun loadRecipeByIngredient(ingredient: String): LoadRecipeSearchByNameResult
 }
 
 // chiedere se deve essere spostata nel modulo di networking
@@ -44,5 +45,9 @@ class RecipeRepositoryImpl(private val recipeAPI: RecipeAPI) : RecipesRepository
         } else {
             categoryCached!!
         }
+    }
+
+    override suspend fun loadRecipeByIngredient(ingredient: String): LoadRecipeSearchByNameResult {
+        return recipeAPI.loadRecipesByIngredient(ingredient)
     }
 }

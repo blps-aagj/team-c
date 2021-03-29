@@ -137,4 +137,30 @@ class RecipeAPIImpl(private val service: RecipeService) : RecipeAPI {
             LoadRecipesByCategoryResult.Failure(LoadRecipesByCategoryError.GenericErrorByArea)
         }
     }
+
+    override suspend fun loadRecipesByIngredient(name: String): LoadRecipeSearchByNameResult {
+        return try {
+            val recipeByIngredientList = service.loadRecipesByIngredient(name)
+            val recipes = recipeByIngredientList.meals.mapNotNull {
+                val id = it.idMeal.toLongOrNull()
+                if (id != null) {
+                    Recipe(name = it.strMeal, image = it.strMealThumb, idMeal = id)
+                } else {
+                    null
+                }
+            }
+            if (recipes != null) {
+                LoadRecipeSearchByNameResult.Success(recipes)
+            } else {
+                LoadRecipeSearchByNameResult.Failure(LoadRecipeSearchByNameError.NoInternet)
+            }
+        } catch (e: IOException) {
+            LoadRecipeSearchByNameResult.Failure(LoadRecipeSearchByNameError.NoInternet)
+        } catch (e: SocketTimeoutException) {
+            LoadRecipeSearchByNameResult.Failure(LoadRecipeSearchByNameError.NoInternet)
+        } catch (e: Exception) {
+            Timber.e(e, "Generic Exception on LoadRecipeSearchByName")
+            LoadRecipeSearchByNameResult.Failure(LoadRecipeSearchByNameError.GenericError)
+        }
+    }
 }

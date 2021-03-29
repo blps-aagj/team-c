@@ -13,6 +13,7 @@ import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetailScreenStates.Error
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Screens
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
+import com.ivanmorgillo.corsoandroid.teamc.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -24,6 +25,7 @@ class RecipeDetailViewModel(
 ) : ViewModel() {
 
     val states = MutableLiveData<RecipeDetailScreenStates>()
+    val actions = SingleLiveEvent<RecipeDetailScreenAction>()
     private var recipeDetail: RecipeDetail? = null
     private var isFavourite: Boolean = false
 
@@ -52,6 +54,11 @@ class RecipeDetailViewModel(
             }
             RecipeDetailScreenEvent.OnLoginDialogClick -> {
                 tracking.logEvent("on_login_dialog_click_detail")
+            }
+            is RecipeDetailScreenEvent.OnIngredientClick -> {
+                tracking.logEvent("on_ingredient_click_detail")
+                Timber.d("ingredient: ${event.ingredient.name}")
+                actions.postValue(RecipeDetailScreenAction.NavigateToSearch(event.ingredient.name))
             }
         }.exhaustive
     }
@@ -134,6 +141,7 @@ sealed class RecipeDetailScreenEvent {
     object OnErrorRandomClick : RecipeDetailScreenEvent()
     object OnFavouriteClicked : RecipeDetailScreenEvent()
     object OnLoginDialogClick : RecipeDetailScreenEvent()
+    data class OnIngredientClick(val ingredient: IngredientUI) : RecipeDetailScreenEvent()
 }
 
 sealed class RecipeDetailScreenStates {
@@ -146,4 +154,8 @@ sealed class RecipeDetailScreenStates {
     object NoLogged : RecipeDetailScreenStates()
 
     data class Content(val recipeDetail: List<DetailScreenItems>) : RecipeDetailScreenStates()
+}
+
+sealed class RecipeDetailScreenAction {
+    data class NavigateToSearch(val ingredient: String) : RecipeDetailScreenAction()
 }
