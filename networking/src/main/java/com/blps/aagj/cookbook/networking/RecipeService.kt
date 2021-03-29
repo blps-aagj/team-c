@@ -28,4 +28,7 @@ interface RecipeService {
 
     @GET("filter.php")
     suspend fun loadRecipesByCategory(@Query("c") category: String): RecipeDTO
+
+    @GET("filter.php")
+    suspend fun loadRecipesByIngredient(@Query("i") ingredient: String): RecipeDTO
 }

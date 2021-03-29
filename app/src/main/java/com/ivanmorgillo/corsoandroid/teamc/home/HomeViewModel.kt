@@ -264,7 +264,6 @@ sealed class MainScreenEvent {
     data class OnRecipeClick(val recipe: RecipeUI) : MainScreenEvent()
     data class OnFavouriteClicked(val recipe: RecipeUI) : MainScreenEvent()
     object OnRandomClick : MainScreenEvent()
-
     object OnFavouriteListMenuClicked : MainScreenEvent()
     object OnFeedbackClicked : MainScreenEvent()
     object OnReady : MainScreenEvent()
@@ -273,8 +272,6 @@ sealed class MainScreenEvent {
     data class OnRefreshClick(val selectedTab: String) : MainScreenEvent()
     object OnSearchClick : MainScreenEvent()
     object OnLoginDialogClick : MainScreenEvent()
-
-
 }
 
 sealed class MainScreenStates {

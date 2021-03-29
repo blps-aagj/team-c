@@ -71,7 +71,10 @@ private const val INSTRUCTIONS_VIEWTYPE = 3
 private const val TITLE_CATEGORY_AREA_VIEWTYPE = 4
 private const val VIDEOINSTRUCTIONS_VIEWTYPE = 5
 
-class DetailRecipeScreenAdapter(private val onDetailFavouriteClicked: () -> Unit) : RecyclerView.Adapter<DetailRecipeScreenViewHolder>() {
+class DetailRecipeScreenAdapter(
+    private val onDetailFavouriteClicked: () -> Unit,
+    private val onDetailIngredientClicked: (IngredientUI) -> Unit
+) : RecyclerView.Adapter<DetailRecipeScreenViewHolder>() {
     var items = emptyList<DetailScreenItems>()
         set(value) {
             val diffCallBack = DetailScreeDiffCallBack(field, value)
@@ -128,7 +131,7 @@ class DetailRecipeScreenAdapter(private val onDetailFavouriteClicked: () -> Unit
             is ImageViewHolder -> holder.bind(items[position] as Image, onDetailFavouriteClicked)
             is InstructionsViewHolder -> holder.bind(items[position] as Instructions)
             is VideoInstructionsViewHolder -> holder.bind(items[position] as VideoInstructions)
-            is IngredientsViewHolder -> holder.bind(items[position] as Ingredients)
+            is IngredientsViewHolder -> holder.bind(items[position] as Ingredients, onDetailIngredientClicked)
         }.exhaustive
     }
 
@@ -163,8 +166,8 @@ sealed class DetailRecipeScreenViewHolder(itemView: View) : ViewHolder(itemView)
     }
 
     class IngredientsViewHolder(private val binding: DetailRecipeScreenIngredientsBinding) : DetailRecipeScreenViewHolder(binding.root) {
-        fun bind(ingredients: Ingredients) {
-            val adapter = IngredientsAdapter()
+        fun bind(ingredients: Ingredients, onDetailIngredientClicked: (IngredientUI) -> Unit) {
+            val adapter = IngredientsAdapter(onDetailIngredientClicked)
             binding.detailRecipeScreenIngredients.adapter = adapter
             adapter.items = ingredients.ingredients
         }
@@ -195,7 +198,7 @@ sealed class DetailRecipeScreenViewHolder(itemView: View) : ViewHolder(itemView)
     }
 }
 
-class IngredientsAdapter : RecyclerView.Adapter<IngredientsItemViewHolder>() {
+class IngredientsAdapter(val onDetailIngredientClicked: (IngredientUI) -> Unit) : RecyclerView.Adapter<IngredientsItemViewHolder>() {
     var items: List<IngredientUI> = emptyList()
         set(value) {
             field = value
@@ -208,7 +211,7 @@ class IngredientsAdapter : RecyclerView.Adapter<IngredientsItemViewHolder>() {
     }
 
     override fun onBindViewHolder(holderItem: IngredientsItemViewHolder, position: Int) {
-        holderItem.bind(items[position])
+        holderItem.bind(items[position], onDetailIngredientClicked)
     }
 
     override fun getItemCount(): Int {
@@ -217,12 +220,15 @@ class IngredientsAdapter : RecyclerView.Adapter<IngredientsItemViewHolder>() {
 }
 
 class IngredientsItemViewHolder(private val binding: DetailRecipeScreenIngredientItemBinding) : ViewHolder(binding.root) {
-    fun bind(item: IngredientUI) {
+    fun bind(item: IngredientUI, onDetailIngredientClicked: (IngredientUI) -> Unit) {
         binding.ingredientImage.load("https://www.themealdb.com/images/ingredients/${item.name}-Small.png", imageLoader(itemView.context)) {
             crossfade(true)
         }
         binding.detailScreenIngredientName.text = item.name
         binding.detailScreenIngredientQuantity.text = item.measure
+        binding.ingredientCard.setOnClickListener(View.OnClickListener {
+            onDetailIngredientClicked(item)
+        })
     }
 }
 

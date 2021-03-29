@@ -35,6 +35,9 @@
             android:name="recipe_id"
             android:defaultValue="0L"
             app:argType="long" />
+        <action
+            android:id="@+id/action_detailFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
     </fragment>
 
     <fragment

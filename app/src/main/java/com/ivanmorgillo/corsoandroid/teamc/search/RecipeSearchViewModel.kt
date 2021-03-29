@@ -49,6 +49,9 @@ class RecipeSearchViewModel(
                 tracking.logEvent("search_random_btn_no_recipe_clicked")
                 loadDetailRandomRecipe()
             }
+            is RecipeSearchScreenEvent.OnReady -> {
+                tracking.logEvent("on_search_ingredient_btn")
+            }
         }.exhaustive
     }
 
@@ -100,6 +103,7 @@ sealed class RecipeSearchScreenEvent {
     data class OnSearchButtonClick(val searchedRecipeName: String) : RecipeSearchScreenEvent()
     data class OnSearchKeyboardClick(val searchedRecipeName: String) : RecipeSearchScreenEvent()
     object OnErrorRandomClick : RecipeSearchScreenEvent()
+    data class OnReady(val ingredient: String) : RecipeSearchScreenEvent()
 }
 
 sealed class RecipeSearchScreenStates {
