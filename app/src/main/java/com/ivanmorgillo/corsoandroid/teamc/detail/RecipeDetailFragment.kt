@@ -25,8 +25,7 @@ class RecipeDetailFragment : Fragment(R.layout.fragment_detail) {
     private val viewModel: RecipeDetailViewModel by viewModel()
     private val binding by viewBinding(FragmentDetailBinding::bind)
 
-    private
-    val args: RecipeDetailFragmentArgs by navArgs()
+    private val args: RecipeDetailFragmentArgs by navArgs()
 
     //  Equivalente alla onCreate di un activity
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
