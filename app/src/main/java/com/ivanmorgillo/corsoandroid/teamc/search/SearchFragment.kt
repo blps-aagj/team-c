@@ -71,6 +71,13 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         }
 
         binding.searchViewRecipeRecyclerviewId.adapter = adapter
+        actions()
+        binding.searchScreenNoRecipe.noRecipeFoundRandomBtn.setOnClickListener {
+            viewModel.send(RecipeSearchScreenEvent.OnErrorRandomClick)
+        }
+    }
+
+    private fun actions() {
         viewModel.actions.observe(viewLifecycleOwner, { action ->
             when (action) {
                 is RecipeSearchScreenAction.NavigateToDetailFromSearch -> {
@@ -91,9 +98,6 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 }
             }.exhaustive
         })
-        binding.searchScreenNoRecipe.noRecipeFoundRandomBtn.setOnClickListener {
-            viewModel.send(RecipeSearchScreenEvent.OnErrorRandomClick)
-        }
     }
 
     private fun closeKeyboard() {
