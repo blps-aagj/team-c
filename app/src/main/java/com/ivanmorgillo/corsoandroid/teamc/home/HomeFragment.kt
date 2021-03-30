@@ -28,6 +28,8 @@ import com.ivanmorgillo.corsoandroid.teamc.visible
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
+private const val CACHE_SIZE = 20
+
 class HomeFragment : Fragment(R.layout.fragment_home) {
     private val viewModel: HomeViewModel by viewModel()
     private val binding by viewBinding(FragmentHomeBinding::bind)
@@ -36,40 +38,41 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
 
-        val cacheSize = 20
         val adapter = RecipeByTabAdapter(
             { viewModel.send(OnRecipeClick(it)) },
             { viewModel.send((OnFavouriteClicked(it))) }
         )
         binding.recipesList.setHasFixedSize(true)
-        binding.recipesList.setItemViewCacheSize(cacheSize)
+        binding.recipesList.setItemViewCacheSize(CACHE_SIZE)
         binding.recipesList.adapter = adapter
 
-        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                val contentDescription = tab?.contentDescription
-                val nationTab = resources.getString(R.string.nazione)
-                val categoryTab = resources.getString(R.string.categoria)
-                when (contentDescription) {
-                    nationTab -> {
-                        selectedTab = contentDescription.toString()
-                        viewModel.send(HomeScreenEvent.OnClickedNation)
-                    }
-                    categoryTab -> {
-                        selectedTab = contentDescription.toString()
-                        viewModel.send(HomeScreenEvent.OnClickedCategory)
+        binding.tabLayout.addOnTabSelectedListener(
+            object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    val contentDescription = tab?.contentDescription
+                    val nationTab = resources.getString(R.string.nazione)
+                    val categoryTab = resources.getString(R.string.categoria)
+                    when (contentDescription) {
+                        nationTab -> {
+                            selectedTab = contentDescription.toString()
+                            viewModel.send(HomeScreenEvent.OnClickedNation)
+                        }
+                        categoryTab -> {
+                            selectedTab = contentDescription.toString()
+                            viewModel.send(HomeScreenEvent.OnClickedCategory)
+                        }
                     }
                 }
-            }
 
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-                // Handle tab reselect
-            }
+                override fun onTabUnselected(tab: TabLayout.Tab?) {
+                    Timber.d("onTabUnselected")
+                }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-                // Handle tab unselect
+                override fun onTabReselected(tab: TabLayout.Tab?) {
+                    Timber.d("onTabReselected")
+                }
             }
-        })
+        )
 
         states(adapter)
         actions()
@@ -78,7 +81,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun actions() {
 
-        viewModel.actions.observe(viewLifecycleOwner, { action ->
+        viewModel.actions.observe(viewLifecycleOwner) { action ->
             when (action) {
                 is NavigateToDetail -> {
                     val directions = actionHomeFragmentToDetailFragment(action.recipe.id)
@@ -103,11 +106,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     findNavController().navigate(directions)
                 }
             }.exhaustive
-        })
+        }
     }
 
     private fun states(adapter: RecipeByTabAdapter) {
-        viewModel.states.observe(viewLifecycleOwner, { state ->
+        viewModel.states.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is HomeScreenStates.Content -> {
                     binding.recipesListProgressBar.root.gone()
@@ -131,7 +134,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
                 HomeScreenStates.NoLogged -> showDialog(requireContext())
             }.exhaustive
-        })
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -153,7 +156,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun showDialog(context: Context) {
         MaterialAlertDialogBuilder(context)
-            .setMessage("Se vuoi aggiungere la ricetta nei preferiti, loggati! :)")
+            .setMessage("Se vuoi aggiungere la ricetta nei preferiti, accedi  :)")
             .setNegativeButton("cancel") { dialog, which ->
                 // Respond to neutral button press
             }

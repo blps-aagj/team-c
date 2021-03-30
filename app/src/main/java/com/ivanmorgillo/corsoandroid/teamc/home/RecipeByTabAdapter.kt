@@ -9,6 +9,8 @@ import com.ivanmorgillo.corsoandroid.teamc.databinding.AreaItemBinding
 import com.ivanmorgillo.corsoandroid.teamc.utils.getFlag
 import com.ivanmorgillo.corsoandroid.teamc.utils.imageLoader
 
+private const val CACHE_SIZE = 20
+
 class RecipeByTabAdapter(private val onclick: (RecipeUI) -> Unit, private val onFavouriteClicked: (RecipeUI) -> Unit) :
     RecyclerView.Adapter<RecipeByAreaViewHolder>() {
 
@@ -41,10 +43,9 @@ class RecipeByTabAdapter(private val onclick: (RecipeUI) -> Unit, private val on
 class RecipeByAreaViewHolder(private val binding: AreaItemBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: RecipeByTabUI, onclick: (RecipeUI) -> Unit, onFavouriteClicked: (RecipeUI) -> Unit) {
         binding.recipeAreaTitle.text = item.nameTab
-        val cacheSize = 20
         val adapter = RecipesAdapter(onclick, onFavouriteClicked)
         binding.recipeAreaRecyclerview.setHasFixedSize(true)
-        binding.recipeAreaRecyclerview.setItemViewCacheSize(cacheSize)
+        binding.recipeAreaRecyclerview.setItemViewCacheSize(CACHE_SIZE)
         binding.recipeAreaRecyclerview.adapter = adapter
         adapter.recipes = item.recipeByTab
         binding.recipeAreaRecyclerview.scrollToPosition(item.selectedRecipePosition)
