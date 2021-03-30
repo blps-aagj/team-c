@@ -19,17 +19,17 @@ import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.gone
 import com.ivanmorgillo.corsoandroid.teamc.home.HomeFragmentDirections.Companion.actionHomeFragmentToDetailFragment
 import com.ivanmorgillo.corsoandroid.teamc.home.HomeFragmentDirections.Companion.actionHomeFragmentToSearchFragment
-import com.ivanmorgillo.corsoandroid.teamc.home.MainScreenAction.NavigateToDetail
-import com.ivanmorgillo.corsoandroid.teamc.home.MainScreenEvent.OnFavouriteClicked
-import com.ivanmorgillo.corsoandroid.teamc.home.MainScreenEvent.OnRecipeClick
-import com.ivanmorgillo.corsoandroid.teamc.home.MainScreenEvent.OnRefreshClick
+import com.ivanmorgillo.corsoandroid.teamc.home.HomeScreenAction.NavigateToDetail
+import com.ivanmorgillo.corsoandroid.teamc.home.HomeScreenEvent.OnFavouriteClicked
+import com.ivanmorgillo.corsoandroid.teamc.home.HomeScreenEvent.OnRecipeClick
+import com.ivanmorgillo.corsoandroid.teamc.home.HomeScreenEvent.OnRefreshClick
 import com.ivanmorgillo.corsoandroid.teamc.utils.bindings.viewBinding
 import com.ivanmorgillo.corsoandroid.teamc.visible
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
-    private val viewModel: MainViewModel by viewModel()
+    private val viewModel: HomeViewModel by viewModel()
     private val binding by viewBinding(FragmentHomeBinding::bind)
     private var selectedTab: String = "Nation"
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,11 +50,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 when (contentDescription) {
                     nationTab -> {
                         selectedTab = contentDescription.toString()
-                        viewModel.send(MainScreenEvent.OnClickedNation)
+                        viewModel.send(HomeScreenEvent.OnClickedNation)
                     }
                     categoryTab -> {
                         selectedTab = contentDescription.toString()
-                        viewModel.send(MainScreenEvent.OnClickedCategory)
+                        viewModel.send(HomeScreenEvent.OnClickedCategory)
                     }
                 }
             }
@@ -70,7 +70,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         states(adapter)
         actions()
-        viewModel.send(MainScreenEvent.OnReady)
+        viewModel.send(HomeScreenEvent.OnReady)
     }
 
     private fun actions() {
@@ -82,7 +82,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     Timber.d("Invio al detail RecipeId = ${action.recipe.id}")
                     findNavController().navigate(directions)
                 }
-                is MainScreenAction.NavigateToDetailRandom -> {
+                is HomeScreenAction.NavigateToDetailRandom -> {
                     // gestire con NavigateToDetail
                     val recipeId = action.recipe.recipeId.toLongOrNull()
                     if (recipeId == null) {
@@ -95,7 +95,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                         findNavController().navigate(directions)
                     }
                 }
-                MainScreenAction.NavigateToSearch -> {
+                HomeScreenAction.NavigateToSearch -> {
                     val directions = actionHomeFragmentToSearchFragment()
                     findNavController().navigate(directions)
                 }
@@ -106,27 +106,27 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun states(adapter: RecipeByTabAdapter) {
         viewModel.states.observe(viewLifecycleOwner, { state ->
             when (state) {
-                is MainScreenStates.Content -> {
+                is HomeScreenStates.Content -> {
                     binding.recipesListProgressBar.root.gone()
                     binding.mainScreenNoNetwork.root.gone()
                     binding.recipesListRoot.visible()
                     adapter.recipeByTab = state.recipes
                 }
-                MainScreenStates.Loading -> {
+                HomeScreenStates.Loading -> {
                     binding.recipesListProgressBar.root.visible()
                     Timber.d("MainScreenStates Loading")
                 }
-                MainScreenStates.Error.NoNetwork -> {
+                HomeScreenStates.Error.NoNetwork -> {
                     binding.recipesListProgressBar.root.gone()
                     binding.recipesListRoot.gone()
                     binding.mainScreenNoNetwork.root.visible()
                 }
-                MainScreenStates.Error.NoRecipeFound -> {
+                HomeScreenStates.Error.NoRecipeFound -> {
                     binding.recipesListProgressBar.root.gone()
                     binding.recipesListRoot.gone()
                     binding.mainScreenNoRecipe.root.visible()
                 }
-                MainScreenStates.NoLogged -> showDialog(requireContext())
+                HomeScreenStates.NoLogged -> showDialog(requireContext())
             }.exhaustive
         })
     }
@@ -140,8 +140,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.refresh_btn -> viewModel.send(OnRefreshClick(selectedTab))
-            R.id.random_btn -> viewModel.send(MainScreenEvent.OnRandomClick)
-            R.id.search_btn -> viewModel.send(MainScreenEvent.OnSearchClick)
+            R.id.random_btn -> viewModel.send(HomeScreenEvent.OnRandomClick)
+            R.id.search_btn -> viewModel.send(HomeScreenEvent.OnSearchClick)
             else -> error("Home onOptionsItemSelected")
         }.exhaustive
 
@@ -155,7 +155,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 // Respond to neutral button press
             }
             .setPositiveButton("Login") { dialog, which ->
-                viewModel.send(MainScreenEvent.OnLoginDialogClick)
+                viewModel.send(HomeScreenEvent.OnLoginDialogClick)
                 (activity as StartGoogleSignIn).startGoogleSignIn { Log.d("msg", "Login successful") }
             }
             .show()

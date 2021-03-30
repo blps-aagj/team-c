@@ -30,8 +30,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.ivanmorgillo.corsoandroid.teamc.databinding.ActivityMainBinding
-import com.ivanmorgillo.corsoandroid.teamc.home.MainScreenEvent
-import com.ivanmorgillo.corsoandroid.teamc.home.MainViewModel
 import com.ivanmorgillo.corsoandroid.teamc.utils.imageLoader
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
@@ -41,7 +39,7 @@ interface StartGoogleSignIn {
 }
 
 class MainActivity : AppCompatActivity(), StartGoogleSignIn {
-    private val viewModel: MainViewModel by viewModel()
+    private val mainViewModel : MainViewModel by  viewModel()
     private val actionBarToggle: ActionBarDrawerToggle by lazy { ActionBarDrawerToggle(this, binding.drawerLayout, R.string.open, R.string.close) }
     private val navController: NavController by lazy { Navigation.findNavController(this, R.id.nav_host_fragment) }
     private val firebaseAuth: FirebaseAuth by lazy { Firebase.auth }
@@ -137,11 +135,13 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
         binding.navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.home_page -> {
+                    mainViewModel.send(MainScreenEvent.OnHomeClicked)
                     navController.navigate(R.id.homeFragment)
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
                     true
                 }
                 R.id.favourite_list -> {
+                    mainViewModel.send(MainScreenEvent.OnFavouriteListMenuClicked)
                     navController.navigate(R.id.favouriteFragment)
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
                     true
@@ -151,7 +151,7 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
                     true
                 }
                 R.id.feedback -> {
-                    viewModel.send(MainScreenEvent.OnFeedbackClicked)
+                    mainViewModel.send(MainScreenEvent.OnFeedbackClicked)
                     val url = "https://docs.google.com/forms/d/e/1FAIpQLScDBfn5FxLD2H48W-NTjJJttWkIhDiFeHegUyj5H_EBTzYokQ/viewform?usp=sf_link"
                     val builder = CustomTabsIntent.Builder()
                     val customTabsIntent = builder.build()
@@ -160,7 +160,7 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
                     true
                 }
                 R.id.settings -> {
-                    Toast.makeText(this, "Impostazioni da implementare", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Impostazioni da implementare (forse)", Toast.LENGTH_SHORT).show()
                     true
                 }
                 R.id.about -> {
@@ -168,6 +168,7 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
                     true
                 }
                 R.id.sign_in -> {
+                    mainViewModel.send(MainScreenEvent.OnSignInClicked)
                     if (Firebase.auth.currentUser == null) {
                         startGoogleSignIn {}
                         binding.drawerLayout.closeDrawer(GravityCompat.START)

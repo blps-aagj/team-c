@@ -12,7 +12,7 @@ import com.ivanmorgillo.corsoandroid.teamc.detail.RecipeDetailViewModel
 import com.ivanmorgillo.corsoandroid.teamc.favourite.FavouriteViewModel
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
 import com.ivanmorgillo.corsoandroid.teamc.firebase.TrackingImpl
-import com.ivanmorgillo.corsoandroid.teamc.home.MainViewModel
+import com.ivanmorgillo.corsoandroid.teamc.home.HomeViewModel
 import com.ivanmorgillo.corsoandroid.teamc.search.RecipeSearchViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -45,7 +45,10 @@ val appModule = module {
         AuthenticationManagerImpl()
     }
     viewModel {
-        MainViewModel(
+        MainViewModel(tracking =get())
+    }
+    viewModel {
+        HomeViewModel(
             repository = get(),
             tracking = get(),
             favouriteRepository = get(),
