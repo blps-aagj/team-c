@@ -69,7 +69,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             } else if (chipNameIsCheck) {
                 viewModel.send(RecipeSearchScreenEvent.OnSearchByRecipeNameButtonClick(searchText))
             } else {
-                Toast.makeText(context, "", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.filter_not_selected_msg), Toast.LENGTH_SHORT).show()
             }
         }
 

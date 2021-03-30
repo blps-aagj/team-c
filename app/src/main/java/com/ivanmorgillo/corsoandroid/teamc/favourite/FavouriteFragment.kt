@@ -19,6 +19,8 @@ import com.ivanmorgillo.corsoandroid.teamc.visible
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
+private const val CACHE_SIZE = 20
+
 class FavouriteFragment : Fragment(R.layout.fragment_favourite_list) {
 
     private val viewModel: FavouriteViewModel by viewModel()
@@ -26,23 +28,28 @@ class FavouriteFragment : Fragment(R.layout.fragment_favourite_list) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val adapter = FavouriteRecipeScreenAdapter {
             viewModel.send(FavouriteScreenEvents.OnFavouriteRecipeClick(it))
         }
         binding.favouriteRecyclerView.itemAnimator = DefaultItemAnimator()
         binding.favouriteRecyclerView.addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
+        binding.favouriteRecyclerView.setHasFixedSize(true)
+        binding.favouriteRecyclerView.setItemViewCacheSize(CACHE_SIZE)
         binding.favouriteRecyclerView.adapter = adapter
 
-        val itemTouchHelperCallback: ItemTouchHelper.SimpleCallback = RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, object :
-            RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int, position: Int) {
-                viewModel.send(FavouriteScreenEvents.OnItemSwiped(position))
+        val itemTouchHelperCallback: ItemTouchHelper.SimpleCallback = RecyclerItemTouchHelper(
+            0,
+            ItemTouchHelper.LEFT,
+            object :
+                RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int, position: Int) {
+                    viewModel.send(FavouriteScreenEvents.OnItemSwiped(position))
+                }
             }
-        })
+        )
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.favouriteRecyclerView)
 
-        viewModel.favouriteStates.observe(viewLifecycleOwner, {
+        viewModel.favouriteStates.observe(viewLifecycleOwner) {
             when (it) {
                 is FavouriteScreenStates.FavouriteScreenContent -> {
                     binding.favouriteInfoMessage.gone()
@@ -62,8 +69,8 @@ class FavouriteFragment : Fragment(R.layout.fragment_favourite_list) {
                     binding.favouriteInfoMessage.visible()
                 }
             }.exhaustive
-        })
-        viewModel.favouriteActions.observe(viewLifecycleOwner, { action ->
+        }
+        viewModel.favouriteActions.observe(viewLifecycleOwner) { action ->
             when (action) {
                 is FavouriteScreenAction.NavigateToDetailFromFavourite -> {
                     val directions = FavouriteFragmentDirections.actionFavouriteFragmentToDetailFragment(action.recipe.idRecipe)
@@ -71,7 +78,7 @@ class FavouriteFragment : Fragment(R.layout.fragment_favourite_list) {
                     findNavController().navigate(directions)
                 }
             }.exhaustive
-        })
+        }
         viewModel.send(FavouriteScreenEvents.OnFavouriteScreenReady)
     }
 

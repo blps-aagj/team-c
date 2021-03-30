@@ -19,6 +19,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 private const val Z_AXIS: Float = 100f
+private const val CACHE_SIZE = 20
 
 class RecipeDetailFragment : Fragment(R.layout.fragment_detail) {
 
@@ -30,7 +31,6 @@ class RecipeDetailFragment : Fragment(R.layout.fragment_detail) {
     //  Equivalente alla onCreate di un activity
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         ViewCompat.setTranslationZ(
             binding.root,
             Z_AXIS
@@ -41,6 +41,8 @@ class RecipeDetailFragment : Fragment(R.layout.fragment_detail) {
         )
         val recipeId = args.recipeId
         adapter.setHasStableIds(true)
+        binding.recipesListRoot.setHasFixedSize(true)
+        binding.recipesListRoot.setItemViewCacheSize(CACHE_SIZE)
         binding.recipesListRoot.adapter = adapter
         binding.detailScreenNoRecipe.noRecipeFoundRandomBtn.setOnClickListener {
             viewModel.send(RecipeDetailScreenEvent.OnErrorRandomClick)
@@ -49,7 +51,7 @@ class RecipeDetailFragment : Fragment(R.layout.fragment_detail) {
             // Torna nella schermata precedente
             findNavController().popBackStack()
         }
-        viewModel.states.observe(viewLifecycleOwner, { state ->
+        viewModel.states.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is RecipeDetailScreenStates.Content -> {
                     binding.detailScreenProgressBar.root.gone()
@@ -73,23 +75,21 @@ class RecipeDetailFragment : Fragment(R.layout.fragment_detail) {
                 }
                 RecipeDetailScreenStates.NoLogged -> showDialog(requireContext())
             }.exhaustive
-        })
-        viewModel.actions.observe(
-            viewLifecycleOwner, { action ->
-                when (action) {
-                    is RecipeDetailScreenAction.NavigateToSearch -> {
-                        val directions = RecipeDetailFragmentDirections.actionDetailFragmentToSearchFragment(action.ingredient)
-                        findNavController().navigate(directions)
-                    }
-                }.exhaustive
-            }
-        )
+        }
+        viewModel.actions.observe(viewLifecycleOwner) { action ->
+            when (action) {
+                is RecipeDetailScreenAction.NavigateToSearch -> {
+                    val directions = RecipeDetailFragmentDirections.actionDetailFragmentToSearchFragment(action.ingredient)
+                    findNavController().navigate(directions)
+                }
+            }.exhaustive
+        }
         viewModel.send(RecipeDetailScreenEvent.OnScreenRecipeDetailReady(recipeId))
     }
 
     private fun showDialog(context: Context) {
         MaterialAlertDialogBuilder(context)
-            .setMessage("Se vuoi aggiungere la ricetta nei preferiti, loggati! :)")
+            .setMessage("Se vuoi aggiungere la ricetta nei preferiti, accedi :)")
             .setNegativeButton("cancel") { _, _ ->
                 // Respond to neutral button press
             }
