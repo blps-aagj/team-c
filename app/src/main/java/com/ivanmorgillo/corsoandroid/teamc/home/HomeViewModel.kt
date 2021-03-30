@@ -16,13 +16,13 @@ import com.blps.aagj.cookbook.domain.home.LoadRecipesByCategoryResult
 import com.blps.aagj.cookbook.domain.home.RecipesRepository
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
 import com.ivanmorgillo.corsoandroid.teamc.firebase.Tracking
-import com.ivanmorgillo.corsoandroid.teamc.home.MainScreenAction.NavigateToDetail
+import com.ivanmorgillo.corsoandroid.teamc.home.HomeScreenAction.NavigateToDetail
 import com.ivanmorgillo.corsoandroid.teamc.utils.SingleLiveEvent
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class MainViewModel(
+class HomeViewModel(
     private val repository: RecipesRepository,
     private val favouriteRepository: FavouriteRepository,
     private val detailsRepository: RecipesDetailsRepository,
@@ -30,51 +30,45 @@ class MainViewModel(
     private val authenticationManager: AuthenticationManager
 ) : ViewModel() {
 
-    val states = MutableLiveData<MainScreenStates>()
-    val actions = SingleLiveEvent<MainScreenAction>()
+    val states = MutableLiveData<HomeScreenStates>()
+    val actions = SingleLiveEvent<HomeScreenAction>()
     private var recipesByArea: List<RecipeByArea>? = null
     private var recipesByCategory: List<RecipeByCategory>? = null
     private var recipesByTabUI: List<RecipeByTabUI>? = null
 
     @Suppress("IMPLICIT_CAST_TO_ANY")
-    fun send(event: MainScreenEvent) {
+    fun send(event: HomeScreenEvent) {
         when (event) {
-            MainScreenEvent.OnReady -> loadContent(false)
-            is MainScreenEvent.OnRecipeClick -> {
+            HomeScreenEvent.OnReady -> loadContent(false)
+            is HomeScreenEvent.OnRecipeClick -> {
                 tracking.logEvent("home_recipe_clicked")
                 actions.postValue(NavigateToDetail(event.recipe))
             }
-            is MainScreenEvent.OnRefreshClick -> {
+            is HomeScreenEvent.OnRefreshClick -> {
                 tracking.logEvent("home_refresh_clicked")
                 onRefreshClick(event)
             }
-            is MainScreenEvent.OnFavouriteClicked -> {
+            is HomeScreenEvent.OnFavouriteClicked -> {
                 tracking.logEvent("home_favorite_clicked")
                 onFavouriteClicked(event)
             }
-            is MainScreenEvent.OnRandomClick -> {
+            is HomeScreenEvent.OnRandomClick -> {
                 tracking.logEvent("home_random_clicked")
                 loadDetailRandomRecipe()
             }
-            MainScreenEvent.OnFeedbackClicked -> {
-                tracking.logEvent("drawer_feedback_clicked")
-            }
-            MainScreenEvent.OnFavouriteListMenuClicked -> {
-                tracking.logEvent("drawer_favourite_list_clicked")
-            }
-            MainScreenEvent.OnSearchClick -> {
+            HomeScreenEvent.OnSearchClick -> {
                 tracking.logEvent("home_search_clicked")
                 Timber.d("OnSearchClick")
-                actions.postValue(MainScreenAction.NavigateToSearch)
+                actions.postValue(HomeScreenAction.NavigateToSearch)
             }
-            MainScreenEvent.OnLoginDialogClick -> {
+            HomeScreenEvent.OnLoginDialogClick -> {
                 tracking.logEvent("login_dialog_clicked_home")
             }
-            MainScreenEvent.OnClickedCategory -> {
+            HomeScreenEvent.OnClickedCategory -> {
                 tracking.logEvent("clicked_tab_category")
                 loadCategoryContent(false)
             }
-            MainScreenEvent.OnClickedNation -> {
+            HomeScreenEvent.OnClickedNation -> {
                 tracking.logEvent("clicked_tab_nation")
                 loadContent(false)
             }
@@ -82,7 +76,7 @@ class MainViewModel(
     }
 
     @Suppress("IMPLICIT_CAST_TO_ANY")
-    private fun onFavouriteClicked(event: MainScreenEvent.OnFavouriteClicked) =
+    private fun onFavouriteClicked(event: HomeScreenEvent.OnFavouriteClicked) =
         if (authenticationManager.isUserLoggedIn()) {
             viewModelScope.launch {
                 if (!savingInProgress) {
@@ -92,10 +86,10 @@ class MainViewModel(
                 }
             }
         } else {
-            states.postValue(MainScreenStates.NoLogged)
+            states.postValue(HomeScreenStates.NoLogged)
         }
 
-    private fun onRefreshClick(event: MainScreenEvent.OnRefreshClick) {
+    private fun onRefreshClick(event: HomeScreenEvent.OnRefreshClick) {
         when (event.selectedTab) {
             "Nation" -> {
                 loadContent(true)
@@ -110,12 +104,12 @@ class MainViewModel(
     }
 
     private fun loadCategoryContent(forced: Boolean) {
-        states.postValue(MainScreenStates.Loading)
+        states.postValue(HomeScreenStates.Loading)
         viewModelScope.launch {
             val result = repository.loadAllRecipesByCategory(forced)
             when (result) {
                 is LoadRecipesByCategoryResult.Failure -> {
-                    states.postValue(MainScreenStates.Error.NoNetwork)
+                    states.postValue(HomeScreenStates.Error.NoNetwork)
                 }
                 is LoadRecipesByCategoryResult.Success -> {
                     recipesByCategory = result.contentListRecipesByCategory
@@ -132,7 +126,7 @@ class MainViewModel(
                             )
                         }
                     recipesByTabUI = recipes
-                    states.postValue(MainScreenStates.Content(recipes))
+                    states.postValue(HomeScreenStates.Content(recipes))
                 }
             }.exhaustive
         }
@@ -174,7 +168,7 @@ class MainViewModel(
             ?.toList()
             ?.run {
                 recipesByTabUI = this
-                val content = MainScreenStates.Content(this)
+                val content = HomeScreenStates.Content(this)
                 states.postValue(content)
             }
     }
@@ -201,28 +195,28 @@ class MainViewModel(
     }
 
     private fun loadDetailRandomRecipe(): Job {
-        states.postValue(MainScreenStates.Loading)
+        states.postValue(HomeScreenStates.Loading)
         return viewModelScope.launch {
             when (val result = detailsRepository.loadDetailsRecipesRandom()) {
                 is LoadRecipesDetailResult.Failure -> {
                     Timber.d("RecipeId failure")
-                    states.postValue(MainScreenStates.Error.NoNetwork)
+                    states.postValue(HomeScreenStates.Error.NoNetwork)
                 }
                 is LoadRecipesDetailResult.Success -> {
                     Timber.d("RecipeId passed")
                     val recipeDetail = result.recipesDetail
-                    actions.postValue(MainScreenAction.NavigateToDetailRandom(recipeDetail))
+                    actions.postValue(HomeScreenAction.NavigateToDetailRandom(recipeDetail))
                 }
             }.exhaustive
         }
     }
 
     private fun loadContent(forced: Boolean) {
-        states.postValue(MainScreenStates.Loading)
+        states.postValue(HomeScreenStates.Loading)
         viewModelScope.launch {
             val result = repository.loadAllRecipesByArea(forced)
             when (result) {
-                is LoadRecipesByAreaResult.Failure -> states.postValue(MainScreenStates.Error.NoNetwork)
+                is LoadRecipesByAreaResult.Failure -> states.postValue(HomeScreenStates.Error.NoNetwork)
                 is LoadRecipesByAreaResult.Success -> {
                     recipesByArea = result.contentListRecipes
                     val favourites = favouriteRepository.loadAll() ?: emptyList()
@@ -238,7 +232,7 @@ class MainViewModel(
                             )
                         }
                     recipesByTabUI = recipes
-                    states.postValue(MainScreenStates.Content(recipes))
+                    states.postValue(HomeScreenStates.Content(recipes))
                 }
             }
         }
@@ -254,34 +248,32 @@ class MainViewModel(
 
 data class RecipeByTabUI(val nameTab: String, val recipeByTab: List<RecipeUI>, val selectedRecipePosition: Int)
 
-sealed class MainScreenAction {
-    data class NavigateToDetail(val recipe: RecipeUI) : MainScreenAction()
-    data class NavigateToDetailRandom(val recipe: RecipeDetail) : MainScreenAction()
-    object NavigateToSearch : MainScreenAction()
+sealed class HomeScreenAction {
+    data class NavigateToDetail(val recipe: RecipeUI) : HomeScreenAction()
+    data class NavigateToDetailRandom(val recipe: RecipeDetail) : HomeScreenAction()
+    object NavigateToSearch : HomeScreenAction()
 }
 
-sealed class MainScreenEvent {
-    data class OnRecipeClick(val recipe: RecipeUI) : MainScreenEvent()
-    data class OnFavouriteClicked(val recipe: RecipeUI) : MainScreenEvent()
-    object OnRandomClick : MainScreenEvent()
-    object OnFavouriteListMenuClicked : MainScreenEvent()
-    object OnFeedbackClicked : MainScreenEvent()
-    object OnReady : MainScreenEvent()
-    object OnClickedNation : MainScreenEvent()
-    object OnClickedCategory : MainScreenEvent()
-    data class OnRefreshClick(val selectedTab: String) : MainScreenEvent()
-    object OnSearchClick : MainScreenEvent()
-    object OnLoginDialogClick : MainScreenEvent()
+sealed class HomeScreenEvent {
+    data class OnRecipeClick(val recipe: RecipeUI) : HomeScreenEvent()
+    data class OnFavouriteClicked(val recipe: RecipeUI) : HomeScreenEvent()
+    object OnRandomClick : HomeScreenEvent()
+    object OnReady : HomeScreenEvent()
+    object OnClickedNation : HomeScreenEvent()
+    object OnClickedCategory : HomeScreenEvent()
+    data class OnRefreshClick(val selectedTab: String) : HomeScreenEvent()
+    object OnSearchClick : HomeScreenEvent()
+    object OnLoginDialogClick : HomeScreenEvent()
 }
 
-sealed class MainScreenStates {
-    object Loading : MainScreenStates()
-    object NoLogged : MainScreenStates()
+sealed class HomeScreenStates {
+    object Loading : HomeScreenStates()
+    object NoLogged : HomeScreenStates()
 
-    sealed class Error : MainScreenStates() {
+    sealed class Error : HomeScreenStates() {
         object NoNetwork : Error()
         object NoRecipeFound : Error()
     }
 
-    data class Content(val recipes: List<RecipeByTabUI>) : MainScreenStates()
+    data class Content(val recipes: List<RecipeByTabUI>) : HomeScreenStates()
 }

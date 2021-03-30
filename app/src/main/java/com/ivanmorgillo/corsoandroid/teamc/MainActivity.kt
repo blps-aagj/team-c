@@ -30,8 +30,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.ivanmorgillo.corsoandroid.teamc.databinding.ActivityMainBinding
-import com.ivanmorgillo.corsoandroid.teamc.home.MainScreenEvent
-import com.ivanmorgillo.corsoandroid.teamc.home.MainViewModel
 import com.ivanmorgillo.corsoandroid.teamc.utils.imageLoader
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
@@ -142,6 +140,7 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
                     true
                 }
                 R.id.favourite_list -> {
+                    viewModel.send(MainScreenEvent.OnFavouriteListMenuClicked)
                     navController.navigate(R.id.favouriteFragment)
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
                     true
