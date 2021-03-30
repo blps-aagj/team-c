@@ -30,7 +30,7 @@ class RecipeDetailFragment : Fragment(R.layout.fragment_detail) {
     //  Equivalente alla onCreate di un activity
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        val cacheSize = 20
         ViewCompat.setTranslationZ(
             binding.root,
             Z_AXIS
@@ -42,7 +42,7 @@ class RecipeDetailFragment : Fragment(R.layout.fragment_detail) {
         val recipeId = args.recipeId
         adapter.setHasStableIds(true)
         binding.recipesListRoot.setHasFixedSize(true)
-        binding.recipesListRoot.setItemViewCacheSize(20)
+        binding.recipesListRoot.setItemViewCacheSize(cacheSize)
         binding.recipesListRoot.adapter = adapter
         binding.detailScreenNoRecipe.noRecipeFoundRandomBtn.setOnClickListener {
             viewModel.send(RecipeDetailScreenEvent.OnErrorRandomClick)

@@ -27,13 +27,14 @@ class FavouriteFragment : Fragment(R.layout.fragment_favourite_list) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+         val cacheSize = 20
         val adapter = FavouriteRecipeScreenAdapter {
             viewModel.send(FavouriteScreenEvents.OnFavouriteRecipeClick(it))
         }
         binding.favouriteRecyclerView.itemAnimator = DefaultItemAnimator()
         binding.favouriteRecyclerView.addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
         binding.favouriteRecyclerView.setHasFixedSize(true)
-        binding.favouriteRecyclerView.setItemViewCacheSize(20)
+        binding.favouriteRecyclerView.setItemViewCacheSize(cacheSize)
         binding.favouriteRecyclerView.adapter = adapter
 
         val itemTouchHelperCallback: ItemTouchHelper.SimpleCallback = RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, object :

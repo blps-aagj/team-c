@@ -36,13 +36,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
 
-
+        val cacheSize = 20
         val adapter = RecipeByTabAdapter(
             { viewModel.send(OnRecipeClick(it)) },
             { viewModel.send((OnFavouriteClicked(it))) }
         )
         binding.recipesList.setHasFixedSize(true)
-        binding.recipesList.setItemViewCacheSize(20)
+        binding.recipesList.setItemViewCacheSize(cacheSize)
         binding.recipesList.adapter = adapter
 
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
