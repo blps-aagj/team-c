@@ -45,6 +45,9 @@ val appModule = module {
         AuthenticationManagerImpl()
     }
     viewModel {
+        MainViewModel(tracking =get())
+    }
+    viewModel {
         HomeViewModel(
             repository = get(),
             tracking = get(),
