@@ -24,7 +24,7 @@
     <string name="there_are_no_favorite_recipes_yet">Non ci sono ancora ricette nei tuoi preferiti</string>
     <string name="search">Cerca</string>
     <string name="there_are_no_recipes_yet">Non ci sono ancora ricette</string>
-    <string name="search_fragment_message">Prova a cercare una ricetta</string>
+    <string name="search_fragment_message">Prova a cercare una ricetta o un ingrediente</string>
     <string name="hint_search">Cake</string>
     <string name="login">Login</string>
     <string name="user_name">Nome Utente</string>

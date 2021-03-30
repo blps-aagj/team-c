@@ -26,7 +26,7 @@
     <string name="there_are_no_favorite_recipes_yet">There are no favorite recipes yet</string>
     <string name="search">Search</string>
     <string name="there_are_no_recipes_yet">there are no recipes yet</string>
-    <string name="search_fragment_message">Try to search some recipe</string>
+    <string name="search_fragment_message">Try to search some recipe or ingredient</string>
     <string name="hint_search">Cake</string>
     <string name="login">Login</string>
     <string name="user_name">User Name</string>

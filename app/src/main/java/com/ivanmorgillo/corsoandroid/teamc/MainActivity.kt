@@ -121,7 +121,8 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
         val requestConfig = RequestConfiguration.Builder().setTestDeviceIds(
             listOf(
                 "362E16B73FDC0FD988C3E2B13E5F0F29",
-                "1EBA99F3F495E2249F5BDEB38B940769"
+                "1EBA99F3F495E2249F5BDEB38B940769",
+                "C2B7E85F57B7276965C4A1A1A10FB7B4"
             )
         ).build()
         MobileAds.setRequestConfiguration(requestConfig)
