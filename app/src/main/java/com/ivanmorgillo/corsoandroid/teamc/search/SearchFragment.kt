@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -65,8 +66,10 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 viewModel.send(OnSearchButtonClick(searchText, searchText))
             } else if (chipIngredientIsCheck) {
                 viewModel.send(RecipeSearchScreenEvent.OnSearchIngredientButtonClick(searchText))
-            } else {
+            } else if (chipNameIsCheck) {
                 viewModel.send(RecipeSearchScreenEvent.OnSearchByRecipeNameButtonClick(searchText))
+            } else {
+                Toast.makeText(context, "", Toast.LENGTH_SHORT).show()
             }
         }
 

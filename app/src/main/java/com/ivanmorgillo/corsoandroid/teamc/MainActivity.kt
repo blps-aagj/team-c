@@ -111,14 +111,19 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
 
             override fun onAdClosed() = Unit
         }
-        adView.adUnitId = "ca-app-pub-9504174324799217/1934053066"
+        adView.adUnitId = "ca-app-pub-3940256099942544/6300978111"
 
         adView.adSize = adSize
 
         // Create an ad request. Check your logcat output for the hashed device ID to
         // get test ads on a physical device, e.g.,
         // "Use AdRequest.Builder.addTestDevice("ABCDE0123") to get test ads on this device."
-        val requestConfig = RequestConfiguration.Builder().setTestDeviceIds(listOf("362E16B73FDC0FD988C3E2B13E5F0F29")).build()
+        val requestConfig = RequestConfiguration.Builder().setTestDeviceIds(
+            listOf(
+                "362E16B73FDC0FD988C3E2B13E5F0F29",
+                "1EBA99F3F495E2249F5BDEB38B940769"
+            )
+        ).build()
         MobileAds.setRequestConfiguration(requestConfig)
         val adRequest = AdRequest.Builder().build()
 
