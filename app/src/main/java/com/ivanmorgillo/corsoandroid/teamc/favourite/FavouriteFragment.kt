@@ -32,6 +32,8 @@ class FavouriteFragment : Fragment(R.layout.fragment_favourite_list) {
         }
         binding.favouriteRecyclerView.itemAnimator = DefaultItemAnimator()
         binding.favouriteRecyclerView.addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
+        binding.favouriteRecyclerView.setHasFixedSize(true)
+        binding.favouriteRecyclerView.setItemViewCacheSize(20)
         binding.favouriteRecyclerView.adapter = adapter
 
         val itemTouchHelperCallback: ItemTouchHelper.SimpleCallback = RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, object :

@@ -41,6 +41,8 @@ class RecipeDetailFragment : Fragment(R.layout.fragment_detail) {
         )
         val recipeId = args.recipeId
         adapter.setHasStableIds(true)
+        binding.recipesListRoot.setHasFixedSize(true)
+        binding.recipesListRoot.setItemViewCacheSize(20)
         binding.recipesListRoot.adapter = adapter
         binding.detailScreenNoRecipe.noRecipeFoundRandomBtn.setOnClickListener {
             viewModel.send(RecipeDetailScreenEvent.OnErrorRandomClick)

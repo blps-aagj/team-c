@@ -36,4 +36,5 @@
     <string name="recipe_name">Recipe Name</string>
     <string name="ingredient">Ingredient</string>
     <string name="name_and_ingredient">Name and Ingredient</string>
+    <string name="filter_not_selected_msg">Select a filter</string>
 </resources>

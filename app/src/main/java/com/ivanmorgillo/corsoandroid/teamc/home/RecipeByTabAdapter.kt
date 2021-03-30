@@ -43,6 +43,8 @@ class RecipeByAreaViewHolder(private val binding: AreaItemBinding) : RecyclerVie
         binding.recipeAreaTitle.text = item.nameTab
 
         val adapter = RecipesAdapter(onclick, onFavouriteClicked)
+        binding.recipeAreaRecyclerview.setHasFixedSize(true)
+        binding.recipeAreaRecyclerview.setItemViewCacheSize(20)
         binding.recipeAreaRecyclerview.adapter = adapter
         adapter.recipes = item.recipeByTab
         binding.recipeAreaRecyclerview.scrollToPosition(item.selectedRecipePosition)
