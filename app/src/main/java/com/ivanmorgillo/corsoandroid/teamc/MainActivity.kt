@@ -122,7 +122,8 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
             listOf(
                 "362E16B73FDC0FD988C3E2B13E5F0F29",
                 "1EBA99F3F495E2249F5BDEB38B940769",
-                "C2B7E85F57B7276965C4A1A1A10FB7B4"
+                "C2B7E85F57B7276965C4A1A1A10FB7B4",
+                "60D5B4ACDF7C7F3527C7F5C42A051BF5"
             )
         ).build()
         MobileAds.setRequestConfiguration(requestConfig)

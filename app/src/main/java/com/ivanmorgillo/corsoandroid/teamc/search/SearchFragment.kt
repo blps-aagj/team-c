@@ -133,7 +133,9 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                     binding.recipesListProgressBar.root.gone()
                     binding.searchScreenNoRecipe.root.visible()
                 }
-                RecipeSearchScreenStates.Loading -> binding.recipesListProgressBar.root.visible()
+                RecipeSearchScreenStates.Loading -> {
+                    binding.recipesListProgressBar.root.visible()
+                }
             }.exhaustive
         })
     }
