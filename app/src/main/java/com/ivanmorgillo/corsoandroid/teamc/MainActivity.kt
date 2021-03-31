@@ -65,27 +65,38 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
         val response = IdpResponse.fromResultIntent(result.data)
         val headerView = binding.navView.getHeaderView(0)
         val currentUser = firebaseAuth.currentUser
+
         if (result.resultCode == Activity.RESULT_OK) {
+            val loggedUser = LoggedUser(
+                userId = currentUser?.uid,
+                userName = currentUser?.displayName,
+                userPhoto = currentUser?.photoUrl.toString(),
+                userMail = currentUser?.email
+            )
             binding.navView.menu.findItem(R.id.sign_in).title = "Logout"
-            if (currentUser?.displayName != null) {
-                Toast.makeText(this, "Welcome, ${currentUser.displayName}", Toast.LENGTH_SHORT).show()
-                headerView.findViewById<TextView>(R.id.userName).text = currentUser.displayName
-                headerView.findViewById<ImageView>(R.id.userAvatar).load(currentUser.photoUrl, imageLoader(this))
-            } else {
-                val userEmail = currentUser?.email?.split("@")?.get(0)
-                headerView.findViewById<TextView>(R.id.userName).text = userEmail
-                Toast.makeText(this, "Welcome, $userEmail", Toast.LENGTH_SHORT).show()
-                if (currentUser?.photoUrl == null) {
-                    headerView.findViewById<ImageView>(R.id.userAvatar).load(
-                        R.drawable.ic_chef
-                    )
-                } else {
-                    headerView.findViewById<ImageView>(R.id.userAvatar).load(currentUser.photoUrl, imageLoader(this))
-                }
-            }
+            setUserUINavHeader(loggedUser, headerView)
             startGoogleSignInCallback?.invoke()
         } else {
             Timber.e("authentication error  ${response?.error?.errorCode}")
+        }
+    }
+
+    private fun setUserUINavHeader(loggedUser: LoggedUser, headerView: View) {
+        if (loggedUser.userName != null) {
+            Toast.makeText(this, "Welcome, ${loggedUser.userName}", Toast.LENGTH_SHORT).show()
+            headerView.findViewById<TextView>(R.id.userName).text = loggedUser.userName
+            headerView.findViewById<ImageView>(R.id.userAvatar).load(loggedUser.userPhoto, imageLoader(this))
+        } else {
+            val userEmail = loggedUser.userMail?.split("@")?.get(0)
+            headerView.findViewById<TextView>(R.id.userName).text = userEmail
+            Toast.makeText(this, "Welcome, $userEmail", Toast.LENGTH_SHORT).show()
+            if (loggedUser.userPhoto == null) {
+                headerView.findViewById<ImageView>(R.id.userAvatar).load(
+                    R.drawable.ic_chef
+                )
+            } else {
+                headerView.findViewById<ImageView>(R.id.userAvatar).load(loggedUser.userPhoto, imageLoader(this))
+            }
         }
     }
 
@@ -255,3 +266,10 @@ class MainActivity : AppCompatActivity(), StartGoogleSignIn {
         firebaseAuthenticationResultLauncher.launch(intent)
     }
 }
+
+data class LoggedUser(
+    val userId: String?,
+    val userName: String?,
+    val userPhoto: String?,
+    val userMail: String?
+)
