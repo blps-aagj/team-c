@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.ivanmorgillo.corsoandroid.teamc.MainActivity
 import com.ivanmorgillo.corsoandroid.teamc.R
 import com.ivanmorgillo.corsoandroid.teamc.databinding.FragmentSearchBinding
 import com.ivanmorgillo.corsoandroid.teamc.exhaustive
@@ -30,6 +31,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as MainActivity).supportActionBar?.title = getString(R.string.search_fragment_title)
         val chipName = binding.chipRecipeName
         val chipIngredient = binding.chipIngredient
         var chipNameIsCheck = false

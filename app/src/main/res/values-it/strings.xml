@@ -35,5 +35,9 @@
     <string name="ingredient">Ingrediente</string>
     <string name="name_and_ingredient">Name and Ingredient</string>
     <string name="filter_not_selected_msg">Scegli un filtro</string>
+    <string name="favourites_fragment_title">Preferiti</string>
+    <string name="home_fragment_title">Home</string>
+    <string name="recipe_detail_fragment_title">Dettaglio della Ricetta</string>
+    <string name="search_fragment_title">Schermata Ricerca</string>
 
 </resources>

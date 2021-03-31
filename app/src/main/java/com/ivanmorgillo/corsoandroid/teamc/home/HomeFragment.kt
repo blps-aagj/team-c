@@ -36,6 +36,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private var selectedTab: String = "Nation"
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as MainActivity).supportActionBar?.title = getString(R.string.home_fragment_title)
         setHasOptionsMenu(true)
 
         val adapter = RecipeByTabAdapter(

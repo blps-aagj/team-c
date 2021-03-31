@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.ivanmorgillo.corsoandroid.teamc.MainActivity
 import com.ivanmorgillo.corsoandroid.teamc.R
 import com.ivanmorgillo.corsoandroid.teamc.StartGoogleSignIn
 import com.ivanmorgillo.corsoandroid.teamc.databinding.FragmentDetailBinding
@@ -31,6 +32,7 @@ class RecipeDetailFragment : Fragment(R.layout.fragment_detail) {
     //  Equivalente alla onCreate di un activity
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as MainActivity).supportActionBar?.title = getString(R.string.recipe_detail_fragment_title)
         ViewCompat.setTranslationZ(
             binding.root,
             Z_AXIS
