@@ -37,4 +37,8 @@
     <string name="ingredient">Ingredient</string>
     <string name="name_and_ingredient">Name and Ingredient</string>
     <string name="filter_not_selected_msg">Select a filter</string>
+    <string name="favourites_fragment_title">Favourites</string>
+    <string name="home_fragment_title">Home</string>
+    <string name="recipe_detail_fragment_title">Recipe Detail</string>
+    <string name="search_fragment_title">Search Screen</string>
 </resources>

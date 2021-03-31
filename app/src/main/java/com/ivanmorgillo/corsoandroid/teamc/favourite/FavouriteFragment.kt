@@ -28,6 +28,7 @@ class FavouriteFragment : Fragment(R.layout.fragment_favourite_list) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as MainActivity).supportActionBar?.title = getString(R.string.favourites_fragment_title)
         val adapter = FavouriteRecipeScreenAdapter {
             viewModel.send(FavouriteScreenEvents.OnFavouriteRecipeClick(it))
         }
